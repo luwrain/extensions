@@ -222,6 +222,16 @@ public class VoiceMan implements Channel
 
     @Override public void setCurrentPuncMode(PuncMode mode)
     {
+	NullCheck.notNull(mode, "mode");
+	switch(mode)
+	{
+	case ALL:
+	    output.println("M:all");
+	    break;
+	case NONE:
+	    output.println("M:none");
+	    break;
+	}
     }
 
     @Override public String getCurrentVoiceName()
