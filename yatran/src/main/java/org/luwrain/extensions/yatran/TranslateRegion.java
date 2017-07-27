@@ -42,25 +42,20 @@ class TranslateRegion implements Command
 	    luwrain.message("Не задан ключ для доступа к функциям переводчика", Luwrain.MESSAGE_ERROR);//FIXME:
 	    return;
 	}
-	final RegionContent data = luwrain.currentAreaRegion(true);
-	if (data == null)
+	final String text = luwrain.getActiveAreaText(Luwrain.AreaTextType.REGION, true);
+	if (text == null || text.trim().isEmpty())
 	    return;
 	final Client client = new Client(key);
-	final String text = data.toSingleLine();
-	final Luwrain l = luwrain;
-	final Runnable r = new Runnable(){ 
-		@Override public void run()
-		{
+	final Runnable r = ()->{
 		    try {
-			System.out.println(text);
-			l.enqueueEvent(new MessageEvent(client.translate(text), Luwrain.MESSAGE_DONE));
+			luwrain.enqueueEvent(new MessageEvent(client.translate(text), Luwrain.MESSAGE_DONE));
 		    }
 		    catch (Exception e)
 		    {
 			e.printStackTrace();
-			l.enqueueEvent(new MessageEvent("Произошла ошибка при обращении к серверу перевода", Luwrain.MESSAGE_ERROR));
+			luwrain.enqueueEvent(new MessageEvent("Произошла ошибка при обращении к серверу перевода", Luwrain.MESSAGE_ERROR));
 		    }
-		}};
+		};
 	new Thread(r).start();
     }
 
