@@ -17,7 +17,6 @@
 package org.luwrain.extensions.yatran;
 
 import org.luwrain.core.*;
-import org.luwrain.core.events.MessageEvent;
 import org.luwrain.util.*;
 
 class TranslateRegion implements Command
@@ -48,12 +47,13 @@ class TranslateRegion implements Command
 	final Client client = new Client(key);
 	final Runnable r = ()->{
 		    try {
-			luwrain.enqueueEvent(new MessageEvent(client.translate(text), Luwrain.MESSAGE_DONE));
+			final String res = client.translate(text);
+			luwrain.runInMainThread(()->luwrain.message(res, Luwrain.MESSAGE_DONE));
 		    }
 		    catch (Exception e)
 		    {
 			e.printStackTrace();
-			luwrain.enqueueEvent(new MessageEvent("Произошла ошибка при обращении к серверу перевода", Luwrain.MESSAGE_ERROR));
+			luwrain.runInMainThread(()->luwrain.message("Произошла ошибка при обращении к серверу перевода", Luwrain.MESSAGE_ERROR));
 		    }
 		};
 	new Thread(r).start();
