@@ -1,3 +1,19 @@
+/*
+   Copyright 2012-2017 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
+
+   This file is part of LUWRAIN.
+
+   LUWRAIN is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public
+   License as published by the Free Software Foundation; either
+   version 3 of the License, or (at your option) any later version.
+
+   LUWRAIN is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+*/
 
 package org.luwrain.extensions.rhvoice;
 
@@ -18,7 +34,7 @@ import org.luwrain.core.*;
 
 class Channel implements org.luwrain.speech.Channel
 {
-    static private final String LOG_COMPONENT = "rhvoice";
+    static final String LOG_COMPONENT = "rhvoice";
 
     	static private final int UPPER_CASE_PITCH_MODIFIER = 30;
         static final int AUDIO_LINE_BUFFER_SIZE=3200; // minimal req value is 3200 (1600 samples max give rhvoice and each one 2 byte size
@@ -101,29 +117,6 @@ SynthesisParameters params = null;
 	params.setVoiceProfile(voiceName);
 	params.setSSMLMode(true);
 	return true;
-    }
-
-    AudioFormat createAudioFormat()
-    {
-	return new AudioFormat(Encoding.PCM_SIGNED, FRAME_RATE, 
-			       Short.SIZE, 1, (1 * Short.SIZE / 8), FRAME_RATE, false);
-    }
-
-    SourceDataLine createAudioLine(AudioFormat audioFormat)
-    {
-	NullCheck.notNull(audioFormat, "audioFormat");
-	try {
-	    final DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-	    final SourceDataLine audioLine = (SourceDataLine) AudioSystem.getLine(info);
-	    audioLine.open(audioFormat,AUDIO_LINE_BUFFER_SIZE);
-	    audioLine.start();
-	    return audioLine;
-	} 
-	catch(Exception e)
-	{
-	    Log.error(LOG_COMPONENT, "unable to init audio line:" + e.getClass().getName() + ":" + e.getMessage());
-	    return null;
-	}
     }
 
     private String suggestVoice()
@@ -235,10 +228,7 @@ SynthesisParameters params = null;
 private void runThread(String text, Listener listener)
 {
     if (thread != null)
-    {
-	thread.interrupt = true;
-	//while (!thread.finished);
-    }
+	thread.interrupt();
     thread = new SpeakingThread(text, listener, this);
     new Thread(thread).start();
 	}
@@ -252,10 +242,7 @@ private void runThread(String text, Listener listener)
     @Override public void silence()
     {
 	if (thread != null)
-	{
-	    thread.interrupt = true;
-	    //	    while(!thread.finished);
-	}
+	    thread.interrupt();
 	thread = null;
 	}
 
