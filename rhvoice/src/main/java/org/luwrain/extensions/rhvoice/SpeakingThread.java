@@ -36,6 +36,9 @@ class SpeakingThread implements Runnable
     private final Listener listener;
     private final String text;
     private final Channel channel;
+
+    private AudioFormat audioFormat = null;
+    private SourceDataLine audioLine = null;
     private boolean interrupt = false;
 
     SpeakingThread(String text,Listener listener, Channel channel)
@@ -49,8 +52,10 @@ class SpeakingThread implements Runnable
     @Override public void run()
     {
 	synchronized(channel){
-	final AudioFormat audioFormat = createAudioFormat();
-	final SourceDataLine audioLine = createAudioLine(audioFormat);
+	    audioFormat = createAudioFormat();
+	if (audioFormat == null)
+	    return;
+	    audioLine = createAudioLine(audioFormat);
 	if (audioLine == null)
 	    return;
 	try {
@@ -64,14 +69,13 @@ class SpeakingThread implements Runnable
 			    audioLine.write(bytes, 0, bytes.length);
 			    if(interrupt)
 			    {
-audioLine.flush();
+				//audioLine.flush();
 				return false;
 			    }
 			}
 			catch(Exception e)
 			{
-			    Log.error("rhvoice", "unable to speak");
-			    e.printStackTrace();
+			    Log.error(LOG_COMPONENT, "unable to speak");
 			    return false;
 			}
 			return true;
@@ -85,7 +89,7 @@ audioLine.flush();
 	    {
 		if(listener != null) 
 		    listener.onFinished(-1);
-		Log.error("rhvoice", "rhvoice error:" + e.getClass().getName() + ":" + e.getMessage());
+		Log.error(LOG_COMPONENT, "rhvoice error:" + e.getClass().getName() + ":" + e.getMessage());
 		return;
 	    }
 	}
@@ -99,6 +103,11 @@ audioLine.flush();
     void interrupt()
     {
 	interrupt = true;
+	synchronized(this)
+	{
+	    if (audioLine != null)
+		audioLine.stop();
+	}
     }
 
     static private AudioFormat createAudioFormat()
