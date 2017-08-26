@@ -21,7 +21,6 @@ import java.nio.*;
 import javax.sound.sampled.*;
 import javax.sound.sampled.AudioFormat.Encoding;
 
-
 import com.github.olga_yakovleva.rhvoice.*;
 
 import org.luwrain.core.*;
@@ -52,6 +51,8 @@ class SpeakingThread implements Runnable
     @Override public void run()
     {
 	synchronized(channel){
+	    if (interrupt)
+		return;
 	    audioFormat = createAudioFormat();
 	if (audioFormat == null)
 	    return;
@@ -94,21 +95,23 @@ class SpeakingThread implements Runnable
 	    }
 	}
 	finally {
+	    synchronized(this) {
+	    if (!interrupt)
 	    audioLine.stop();
 	    audioLine.close();
+	    }
 	}
 	}
     }
 
     void interrupt()
     {
-	interrupt = true;
-	synchronized(this)
-	{
-	    if (audioLine != null)
-		audioLine.stop();
-	}
+	synchronized(this) {
+	    interrupt = true;
+	if (audioLine != null)
+	    audioLine.stop();
     }
+}
 
     static private AudioFormat createAudioFormat()
     {
