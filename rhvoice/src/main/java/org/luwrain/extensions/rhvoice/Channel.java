@@ -171,13 +171,13 @@ if (voiceName == null || voiceName.trim().isEmpty())
 
     @Override public void setDefaultPitch(int value)
     {
-    	curPitch=limit100(value);
+    	curPitch=properRange(value);
     	params.setPitch(convPitch(curPitch)); // todo: check it
     }
 
     @Override public void setDefaultRate(int value)
     {
-    	curRate=limit100(value);
+    	curRate=properRange(value);
 	params.setRate(convRate(curRate));
     }
 
@@ -214,8 +214,16 @@ if (voiceName == null || voiceName.trim().isEmpty())
 	    setDefaultRate(curRate+relRate);
    	// make text string to xml with pitch change for uppercase
    	// todo:add support for cancelPrevious=false
-   	params.setSSMLMode(true);
-	runThread(SSML.upperCasePitchControl(""+letter,UPPER_CASE_PITCH_MODIFIER), listener, params);
+
+	final SynthesisParameters p = new SynthesisParameters();
+	p.setVoiceProfile(voiceName);
+	p.setRate(convRate(curRate + relRate));
+	p.setPitch(convPitch(curPitch + relPitch + (Character.isUpperCase(letter)?30:0)));
+	//   	p.setSSMLMode(false);
+   	p.setSSMLMode(false);
+	//	runThread(SSML.upperCasePitchControl(""+letter,UPPER_CASE_PITCH_MODIFIER), listener, params);
+
+	runThread("" + letter, listener, p);
    	if(relPitch!=0)
 	    setDefaultPitch(defPitch);
    	if(relRate!=0)
@@ -313,20 +321,22 @@ if (voiceName == null || voiceName.trim().isEmpty())
 	return tts;
     }
 
-    private int limit100(int value)
+    static private int properRange(int value)
     {
-	if(value<0) value=0;
-	if(value>100) value=100;
+	if(value < 0)
+	    return 0;
+	if(value > 100)
+	    return 100;
 	return value;
     }
 
-    private double convRate(int value)
+    static private double convRate(int value)
     {
 	final double range = RATE_MAX - RATE_MIN;
     	return RATE_MIN + range - (double)value * range / 100f;
     }
 
-    private double convPitch(int value)
+    static private double convPitch(int value)
     { // 0.5 ... 2
 	final double range = PITCH_MAX - PITCH_MIN;
     	return PITCH_MIN + (double)value * range / 100f;
