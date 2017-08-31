@@ -53,6 +53,7 @@ class Channel implements org.luwrain.speech.Channel
 
 private TTSEngine tts = null;
     private SynthesisParameters params = null;
+    private String voiceName = "";
     private SpeakingThread thread = null;
 
     @Override public boolean initByRegistry(Registry registry, String path)
@@ -73,7 +74,7 @@ private TTSEngine tts = null;
     // currently args must contains single string - voice name
     @Override public boolean initByArgs(String[] args)
     {
-    	NullCheck.notNullItems(args,"rhvoice argument");
+    	NullCheck.notNullItems(args, "arg");
 	try {
 	    System.loadLibrary("RHVoice_core");
 	}
@@ -81,15 +82,12 @@ private TTSEngine tts = null;
 	{
 	    Log.warning(LOG_COMPONENT, "unable to load RHVoice_core:" + e.getClass().getName() + ":" + e.getMessage());
 	}
-	try {
-	    TTSEngine.init();
 	    final Path dataPath = Paths.get("rhvoice", "data");
 	    final Path configPath = Paths.get("rhvoice", "config");
-	    Log.debug(LOG_COMPONENT, "data path:" + dataPath.toString());
-	    Log.debug(LOG_COMPONENT, "config path:" + configPath.toString());
 	    final Path enPath = Paths.get("data", "languages", "English");
 	    final Path ruPath = Paths.get("data", "languages", "Russian");
-	    //	    tts=new TTSEngine("rhvoice"+File.separator+"data","rhvoice"+File.separator+"config",new String[]{"data"+File.separator+"languages"+File.separator+"English","data"+File.separator+"languages"+File.separator+"Russian"},null);
+	try {
+	    TTSEngine.init();
 	    tts = new TTSEngine(dataPath.toString(), configPath.toString(), new String[]{
 		    enPath.toString(),
 		    ruPath.toString(),
@@ -98,17 +96,16 @@ private TTSEngine tts = null;
 	catch(RHVoiceException e)
 	{
 	    Log.error(LOG_COMPONENT, "rhvoice refuses to initialize:" + e.getClass().getName() + ":" + e.getMessage());
-	    e.printStackTrace();
 	    return false;
 	}
 	//Selecting the voice
-	final String voiceName = (args.length > 0 && !args[0].isEmpty())?args[0]:suggestVoice();
-	if (voiceName.isEmpty())
+voiceName = (args.length > 0 && !args[0].isEmpty())?args[0]:suggestVoice();
+if (voiceName == null || voiceName.trim().isEmpty())
 	{
-	    Log.error(LOG_COMPONENT, "unable to choose suitable voice");
+	    Log.error(LOG_COMPONENT, "unable to choose a suitable voice");
 	    return false;
 	}
-	Log.debug(LOG_COMPONENT, "selecting voice \'" + voiceName + "\'");
+	Log.debug(LOG_COMPONENT, "using voice \'" + voiceName + "\'");
 	params=new SynthesisParameters();
 	setDefaultPitch(curPitch);
 	setDefaultRate(curRate);
@@ -195,6 +192,7 @@ private TTSEngine tts = null;
 	    setDefaultRate(curRate+relRate);
 
 	final SynthesisParameters p = new SynthesisParameters();
+	p.setVoiceProfile(voiceName);
 	p.setRate(convRate(50));
 	p.setPitch(convPitch(50));
    	p.setSSMLMode(false);
