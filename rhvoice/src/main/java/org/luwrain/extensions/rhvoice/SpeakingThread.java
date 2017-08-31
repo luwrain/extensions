@@ -117,7 +117,7 @@ class SpeakingThread implements Runnable
     }
 }
 
-    static private AudioFormat createAudioFormat()
+    static AudioFormat createAudioFormat()
     {
 	return new AudioFormat(Encoding.PCM_SIGNED, FRAME_RATE, 
 			       Short.SIZE, 1, (1 * Short.SIZE / 8), FRAME_RATE, false);

@@ -214,7 +214,7 @@ class Channel extends ChannelBase
 
     @Override public AudioFormat[] getSynthSupportedFormats()
     {
-	return null;
+	return new AudioFormat[]{SpeakingThread.createAudioFormat()};
     }
 
     @Override public void setCurrentVoice(String name)
