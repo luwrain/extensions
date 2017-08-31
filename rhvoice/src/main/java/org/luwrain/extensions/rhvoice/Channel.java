@@ -193,8 +193,8 @@ if (voiceName == null || voiceName.trim().isEmpty())
 
 	final SynthesisParameters p = new SynthesisParameters();
 	p.setVoiceProfile(voiceName);
-	p.setRate(convRate(50));
-	p.setPitch(convPitch(50));
+	p.setRate(convRate(curRate + relRate));
+	p.setPitch(convPitch(curPitch + relPitch));
    	p.setSSMLMode(false);
 	runThread(text,listener, p);
 	if(relPitch != 0)
