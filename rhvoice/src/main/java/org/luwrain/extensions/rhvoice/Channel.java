@@ -193,10 +193,12 @@ private TTSEngine tts = null;
 	    setDefaultPitch(curPitch+relPitch);
 	if(relRate!=0)
 	    setDefaultRate(curRate+relRate);
-	// make text string to xml with pitch change for uppercase
-	// todo:add support for cancelPrevious=false 
-   	params.setSSMLMode(false);
-	runThread(text,listener, params);
+
+	final SynthesisParameters p = new SynthesisParameters();
+	p.setRate(convRate(50));
+	p.setPitch(convPitch(50));
+   	p.setSSMLMode(false);
+	runThread(text,listener, p);
 	if(relPitch != 0)
 	    setDefaultPitch(defPitch);
 	if(relRate != 0)
