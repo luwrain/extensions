@@ -36,14 +36,11 @@ class Channel implements org.luwrain.speech.Channel
 {
     static final String LOG_COMPONENT = "rhvoice";
 
-    	static private final int UPPER_CASE_PITCH_MODIFIER = 30;
-    //        static final int AUDIO_LINE_BUFFER_SIZE=3200; // minimal req value is 3200 (1600 samples max give rhvoice and each one 2 byte size
-    //	static final float FRAME_RATE = 24000f;
-
-            static private final double RATE_MIN  = 0.5f;
-    static private final double RATE_MAX  = 2.0f;
-    static private final double PITCH_MIN = 0.5f;
-    static private final double PITCH_MAX = 2.0f;
+    	static private final double UPPER_CASE_PITCH_MODIFIER = 3.0;
+            static private final double RATE_MIN  = 0.5;
+    static private final double RATE_MAX  = 2.0;
+    static private final double PITCH_MIN = 0.5;
+    static private final double PITCH_MAX = 2.0;
 
     private int curPitch = 30;
     private int curRate = 60;
@@ -52,7 +49,6 @@ class Channel implements org.luwrain.speech.Channel
     private boolean defaultChannel = false;
 
 private TTSEngine tts = null;
-    private SynthesisParameters params = null;
     private String voiceName = "";
     private SpeakingThread thread = null;
 
@@ -106,11 +102,6 @@ if (voiceName == null || voiceName.trim().isEmpty())
 	    return false;
 	}
 	Log.debug(LOG_COMPONENT, "using voice \'" + voiceName + "\'");
-	params=new SynthesisParameters();
-	setDefaultPitch(curPitch);
-	setDefaultRate(curRate);
-	params.setVoiceProfile(voiceName);
-	params.setSSMLMode(true);
 	return true;
     }
 
@@ -172,62 +163,33 @@ if (voiceName == null || voiceName.trim().isEmpty())
     @Override public void setDefaultPitch(int value)
     {
     	curPitch=properRange(value);
-    	params.setPitch(convPitch(curPitch)); // todo: check it
     }
 
     @Override public void setDefaultRate(int value)
     {
     	curRate=properRange(value);
-	params.setRate(convRate(curRate));
     }
 
     @Override public long speak(String text,Listener listener,int relPitch,int relRate, boolean cancelPrevious)
     {
 	NullCheck.notNull(text, "text");
-   	int defPitch=curPitch;
-   	int defRate=curRate;
-	if(relPitch!=0)
-	    setDefaultPitch(curPitch+relPitch);
-	if(relRate!=0)
-	    setDefaultRate(curRate+relRate);
-
 	final SynthesisParameters p = new SynthesisParameters();
 	p.setVoiceProfile(voiceName);
 	p.setRate(convRate(curRate + relRate));
 	p.setPitch(convPitch(curPitch + relPitch));
    	p.setSSMLMode(false);
 	runThread(text,listener, p);
-	if(relPitch != 0)
-	    setDefaultPitch(defPitch);
-	if(relRate != 0)
-	    setDefaultRate(defRate);
 	return -1;
     }
 
     @Override public long speakLetter(char letter,Listener listener,int relPitch,int relRate, boolean cancelPrevious)
     {
-   	int defPitch=curPitch;
-   	int defRate=curRate;
-	if(relPitch!=0)
-	    setDefaultPitch(curPitch+relPitch);
-   	if(relRate!=0)
-	    setDefaultRate(curRate+relRate);
-   	// make text string to xml with pitch change for uppercase
-   	// todo:add support for cancelPrevious=false
-
 	final SynthesisParameters p = new SynthesisParameters();
 	p.setVoiceProfile(voiceName);
 	p.setRate(convRate(curRate + relRate));
-	p.setPitch(convPitch(curPitch + relPitch + (Character.isUpperCase(letter)?30:0)));
-	//   	p.setSSMLMode(false);
+	p.setPitch(convPitch(curPitch + relPitch) + (Character.isUpperCase(letter)?UPPER_CASE_PITCH_MODIFIER:0));
    	p.setSSMLMode(false);
-	//	runThread(SSML.upperCasePitchControl(""+letter,UPPER_CASE_PITCH_MODIFIER), listener, params);
-
 	runThread("" + letter, listener, p);
-   	if(relPitch!=0)
-	    setDefaultPitch(defPitch);
-   	if(relRate!=0)
-	    setDefaultRate(defRate);
    	return -1;
     }
 
@@ -248,7 +210,7 @@ if (voiceName == null || voiceName.trim().isEmpty())
 	if (tts == null)
 	    return false;
 	try {
-	    tts.speak(text, params, (samples)->{
+	    tts.speak(text, null, (samples)->{
 		    try {
 			final ByteBuffer buffer=ByteBuffer.allocate(samples.length * 4);//FIXME:real frame size
 			buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -307,7 +269,7 @@ if (voiceName == null || voiceName.trim().isEmpty())
 
     @Override public String getCurrentVoiceName()
     {
-	return params.getVoiceProfile();
+	return voiceName;
     }
 
     @Override public void close()
