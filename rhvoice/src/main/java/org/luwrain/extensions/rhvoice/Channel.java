@@ -37,10 +37,10 @@ class Channel implements org.luwrain.speech.Channel
     static final String LOG_COMPONENT = "rhvoice";
 
     	static private final int UPPER_CASE_PITCH_MODIFIER = 30;
-        static final int AUDIO_LINE_BUFFER_SIZE=3200; // minimal req value is 3200 (1600 samples max give rhvoice and each one 2 byte size
-	static final float FRAME_RATE = 24000f;
+    //        static final int AUDIO_LINE_BUFFER_SIZE=3200; // minimal req value is 3200 (1600 samples max give rhvoice and each one 2 byte size
+    //	static final float FRAME_RATE = 24000f;
 
-        static private final double RATE_MIN  = 0.5f;
+            static private final double RATE_MIN  = 0.5f;
     static private final double RATE_MAX  = 2.0f;
     static private final double PITCH_MIN = 0.5f;
     static private final double PITCH_MAX = 2.0f;
@@ -51,10 +51,8 @@ class Channel implements org.luwrain.speech.Channel
     private String name = "";
     private boolean defaultChannel = false;
 
-
-    //These variable are accessible for SpeakingThread
-TTSEngine tts = null;
-SynthesisParameters params = null;
+private TTSEngine tts = null;
+    private SynthesisParameters params = null;
     private SpeakingThread thread = null;
 
     @Override public boolean initByRegistry(Registry registry, String path)
@@ -198,7 +196,7 @@ SynthesisParameters params = null;
 	// make text string to xml with pitch change for uppercase
 	// todo:add support for cancelPrevious=false 
    	params.setSSMLMode(false);
-	runThread(text,listener);
+	runThread(text,listener, params);
 	if(relPitch != 0)
 	    setDefaultPitch(defPitch);
 	if(relRate != 0)
@@ -217,7 +215,7 @@ SynthesisParameters params = null;
    	// make text string to xml with pitch change for uppercase
    	// todo:add support for cancelPrevious=false
    	params.setSSMLMode(true);
-	runThread(SSML.upperCasePitchControl(""+letter,UPPER_CASE_PITCH_MODIFIER), listener);
+	runThread(SSML.upperCasePitchControl(""+letter,UPPER_CASE_PITCH_MODIFIER), listener, params);
    	if(relPitch!=0)
 	    setDefaultPitch(defPitch);
    	if(relRate!=0)
@@ -225,18 +223,43 @@ SynthesisParameters params = null;
    	return -1;
     }
 
-private void runThread(String text, Listener listener)
+    private void runThread(String text, Listener listener, SynthesisParameters params)
 {
+    NullCheck.notNull(text, "text");
+    NullCheck.notNull(params, "params");
     if (thread != null)
 	thread.interrupt();
-    thread = new SpeakingThread(text, listener, this);
+    thread = new SpeakingThread(text, listener, this, params);
     new Thread(thread).start();
 	}
 
-    @Override public boolean synth(String text,int pitch, int rate,
-				   AudioFormat format,OutputStream stream)
+    @Override public boolean synth(String text,int pitch, int rate, AudioFormat format,OutputStream stream)
     {
-	return false;
+	NullCheck.notNull(format, "format");
+	NullCheck.notNull(stream, "stream");
+	if (tts == null)
+	    return false;
+	try {
+	    tts.speak(text, params, (samples)->{
+		    try {
+			final ByteBuffer buffer=ByteBuffer.allocate(samples.length * 4);//FIXME:real frame size
+			buffer.order(ByteOrder.LITTLE_ENDIAN);
+			buffer.asShortBuffer().put(samples);
+			final byte[] bytes = buffer.array();
+		    }
+		    catch(Exception e)
+		    {
+			Log.error(LOG_COMPONENT, "unable to speak");
+			return false;
+		    }
+		    return true;
+		});
+	} 
+	catch(RHVoiceException e)
+	{
+	    Log.error(LOG_COMPONENT, "rhvoice error:" + e.getClass().getName() + ":" + e.getMessage());
+	}
+	return true;
     }
 
     @Override public void silence()
@@ -283,6 +306,11 @@ private void runThread(String text, Listener listener)
     {
 	silence();
 	//FIXME:
+    }
+
+    TTSEngine getTtsEngine()
+    {
+	return tts;
     }
 
     private int limit100(int value)

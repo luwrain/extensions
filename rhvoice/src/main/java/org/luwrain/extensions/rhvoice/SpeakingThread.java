@@ -35,17 +35,21 @@ class SpeakingThread implements Runnable
     private final Listener listener;
     private final String text;
     private final Channel channel;
+    private final SynthesisParameters params;
 
     private AudioFormat audioFormat = null;
     private SourceDataLine audioLine = null;
     private boolean interrupt = false;
 
-    SpeakingThread(String text,Listener listener, Channel channel)
+    SpeakingThread(String text,Listener listener, Channel channel, SynthesisParameters params)
     {
 	NullCheck.notNull(text, "text");
+	NullCheck.notNull(channel, "channel");
+	NullCheck.notNull(params, "params");
 	this.listener = listener;
 	this.text = text;
 	this.channel = channel;
+	this.params = params;
     }
 
     @Override public void run()
@@ -61,7 +65,7 @@ class SpeakingThread implements Runnable
 	    return;
 	try {
 	    try {
-		channel.tts.speak(text, channel.params, (samples)->{
+		channel.getTtsEngine().speak(text, params, (samples)->{
 			try {
 			    final ByteBuffer buffer=ByteBuffer.allocate(samples.length * audioFormat.getFrameSize());
 			    buffer.order(ByteOrder.LITTLE_ENDIAN);
