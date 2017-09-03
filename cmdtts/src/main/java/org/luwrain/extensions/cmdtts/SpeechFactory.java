@@ -37,7 +37,7 @@ SpeechFactory(Luwrain luwrain)
 
     @Override public Channel newChannel()
     {
-	return new Command();
+	return new org.luwrain.extensions.cmdtts.Channel();
     }
 
     @Override public org.luwrain.cpanel.Section newSettingsSection(org.luwrain.cpanel.Element el, String registryPath)

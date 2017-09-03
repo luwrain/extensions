@@ -59,8 +59,8 @@ class Channel extends ChannelBase
 	signed = settings.getSigned(true);
 	bigEndian = settings.getBigEndian(false);
 	defaultChannel = settings.getDefault(false);
-	defaultRate = Channel.adjustParamValue(settings.getDefaultRate(50));
-	defaultPitch = Channel.adjustParamValue(settings.getDefaultRate(50));
+	defaultRate = properRange(settings.getDefaultRate(50));
+	defaultPitch = properRange(settings.getDefaultRate(50));
 	task = createTask();
 	executor.execute(task);
 	return true;
