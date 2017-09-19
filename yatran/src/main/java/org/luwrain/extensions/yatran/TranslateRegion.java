@@ -1,7 +1,7 @@
 /*
-   Copyright 2012-2016 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2017 Michael Pozhidaev <michael.pozhidaev@gmail.com>
 
-   This file is part of the LUWRAIN.
+   This file is part of LUWRAIN.
 
    LUWRAIN is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public
@@ -31,7 +31,6 @@ class TranslateRegion implements Command
     @Override public void onCommand(Luwrain luwrain)
     {
 	final Registry registry = luwrain.getRegistry();
-	//	final RegistryAutoCheck check = new RegistryAutoCheck(registry);
 	final String key;
 	if (registry.getTypeOf(KEY_PATH) == Registry.STRING)
 	    key = registry.getString(KEY_PATH); else
@@ -41,22 +40,27 @@ class TranslateRegion implements Command
 	    luwrain.message("Не задан ключ для доступа к функциям переводчика", Luwrain.MESSAGE_ERROR);//FIXME:
 	    return;
 	}
-	final String text = luwrain.getActiveAreaText(Luwrain.AreaTextType.REGION, true);
+	final String text;
+final String regionText = luwrain.getActiveAreaText(Luwrain.AreaTextType.REGION, true);
+if (regionText == null)
+text = luwrain.getActiveAreaText(Luwrain.AreaTextType.WORD, true); else
+    text = regionText;
 	if (text == null || text.trim().isEmpty())
+	{
+	    luwrain.message("Отсутствует текст для перевода", Luwrain.MessageType.ERROR);//FIXME:
 	    return;
+	}
 	final Client client = new Client(key);
 	final Runnable r = ()->{
 		    try {
 			final String res = client.translate(text);
-			luwrain.runInMainThread(()->luwrain.message(res, Luwrain.MESSAGE_DONE));
+			luwrain.message(res, Luwrain.MESSAGE_DONE);
 		    }
 		    catch (Exception e)
 		    {
-			e.printStackTrace();
-			luwrain.runInMainThread(()->luwrain.message("Произошла ошибка при обращении к серверу перевода", Luwrain.MESSAGE_ERROR));
+			luwrain.crash(e);
 		    }
 		};
 	new Thread(r).start();
     }
-
 }
