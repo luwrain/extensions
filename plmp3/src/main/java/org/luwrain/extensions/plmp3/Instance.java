@@ -1,19 +1,3 @@
-/*
-   Copyright 2012-2017 Michael Pozhidaev <michael.pozhidaev@gmail.com>
-   Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
-
-   This file is part of LUWRAIN.
-
-   LUWRAIN is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public
-   License as published by the Free Software Foundation; either
-   version 3 of the License, or (at your option) any later version.
-
-   LUWRAIN is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
-*/
 
 package org.luwrain.extensions.plmp3;
 
@@ -32,7 +16,7 @@ import javazoom.jl.player.*;
 import org.luwrain.base.*;
 import org.luwrain.core.*;
 
-class JLayer implements org.luwrain.base.MediaResourcePlayer.Instance
+class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
 {
     static private final String LOG_COMPONENT = "jlayer";
 
@@ -42,7 +26,7 @@ class JLayer implements org.luwrain.base.MediaResourcePlayer.Instance
     private boolean interrupting = false;
     private CustomDevice device = null;
 
-    JLayer(MediaResourcePlayer.Listener listener)
+    Instance(MediaResourcePlayer.Listener listener)
     {
 	NullCheck.notNull(listener, "listener");
 	this.listener = listener;
@@ -86,7 +70,7 @@ class JLayer implements org.luwrain.base.MediaResourcePlayer.Instance
 			    bitstream.closeFrame();
 			}
 			//starting real playing
-			listener.onPlayerTime(JLayer.this, new Float(currentPosition).longValue());
+			listener.onPlayerTime(Instance.this, new Float(currentPosition).longValue());
 			while(true)
 			{
 			    //			    System.out.println("proba step");
@@ -107,7 +91,7 @@ class JLayer implements org.luwrain.base.MediaResourcePlayer.Instance
 			    if (currentPosition > lastNotifiedMsec + 50)
 			    {
 				lastNotifiedMsec = new Float(currentPosition).longValue();
-				listener.onPlayerTime(JLayer.this, lastNotifiedMsec);
+				listener.onPlayerTime(Instance.this, lastNotifiedMsec);
 			    }
 			    bitstream.closeFrame();
 			} //playing
@@ -119,7 +103,7 @@ class JLayer implements org.luwrain.base.MediaResourcePlayer.Instance
 			    device.close();
 			if(stream != null)
 			    stream.close();
-			listener.onPlayerFinish(JLayer.this);
+			listener.onPlayerFinish(Instance.this);
 		    }
 		}
 		catch (Exception e)
