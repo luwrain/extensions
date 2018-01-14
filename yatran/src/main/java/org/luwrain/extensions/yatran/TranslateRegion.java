@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2017 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
 
    This file is part of LUWRAIN.
 
@@ -37,7 +37,7 @@ class TranslateRegion implements Command
 	    key = "";
 	if (key == null || key.trim().isEmpty())
 	{
-	    luwrain.message("Не задан ключ для доступа к функциям переводчика", Luwrain.MESSAGE_ERROR);//FIXME:
+	    luwrain.message("Не задан ключ для доступа к функциям переводчика", Luwrain.MessageType.ERROR);//FIXME:
 	    return;
 	}
 	final String text;
@@ -54,7 +54,7 @@ text = luwrain.getActiveAreaText(Luwrain.AreaTextType.WORD, true); else
 	final Runnable r = ()->{
 		    try {
 			final String res = client.translate(text);
-			luwrain.message(res, Luwrain.MESSAGE_DONE);
+			luwrain.message(res, Luwrain.MessageType.DONE);
 		    }
 		    catch (Exception e)
 		    {

@@ -1,3 +1,18 @@
+/*
+   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+
+   This file is part of LUWRAIN.
+
+   LUWRAIN is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public
+   License as published by the Free Software Foundation; either
+   version 3 of the License, or (at your option) any later version.
+
+   LUWRAIN is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+*/
 
 package org.luwrain.extensions.voiceman;
 
@@ -38,9 +53,6 @@ public class VoiceMan implements Channel
 	    port = s.getPort(DEFAULT_PORT);
 	    name = s.getName(DEFAULT_NAME);
 	    def = s.getDefault(false);
-	    Log.debug("voiceman", "hname value from the registry is \'" + (name != null?name:"") + "\'");
-	    Log.debug("voiceman", "host value from the registry is " + (host != null?host:""));
-	    Log.debug("voiceman", "hport value from the registry is " + port);
 	}
 	/*
 	final CmdLineUtils cmdLineUtils = new CmdLineUtils(cmdLine);
@@ -84,7 +96,6 @@ public class VoiceMan implements Channel
 
     private boolean connect(String host, int port)
     {
-	Log.debug("voiceman", "connecting to " + host + ":" + port);
 	try {
 	    sock = new Socket(host, port);
 	    output = new PrintStream(sock.getOutputStream(), true, "UTF-8");
