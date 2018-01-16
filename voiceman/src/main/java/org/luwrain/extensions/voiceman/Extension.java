@@ -16,19 +16,45 @@
 
 package org.luwrain.extensions.voiceman;
 
+import org.luwrain.base.*;
 import org.luwrain.core.*;
 import org.luwrain.core.extensions.*;
+import org.luwrain.speech.*;
+import org.luwrain.cpanel.*;
 
-public class Extension extends EmptyExtension
+public final class Extension extends EmptyExtension
 {
     @Override public String init(Luwrain luwrain)
     {
 	return null;
     }
 
-    @Override public org.luwrain.speech.Factory[] getSpeechFactories(Luwrain luwrain)
+    @Override public ExtensionObject[] getExtObjects(Luwrain luwrain)
     {
 	NullCheck.notNull(luwrain, "luwrain");
-	return new org.luwrain.speech.Factory[]{new SpeechFactory(luwrain)};
+	return new ExtensionObject[]{
+
+	    new org.luwrain.speech.Factory()
+	    {
+		@Override public String getExtObjName()
+		{
+		    return "voiceman";
+		}
+		@Override public Channel newChannel()
+		{
+		    return new VoiceMan();
+		}
+		@Override public org.luwrain.cpanel.Section newSettingsSection(org.luwrain.cpanel.Element el, String registryPath)
+		{
+		    NullCheck.notNull(el, "el");
+		    NullCheck.notEmpty(registryPath, "registryPath");
+		    final Settings settings = Settings.create(luwrain.getRegistry(), registryPath);
+		    return new SimpleSection(el, settings.getName("VoiceMan channel"),
+					     (controlPanel)->SettingsForm.create(controlPanel, registryPath)
+					     );
+		}
+	    },
+
+	};
     }
 }

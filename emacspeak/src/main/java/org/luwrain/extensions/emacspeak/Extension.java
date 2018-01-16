@@ -1,7 +1,7 @@
 /*
-   Copyright 2012-2016 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
 
-   This file is part of the LUWRAIN.
+   This file is part of LUWRAIN.
 
    LUWRAIN is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public
@@ -16,19 +16,40 @@
 
 package org.luwrain.extensions.emacspeak;
 
+import org.luwrain.base.*;
 import org.luwrain.core.*;
 import org.luwrain.core.extensions.*;
+import org.luwrain.speech.*;
+import org.luwrain.cpanel.*;
 
-public class Extension extends EmptyExtension
+public final class Extension extends EmptyExtension
 {
-    @Override public String init(Luwrain luwrain)
-    {
-	return null;
-    }
-
-    @Override public org.luwrain.speech.Factory[] getSpeechFactories(Luwrain luwrain)
+    @Override public ExtensionObject[] getExtObjects(Luwrain luwrain)
     {
 	NullCheck.notNull(luwrain, "luwrain");
-	return new org.luwrain.speech.Factory[]{new SpeechFactory(luwrain)};
+	return new ExtensionObject[]{
+	    
+	    new org.luwrain.speech.Factory(){
+
+	        @Override public String getExtObjName()
+    {
+	return "emacspeak";
+    }
+    @Override public Channel newChannel()
+    {
+	return new Emacspeak();
+    }
+    @Override public org.luwrain.cpanel.Section newSettingsSection(org.luwrain.cpanel.Element el, String registryPath)
+    {
+	NullCheck.notNull(el, "el");
+	NullCheck.notNull(registryPath, "registryPath");
+	final Settings settings = Settings.create(luwrain.getRegistry(), registryPath);
+	return new SimpleSection(el, settings.getName("???"),
+				 (controlPanel)->SettingsForm.create(controlPanel, registryPath)
+				 );
+    }
+	    },
+
+	};
     }
 }

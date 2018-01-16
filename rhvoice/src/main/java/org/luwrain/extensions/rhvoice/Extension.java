@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2017 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
    Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
 
    This file is part of LUWRAIN.
@@ -17,14 +17,33 @@
 
 package org.luwrain.extensions.rhvoice;
 
+import org.luwrain.base.*;
 import org.luwrain.core.*;
 import org.luwrain.core.extensions.*;
 
-public class Extension extends EmptyExtension
+public final class Extension extends EmptyExtension
 {
-    @Override public org.luwrain.speech.Factory[] getSpeechFactories(Luwrain luwrain)
+    @Override public ExtensionObject [] getExtObjects(Luwrain luwrain)
     {
 	NullCheck.notNull(luwrain, "luwrain");
-	return new org.luwrain.speech.Factory[]{new SpeechFactory(luwrain)};
+	return new ExtensionObject[]{
+
+	    new org.luwrain.speech.Factory()
+	    {
+		@Override public String getExtObjName()
+		{
+		    return "rhvoice";
+		}
+		@Override public Channel newChannel()
+		{
+		    return new Channel();
+		}
+		@Override public org.luwrain.cpanel.Section newSettingsSection(org.luwrain.cpanel.Element el, String registryPath)
+		{
+		    return null;
+		}
+	    },
+
+	};
     }
 }
