@@ -9,6 +9,8 @@ import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.*;
 
+import org.luwrain.core.*;
+
 /**
    This class gives the custom implementation of a device for JLayer. Its
    creation was caused by the inaccessible instance of {@code
@@ -16,13 +18,17 @@ import javazoom.jl.player.*;
 */
 class CustomDevice extends AudioDeviceBase
 {
+static private final String LOG_COMPONENT = Instance.LOG_COMPONENT;
+
     SourceDataLine	source = null;
-    private final float initialVolume;
+    private final int initialVolume;
     private AudioFormat		fmt = null;
     private byte[]			byteBuf = new byte[4096];
 
-    CustomDevice(float initialVolume)
+    CustomDevice(int initialVolume)
     {
+	if (initialVolume < 0 || initialVolume > 100)
+	    throw new IllegalArgumentException("initialVolume (" + initialVolume + ") must be between 0 and 100 (inclusively)");
 	this.initialVolume = initialVolume;
     }
 
@@ -95,11 +101,8 @@ class CustomDevice extends AudioDeviceBase
             {
 		source = (SourceDataLine)line;
 		source.open(fmt);
-                if (source.isControlSupported(FloatControl.Type.MASTER_GAIN))
-                {
-		    FloatControl c = (FloatControl)source.getControl(FloatControl.Type.MASTER_GAIN);
-		    c.setValue(initialVolume);
-                }
+		if (!org.luwrain.util.SoundUtils.setLineMasterGanePercent(source, initialVolume))
+		    Log.error(LOG_COMPONENT, "unable to set initial volume (" + initialVolume + ")");
                 source.start();
             }
 	}
@@ -115,7 +118,8 @@ class CustomDevice extends AudioDeviceBase
 	{
 	    t = ex;
 	}
-	if (source==null) throw new JavaLayerException("cannot obtain source audio line", t);
+	if (source==null)
+	    throw new JavaLayerException("cannot obtain source audio line", t);
     }
 
     private Line createLine() throws LineUnavailableException {

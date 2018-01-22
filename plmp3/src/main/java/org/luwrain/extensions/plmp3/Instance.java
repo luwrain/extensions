@@ -34,7 +34,7 @@ import org.luwrain.core.*;
 
 class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
 {
-    static private final String LOG_COMPONENT = "jlayer";
+    static final String LOG_COMPONENT = "jlayer";
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final MediaResourcePlayer.Listener listener;
@@ -48,10 +48,15 @@ class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
 	this.listener = listener;
     }
 
-    @Override public MediaResourcePlayer.Result play(URL url, long playFromMsec, Set<MediaResourcePlayer.Flags> flags)
+    @Override public MediaResourcePlayer.Result play(URL url, MediaResourcePlayer.Params params)
     {
 	NullCheck.notNull(url, "url");
-	NullCheck.notNull(flags, "flags");
+	    NullCheck.notNull(params, "params");
+	    NullCheck.notNull(params.flags, "params.flags");
+	    if (params.playFromMsec < 0)
+		throw new IllegalArgumentException("params.playFromMsec (" + params.playFromMsec + ") may not be negative");
+	    if (params.volume < 0 || params.volume > 100)
+		throw new IllegalArgumentException("params.volume (" + params.volume + ") must be between 0 and 100 inclusively");
 	interrupting = false;
 	task = new FutureTask(()->{
 		try {
@@ -63,7 +68,7 @@ class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
 			final BufferedInputStream bufferedIn = new BufferedInputStream(url.openStream());
 			stream = AudioSystem.getAudioInputStream(bufferedIn);
 			final AudioFormat bitFormat = stream.getFormat();
-			device = new CustomDevice(-10);
+			device = new CustomDevice(params.volume);
 			if(device==null)
 			{
 			    Log.error(LOG_COMPONENT, "unable to create an audio device for playing");
@@ -73,7 +78,7 @@ class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
 			final Decoder decoder=new Decoder();
 			device.open(decoder);
 			final Bitstream bitstream = new Bitstream(stream);
-			while(currentPosition < playFromMsec)
+			while(currentPosition < params.playFromMsec)
 			{
 			    final Header frame = bitstream.readFrame();
 			    if (frame == null)
