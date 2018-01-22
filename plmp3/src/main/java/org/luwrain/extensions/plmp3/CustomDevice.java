@@ -32,6 +32,14 @@ static private final String LOG_COMPONENT = Instance.LOG_COMPONENT;
 	this.initialVolume = initialVolume;
     }
 
+    void setVolume(int value)
+    {
+	if (source == null)
+	    return;
+	if (!org.luwrain.util.SoundUtils.setLineMasterGanePercent(source, value))
+	    Log.error(LOG_COMPONENT, "unable to set volume (" + value + ")");
+	    }
+
     @Override protected void openImpl() throws JavaLayerException
     {
     }

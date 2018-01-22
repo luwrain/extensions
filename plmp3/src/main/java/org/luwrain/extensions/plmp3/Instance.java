@@ -137,6 +137,14 @@ class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
 	return new MediaResourcePlayer.Result();
     }
 
+    @Override public void setVolume(int value)
+    {
+	if (value < 0 || value > 100)
+	    throw new IllegalArgumentException("value (" + value + ") must be between 0 and 100 (inclusively)");
+	if (device != null)
+	    device.setVolume(value);
+    }
+
     @Override public void stop()
     {
 	interrupting = true;
