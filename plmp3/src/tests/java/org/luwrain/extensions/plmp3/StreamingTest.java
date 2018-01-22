@@ -120,7 +120,7 @@ public class StreamingTest extends Assert
 	final MediaResourcePlayer player = new org.luwrain.extensions.plmp3.Player();
 	final Listener listener = new Listener();
 	final MediaResourcePlayer.Instance instance = player.newMediaResourcePlayer(listener);
-	instance.play(url, 0, EnumSet.noneOf(MediaResourcePlayer.Flags.class));
+	instance.play(url, new MediaResourcePlayer.Params());
 	while(listener.msec < 0)
 	{
 	    assertFalse(listener.finished);
