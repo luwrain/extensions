@@ -31,9 +31,11 @@ public class Extension extends EmptyExtension
 	return new Command[]{translateRegion};
     }
 
+    /*
     @Override public org.luwrain.cpanel.Factory[] getControlPanelFactories(Luwrain luwrain)
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	return new org.luwrain.cpanel.Factory[]{new ControlPanelFactory(luwrain)};
     }
+    */
 }
