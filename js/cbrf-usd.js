@@ -1,4 +1,16 @@
-var con = org.jsoup.Jsoup.connect("http://www.cbr.ru/scripts/XML_daily.asp?date_req=20/01/2018");
+// Speaks the currency rate for USD as it's published by CBRF
+// Michael Pozhidaev <michael.pozhidaev@gmail.com>
+
+var date = new java.util.Date();
+var day = date.getDate();
+day = day < 10?"0" + day:"" + day;
+var month = date.getMonth() + 1;
+month = month < 10?"0" + month:"" + month;
+var year = "" + (date.getYear() + 1900);
+
+var url = "http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + day + "/" + month + "/" + year;
+
+var con = org.jsoup.Jsoup.connect(url);
 var doc = con.get();
 var valutes = doc.getElementsByTag("valute");
 for(var i = 0;i < valutes.length;i++)
