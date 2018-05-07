@@ -1,9 +1,9 @@
 
 function KeyboardApp()
 {
-        this.name = "Тренажёр клавиатуры";
+    this.name = "Тренажёр клавиатуры";
     this.type = "simple-centered";
-        this.text = "МЫ НАБИРАЕМ ЭТОТ ТЕКСТ И СТАНОВИМСЯ БОЛЬШИМИ МОЛОДЦАМИ";
+    this.text = "МЫ НАБИРАЕМ ЭТОТ ТЕКСТ И СТАНОВИМСЯ БОЛЬШИМИ МОЛОДЦАМИ";
     this.index = 0;
     this.lines = ["",
 		  "",
@@ -31,7 +31,7 @@ function KeyboardApp()
 	var ch = event.toUpperCase()[0];
 	if ((ch < 'А' || ch > 'Я') && ch != ' ')
 	    return false;
-	    	if (this.index >= this.text.length())
+	if (this.index >= this.text.length())
 	{
 	    Luwrain.message("Весь ттекст набран");
 	    return true;
@@ -44,16 +44,16 @@ function KeyboardApp()
 	this.index++;
 	if (this.index >= this.text.length())
 	{
-	    	    this.lines[0] = this.text;
+	    this.lines[0] = this.text;
 	    this.hotPointX = this.text.length();
 	    this.hotPointY = 0;
-	    	    Luwrain.message("Весь текст набран!");
+	    Luwrain.message("Весь текст набран!");
 	    return true;
 	}
 	Luwrain.message("Правильно! Теперь найдите " + charName(this.text[this.index]));
 	this.lines[0] = this.text.substring(0, this.index);
 	this.highlightChar(this.text[this.index]);
-	    return true;
+	return true;
     };
 
     this.highlightChar = function(ch)
