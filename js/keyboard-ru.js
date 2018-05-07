@@ -1,40 +1,85 @@
+
 function KeyboardApp()
 {
-    this.name = "Тренажёр клавиатуры";
+        this.name = "Тренажёр клавиатуры";
     this.type = "simple-centered";
+        this.text = "МЫ НАБИРАЕМ ЭТОТ ТЕКСТ И СТАНОВИМСЯ БОЛЬШИМИ МОЛОДЦАМИ";
+    this.index = 0;
     this.lines = ["",
 		  "",
 		  "Ё 1 2 3 4 5 6 7 8 9 0 - =",
 		  " Й Ц У К Е Н Г Ш Щ З Х Ъ",
 		  " Ф Ы В А П Р О Л Д Ж Э \\",
-"   Я Ч С М И Т Ь Б Ю ."];
-    this.hotPointX = 0;
-    this.hotPointY = 0;
+		  "   Я Ч С М И Т Ь Б Ю ."];
+    this.hotPointX = 9;
+    this.hotPointY = 5;
 
-
-
-                this.onInputEvent = function(event)
+    this.onInputEvent = function(event)
     {
-	if (event.length() == 1)
-	    return this.highlightChar(event.toUpperCase()[0]);
-	return true;
-    };
-
-    
-    this.highlightChar = function(ch)
-    {
-	for(var i = 2;i < 6;i++)
-	    for(var j = 0;j < this.lines[i].length();j++)
-		if (this.lines[i][j] == ch)
+	if (event == "ENTER")
 	{
-	    this.hotPointX = j;
-	    this.hotPointY = i;
+	    if (this.index == 0)
+	    {
+		Luwrain.message("Пока ничего не набрано");
+		return true;
+	    }
+	    Luwrain.message(this.text.substring(0, this.index));
 	    return true;
 	}
-	return false;
+	if (event.length() != 1)
+	    return false;
+	var ch = event.toUpperCase()[0];
+	if ((ch < 'А' || ch > 'Я') && ch != ' ')
+	    return false;
+	    	if (this.index >= this.text.length())
+	{
+	    Luwrain.message("Весь ттекст набран");
+	    return true;
+	}
+	if (ch != this.text[this.index])
+	{
+	    Luwrain.message("Это " + charName(ch) + ", а нам надо " + charName(this.text[this.index]));
+	    return true;
+	}
+	this.index++;
+	if (this.index >= this.text.length())
+	{
+	    	    this.lines[0] = this.text;
+	    this.hotPointX = this.text.length();
+	    this.hotPointY = 0;
+	    	    Luwrain.message("Весь текст набран!");
+	    return true;
+	}
+	Luwrain.message("Правильно! Теперь найдите " + charName(this.text[this.index]));
+	this.lines[0] = this.text.substring(0, this.index);
+	this.highlightChar(this.text[this.index]);
+	    return true;
     };
 
+    this.highlightChar = function(ch)
+    {
+	if (ch == ' ')
+	{
+	    this.hotPointX = 0;
+	    this.hotPointY = 1;
+	    return true;
+	}
+	for(var i = 2;i < 6;i++)
+	    for(var j = 0;j < this.lines[i].length();j++) 
+		if (this.lines[i][j] == ch) {
+		    this.hotPointX = j;
+		    this.hotPointY = i;
+		    return true;
+		}
+	return false;
+    };
+}
 
+function charName(ch)
+{
+    if (ch == ' ')
+	return "пробел";
+    return ch;
 }
 
 Luwrain.addApp("edu-keyboard", KeyboardApp);
