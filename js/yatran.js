@@ -29,4 +29,18 @@ function yatranEnRu()
         Luwrain.runBkg(function(){yatran(text, "en-ru");});
 }
 
+function yatranRuEn()
+{
+    var text = Luwrain.getActiveAreaText("region");
+    if (text == null)
+	text = Luwrain.getActiveAreaText("word");
+    if (text == null || text.trim().isEmpty())
+    {
+	Luwrain.message("Отсутствует текст для перевода");//FIXME:error type
+	return;
+    }
+        Luwrain.runBkg(function(){yatran(text, "ru-en");});
+}
+
 Luwrain.addCommand("yatran-en-ru", yatranEnRu);
+Luwrain.addCommand("yatran-ru-en", yatranRuEn);
