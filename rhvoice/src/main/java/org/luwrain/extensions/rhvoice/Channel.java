@@ -176,33 +176,42 @@ class Channel extends ChannelBase
 	new Thread(thread).start();
     }
 
-    @Override public boolean synth(String text,int pitch, int rate, AudioFormat format,OutputStream stream)
+    @Override public StreamedSpeaking createStreamedSpeaking(int pitch, int rate, AudioFormat format)
     {
 	NullCheck.notNull(format, "format");
-	NullCheck.notNull(stream, "stream");
-	if (tts == null)
-	    return false;
-	try {
-	    tts.speak(text, null, (samples)->{
-		    try {
-			final ByteBuffer buffer=ByteBuffer.allocate(samples.length * 4);//FIXME:real frame size
-			buffer.order(ByteOrder.LITTLE_ENDIAN);
-			buffer.asShortBuffer().put(samples);
-			final byte[] bytes = buffer.array();
-		    }
-		    catch(Exception e)
-		    {
-			Log.error(LOG_COMPONENT, "unable to speak");
-			return false;
-		    }
-		    return true;
-		});
-	} 
-	catch(RHVoiceException e)
-	{
-	    Log.error(LOG_COMPONENT, "rhvoice error:" + e.getClass().getName() + ":" + e.getMessage());
-	}
-	return true;
+	return new StreamedSpeaking(){
+	    @Override public boolean speak(String text, OutputStream stream)
+	    {
+		NullCheck.notNull(text, "text");
+		NullCheck.notNull(stream, "stream");
+		if (tts == null)
+		    return false;
+		try {
+		    tts.speak(text, null, (samples)->{
+			    try {
+				final ByteBuffer buffer=ByteBuffer.allocate(samples.length * 4);//FIXME:real frame size
+				buffer.order(ByteOrder.LITTLE_ENDIAN);
+				buffer.asShortBuffer().put(samples);
+				final byte[] bytes = buffer.array();
+			    }
+			    catch(Exception e)
+			    {
+				Log.error(LOG_COMPONENT, "unable to speak");
+				return false;
+			    }
+			    return true;
+			});
+		} 
+		catch(RHVoiceException e)
+		{
+		    Log.error(LOG_COMPONENT, "rhvoice error:" + e.getClass().getName() + ":" + e.getMessage());
+		}
+		return true;
+	    }
+	    @Override public void close()
+	    {
+	    }
+	};
     }
 
     @Override public void silence()

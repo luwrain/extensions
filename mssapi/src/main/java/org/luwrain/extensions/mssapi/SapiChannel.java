@@ -100,37 +100,46 @@ class SapiChannel implements Channel
 	return -1;
     }
 
-    @Override public boolean synth(String text,int pitch, int rate,
-				   AudioFormat format,OutputStream stream)
+    @Override public StreamedSpeaking createStreamedSpeaking(int pitch, int rate, AudioFormat format)
     {
-	impl.stream(tempFile.getPath(),chooseSAPIAudioFormatFlag(format));
-	if(pitch!=0)
-	    impl.pitch(limit100(curPitch+pitch));
-	if(rate!=0)
-	    impl.rate(convRate(limit100(curRate+rate)));
-	impl.speak(text,SAPIImpl_constants.SPF_IS_NOT_XML);
-	if(pitch!=0)
-	    impl.pitch(curPitch);
-	if(rate!=0)
-	    impl.rate(convRate(curRate));
-	impl.stream(null,SAPIImpl_constants.SPSF_Default);
-	//Copying the whole file to the stream, except of 44 wave header
-	try {
-	    final FileInputStream is=new FileInputStream(tempFile.getPath());
-	    final byte[] buf=new byte[COPY_WAV_BUF_SIZE];
-	    while(true)
+	return new StreamedSpeaking(){
+	    @Override public boolean speak(String text, OutputStream stream)
 	    {
-		final int len=is.read(buf);
-		if(len == -1)
-		    break;
-		stream.write(buf,0,len);
+		NullCheck.notNull(text, "text");
+		NullCheck.notNull(stream, "stream");
+		impl.stream(tempFile.getPath(),chooseSAPIAudioFormatFlag(format));
+		if(pitch!=0)
+		    impl.pitch(limit100(curPitch+pitch));
+		if(rate!=0)
+		    impl.rate(convRate(limit100(curRate+rate)));
+		impl.speak(text,SAPIImpl_constants.SPF_IS_NOT_XML);
+		if(pitch!=0)
+		    impl.pitch(curPitch);
+		if(rate!=0)
+		    impl.rate(convRate(curRate));
+		impl.stream(null,SAPIImpl_constants.SPSF_Default);
+		//Copying the whole file to the stream, except of 44 wave header
+		try {
+		    final FileInputStream is=new FileInputStream(tempFile.getPath());
+		    final byte[] buf=new byte[COPY_WAV_BUF_SIZE];
+		    while(true)
+		    {
+			final int len=is.read(buf);
+			if(len == -1)
+			    break;
+			stream.write(buf,0,len);
+		    }
+		} catch(Exception e)
+		{
+		    Log.warning(LOG_COMPONENT, "unable to copy synthesized data:" + e.getMessage());
+		    return false;
+		}
+		return true;
 	    }
-	} catch(Exception e)
-	{
-	    Log.warning(LOG_COMPONENT, "unable to copy synthesized data:" + e.getMessage());
-	    return false;
-	}
-	return true;
+	    @Override public void close()
+	    {
+	    }
+	};
     }
 
     @Override public long speakLetter(char letter,Listener listener,int relPitch,int relRate, boolean cancelPrevious)

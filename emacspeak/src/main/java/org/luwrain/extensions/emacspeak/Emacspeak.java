@@ -176,10 +176,10 @@ class Emacspeak implements Channel
 	return -1;
     }
 
-    @Override public boolean synth(String text, int pitch, int rate, 
-				   AudioFormat format, OutputStream stream)
+    @Override public StreamedSpeaking createStreamedSpeaking(int pitch, int rate, AudioFormat audioFormat)
     {
-	return false;
+	NullCheck.notNull(audioFormat, "audioFormat");
+	return null;
     }
 
     @Override public AudioFormat[] getSynthSupportedFormats()

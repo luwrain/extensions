@@ -139,11 +139,13 @@ class Channel extends ChannelBase
 	return id;
     }
 
-    @Override public boolean synth(String text, int pitch, int rate, 
-				   AudioFormat format, OutputStream stream)
+    @Override public StreamedSpeaking createStreamedSpeaking(int pitch, int rate, AudioFormat format)
     {
+		NullCheck.notNull(format, "format");
+		return new StreamedSpeaking() {
+		    @Override public boolean speak(String text, OutputStream stream)
+		    {
 	NullCheck.notNull(text, "text");
-	NullCheck.notNull(format, "format");
 	NullCheck.notNull(stream, "stream");
 	try {
 	    final Process p = new ProcessBuilder("/bin/bash", "-c", toStreamCommand).start();
@@ -168,6 +170,11 @@ class Channel extends ChannelBase
 	    return false;
 	}
 	return true;
+		    }
+		    @Override public void close()
+		    {
+		    }
+		};
     }
 
     @Override public AudioFormat[] getSynthSupportedFormats()

@@ -192,11 +192,10 @@ public class VoiceMan implements Channel
 	sock = null;
     }
 
-    @Override public boolean synth(String text, 
-				   int pitch, int rate, 
-				   AudioFormat format, OutputStream stream)
+    @Override public StreamedSpeaking createStreamedSpeaking(int pitch, int rate, AudioFormat format)
     {
-	return false;
+	NullCheck.notNull(format, "format");
+	return null;
     }
 
     @Override public void silence()
