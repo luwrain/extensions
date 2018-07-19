@@ -69,7 +69,6 @@ class Channel extends ChannelBase
 	}
 	catch(Exception | UnsatisfiedLinkError e)
 	{
-	    Log.warning(LOG_COMPONENT, "unable to load RHVoice_core:" + e.getClass().getName() + ":" + e.getMessage());
 	}
 	final Path dataPath = Paths.get("rhvoice", "data");
 	final Path configPath = Paths.get("rhvoice", "config");
@@ -85,6 +84,7 @@ class Channel extends ChannelBase
 	catch(RHVoiceException e)
 	{
 	    Log.error(LOG_COMPONENT, "rhvoice refuses to initialize:" + e.getClass().getName() + ":" + e.getMessage());
+	    Log.error(LOG_COMPONENT, "current directory is " + (new File(".").getAbsolutePath()));
 	    return false;
 	}
 	//Selecting the voice
