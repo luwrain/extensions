@@ -1,13 +1,14 @@
 
 var MSG_EMPTY_CELL = "Элемент отсутствует";
-var MSG_MASS = "атомная масса: ";
+var MSG_MASS = "Атомная масса: ";
 var MSG_LATIN = "латинское название: ";
 var MSG_NUMBER = "Элемент ";
-var MSG_GROUP = "группа: ";
-var MSG_PERIOD = "период ";
-var MSG_ROW = "ряд ";
+var MSG_GROUP = "Группа ";
+var MSG_PERIOD = "Период ";
+var MSG_ROW = "Ряд ";
 var MSG_LANTANOIDS = "Лантаноиды";
 var MSG_ACTINOIDS = "Актиноиды";
+var MSG_OR = " или ";
 
 var TABLE = [
     //First row
@@ -197,60 +198,76 @@ function MendeleevApp()
 		    spoken = id[0]; else
 			spoken = id[0] + " " + id[1];
 		Luwrain.message(spoken +", " +
-				MSG_LATIN + TABLE[this.y][this.x].latin.replaceAll(",", " или "));
+				MSG_LATIN + TABLE[this.y][this.x].latin.replaceAll(",", MSG_OR));
 	    }
 	    return true;
+	    case "1":
+	    	    if (TABLE[this.y][this.x] == null)
+			return false;
+	    Luwrain.message(MSG_NUMBER + TABLE[this.y][this.x].num);
+	    return true;
+
+	    	    case "2":
+	    	    if (TABLE[this.y][this.x] == null)
+			return false;
+	    Luwrain.message(MSG_GROUP + TABLE[this.y][this.x].group);
+	    return true;
+
+	    	    	    case "3":
+	    	    if (TABLE[this.y][this.x] == null)
+			return false;
+	    Luwrain.message(MSG_PERIOD + TABLE[this.y][this.x].period);
+	    return true;
+
+	    	    	    	    case "4":
+	    	    if (TABLE[this.y][this.x] == null)
+			return false;
+	    Luwrain.message(MSG_ROW + TABLE[this.y][this.x].row);
+	    return true;
+
+	    	    	    	    	    case "5":
+	    	    if (TABLE[this.y][this.x] == null)
+			return false;
+	    Luwrain.message(MSG_MASS + TABLE[this.y][this.x].mass);
+	    return true;
+
+
+
+
+	    
 	    case "ENTER":
 	    if (TABLE[this.y][this.x] == null)
 		return false;
-	    {
-		var item = TABLE[this.y][this.x];
-		Luwrain.message(MSG_NUMBER + item.num + ", "+
-				MSG_GROUP + item.group + ", " +
-				MSG_PERIOD + item.period + ", " +
-				MSG_ROW + item.row + ", " +
-				MSG_MASS + item.mass);
-	    }
+	    //FIXME:wikipedia
 	    return true;
 	    case "ARROW_LEFT":
 	    if (this.x == 0)
 		return false;
 	    this.x--;
-	    this.updateHotPoint();
-	    if (TABLE[this.y][this.x] != null)
-		Luwrain.message(TABLE[this.y][this.x].name); else
-		    Luwrain.message(MSG_EMPTY_CELL);
-	    return true;
+	    break;
 	    case "ARROW_RIGHT":
 	    if (this.x + 1 >= TABLE[this.y].length)
 		return false;
 	    this.x++;
-	    this.updateHotPoint();
-	    if (TABLE[this.y][this.x] != null)
-		Luwrain.message(TABLE[this.y][this.x].name); else
-		    Luwrain.message(MSG_EMPTY_CELL);
-	    return true;
+	    break;
 	    case "ARROW_UP":
 	    if (this.y == 0)
 		return false;
 	    this.y--;
-	    this.updateHotPoint();
-	    if (TABLE[this.y][this.x] != null)
-		Luwrain.message(TABLE[this.y][this.x].name); else
-		    Luwrain.message(MSG_EMPTY_CELL);
-	    return true;
+	    break;
 	    case "ARROW_DOWN":
 	    if (this.y + 1 >= TABLE.length)
 		return false;
 	    this.y++;
-	    this.updateHotPoint();
+	    break;
+	    default:
+	    return false;
+	}
+		    this.updateHotPoint();
 	    if (TABLE[this.y][this.x] != null)
 		Luwrain.message(TABLE[this.y][this.x].name); else
 		    Luwrain.message(MSG_EMPTY_CELL);
 	    return true;
-	    default:
-	    return false;
-	}
     };
 
     this.updateHotPoint = function()
@@ -264,11 +281,12 @@ function MendeleevApp()
 	    return;
 	}
 	var item = TABLE[this.y][this.x];
-	this.lines[this.lines.length - 1] = MSG_NUMBER + item.num + ", "+
+	this.lines[this.lines.length - 2] = item.id + ", " + item.latin.replaceAll(",", MSG_OR);
+	this.lines[this.lines.length - 1] = ("" + item.num + ", "+
 	    MSG_GROUP + item.group + ", " +
 	    MSG_PERIOD + item.period + ", " +
 	    MSG_ROW + item.row + ", " +
-	    MSG_MASS + item.mass;
+					     MSG_MASS + item.mass).toLowerCase();
     }
 }
 
