@@ -1,5 +1,7 @@
 
 var MSG_EMPTY_CELL = "Элемент отсутствует";
+var MSG_MASS = "Атомная масса: ";
+var MSG_LATIN = "Латинское название: ";
 
 var TABLE = [
     //First row
@@ -169,8 +171,38 @@ function MendeleevApp()
 
     this.onInputEvent = function(event)
     {
-	if (event == "ARROW_RIGHT")
+	switch(event)
 	{
+	    case " ":
+	    if (TABLE[this.y][this.x] == null)
+		return false;
+	    {
+		var id = TABLE[this.y][this.x].id;
+		var spoken = "";
+		if (id.length == 1)
+		    spoken = id[0]; else
+			spoken = id[0] + " " + id[1];
+	    Luwrain.message(spoken +", " +
+			    MSG_LATIN + TABLE[this.y][this.x].latin.replaceAll(",", " или "));
+	    }
+	    return true;
+	    case "ENTER":
+	    if (TABLE[this.y][this.x] == null)
+		return false;
+	    Luwrain.message(MSG_MASS + TABLE[this.y][this.x].mass);
+	    return true;
+	    	    case "ARROW_LEFT":
+	    if (this.x == 0)
+		return false;
+	    this.x--;
+	    this.updateHotPoint();
+	    if (TABLE[this.y][this.x] != null)
+		Luwrain.message(TABLE[this.y][this.x].name); else
+		    Luwrain.message(MSG_EMPTY_CELL);
+	    return true;
+
+	    
+	    case "ARROW_RIGHT":
 	    if (this.x + 1 >= TABLE[this.y].length)
 		return false;
 	    this.x++;
@@ -179,10 +211,19 @@ function MendeleevApp()
 		Luwrain.message(TABLE[this.y][this.x].name); else
 		    Luwrain.message(MSG_EMPTY_CELL);
 	    return true;
-	}
 
-		if (event == "ARROW_DOWN")
-	{
+	    	    case "ARROW_UP":
+	    if (this.y == 0)
+		return false;
+	    this.y--;
+	    this.updateHotPoint();
+	    if (TABLE[this.y][this.x] != null)
+		Luwrain.message(TABLE[this.y][this.x].name); else
+		    Luwrain.message(MSG_EMPTY_CELL);
+	    return true;
+
+	    
+	    case "ARROW_DOWN":
 	    if (this.y + 1 >= TABLE.length)
 		return false;
 	    this.y++;
@@ -191,10 +232,9 @@ function MendeleevApp()
 		Luwrain.message(TABLE[this.y][this.x].name); else
 		    Luwrain.message(MSG_EMPTY_CELL);
 	    return true;
+	    default:
+	    return false;
 	}
-
-	
-	return false;
     };
 
     this.updateHotPoint = function()
