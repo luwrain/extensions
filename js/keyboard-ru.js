@@ -83,4 +83,4 @@ function charName(ch)
 }
 
 Luwrain.addApp("edu-keyboard", KeyboardApp);
-Luwrain.addCommand("edu-keyboard", function(){Luwrain.launchApp("edu-keyboard");});
+Luwrain.addCommand("edu-keyboard", function(){Luwrain.launchApp("edu-keyboard", []);});

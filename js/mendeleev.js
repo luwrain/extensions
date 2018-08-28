@@ -4,6 +4,7 @@ var MSG_MASS = "Атомная масса: ";
 var MSG_LATIN = "латинское название: ";
 var MSG_NUMBER = "Элемент ";
 var MSG_GROUP = "Группа ";
+var MSG_ADDITIONAL_GROUP = "побочная";
 var MSG_PERIOD = "Период ";
 var MSG_ROW = "Ряд ";
 var MSG_LANTANOIDS = "Лантаноиды";
@@ -144,6 +145,119 @@ var TABLE = [[
     {num: 103, name: "Лоуренсий", id: "Lr", latin: "Lawrencium,Laurentium", period: 7, row: 0, group: 3, mass: 266},
 ]];
 
+var WIKIPEDIA = {};
+WIKIPEDIA['H'] = "https://ru.wikipedia.org/wiki/Водород";
+WIKIPEDIA['He'] = "https://ru.wikipedia.org/wiki/Гелий";
+WIKIPEDIA['Li'] = "https://ru.wikipedia.org/wiki/Литий";
+WIKIPEDIA['Be'] = "https://ru.wikipedia.org/wiki/Бериллий";
+WIKIPEDIA['B'] = "https://ru.wikipedia.org/wiki/Бор_(элемент)";
+WIKIPEDIA['C'] = "https://ru.wikipedia.org/wiki/Углерод";
+WIKIPEDIA['N'] = "https://ru.wikipedia.org/wiki/Азот";
+WIKIPEDIA['O'] = "https://ru.wikipedia.org/wiki/Кислород";
+WIKIPEDIA['F'] = "https://ru.wikipedia.org/wiki/Фтор";
+WIKIPEDIA['Ne'] = "https://ru.wikipedia.org/wiki/Неон";
+WIKIPEDIA['Na'] = "https://ru.wikipedia.org/wiki/Натрий";
+WIKIPEDIA['Mg'] = "https://ru.wikipedia.org/wiki/Магний";
+WIKIPEDIA['Al'] = "https://ru.wikipedia.org/wiki/Алюминий";
+WIKIPEDIA['Si'] = "https://ru.wikipedia.org/wiki/Кремний";
+WIKIPEDIA['P'] = "https://ru.wikipedia.org/wiki/Фосфор";
+WIKIPEDIA['S'] = "https://ru.wikipedia.org/wiki/Сера";
+WIKIPEDIA['Cl'] = "https://ru.wikipedia.org/wiki/Хлор";
+WIKIPEDIA['Ar'] = "https://ru.wikipedia.org/wiki/Аргон";
+WIKIPEDIA['K'] = "https://ru.wikipedia.org/wiki/Калий";
+WIKIPEDIA['Ca'] = "https://ru.wikipedia.org/wiki/Кальций";
+WIKIPEDIA['Sc'] = "https://ru.wikipedia.org/wiki/Скандий";
+WIKIPEDIA['Ti'] = "https://ru.wikipedia.org/wiki/Титан_(элемент)";
+WIKIPEDIA['V'] = "https://ru.wikipedia.org/wiki/Ванадий";
+WIKIPEDIA['Cr'] = "https://ru.wikipedia.org/wiki/Хром";
+WIKIPEDIA['Mn'] = "https://ru.wikipedia.org/wiki/Марганец";
+WIKIPEDIA['Fe'] = "https://ru.wikipedia.org/wiki/Железо";
+WIKIPEDIA['Co'] = "https://ru.wikipedia.org/wiki/Кобальт";
+WIKIPEDIA['Ni'] = "https://ru.wikipedia.org/wiki/Никель";
+WIKIPEDIA['Cu'] = "https://ru.wikipedia.org/wiki/Медь";
+WIKIPEDIA['Zn'] = "https://ru.wikipedia.org/wiki/Цинк";
+WIKIPEDIA['Ga'] = "https://ru.wikipedia.org/wiki/Галлий";
+WIKIPEDIA['Ge'] = "https://ru.wikipedia.org/wiki/Германий";
+WIKIPEDIA['As'] = "https://ru.wikipedia.org/wiki/Мышьяк";
+WIKIPEDIA['Se'] = "https://ru.wikipedia.org/wiki/Селен";
+WIKIPEDIA['Br'] = "https://ru.wikipedia.org/wiki/Бром";
+WIKIPEDIA['Kr'] = "https://ru.wikipedia.org/wiki/Криптон";
+WIKIPEDIA['Rb'] = "https://ru.wikipedia.org/wiki/Рубидий";
+WIKIPEDIA['Sr'] = "https://ru.wikipedia.org/wiki/Стронций";
+WIKIPEDIA['Y'] = "https://ru.wikipedia.org/wiki/Иттрий";
+WIKIPEDIA['Zr'] = "https://ru.wikipedia.org/wiki/Цирконий";
+WIKIPEDIA['Nb'] = "https://ru.wikipedia.org/wiki/Ниобий";
+WIKIPEDIA['Mo'] = "https://ru.wikipedia.org/wiki/Молибден";
+WIKIPEDIA['Tc'] = "https://ru.wikipedia.org/wiki/Технеций";
+WIKIPEDIA['Ru'] = "https://ru.wikipedia.org/wiki/Рутений";
+WIKIPEDIA['Rh'] = "https://ru.wikipedia.org/wiki/Родий";
+WIKIPEDIA['Pd'] = "https://ru.wikipedia.org/wiki/Палладий";
+WIKIPEDIA['Ag'] = "https://ru.wikipedia.org/wiki/Серебро";
+WIKIPEDIA['Cd'] = "https://ru.wikipedia.org/wiki/Кадмий";
+WIKIPEDIA['In'] = "https://ru.wikipedia.org/wiki/Индий";
+WIKIPEDIA['Sn'] = "https://ru.wikipedia.org/wiki/Олово";
+WIKIPEDIA['Sb'] = "https://ru.wikipedia.org/wiki/Сурьма";
+WIKIPEDIA['Te'] = "https://ru.wikipedia.org/wiki/Теллур";
+WIKIPEDIA['I'] = "https://ru.wikipedia.org/wiki/Иод";
+WIKIPEDIA['Xe'] = "https://ru.wikipedia.org/wiki/Ксенон";
+WIKIPEDIA['Cs'] = "https://ru.wikipedia.org/wiki/Цезий";
+WIKIPEDIA['Ba'] = "https://ru.wikipedia.org/wiki/Барий";
+WIKIPEDIA['La'] = "https://ru.wikipedia.org/wiki/Лантан";
+WIKIPEDIA['Ce'] = "https://ru.wikipedia.org/wiki/Церий";
+WIKIPEDIA['Pr'] = "https://ru.wikipedia.org/wiki/Празеодим";
+WIKIPEDIA['Nd'] = "https://ru.wikipedia.org/wiki/Неодим";
+WIKIPEDIA['Pm'] = "https://ru.wikipedia.org/wiki/Прометий";
+WIKIPEDIA['Sm'] = "https://ru.wikipedia.org/wiki/Самарий";
+WIKIPEDIA['Eu'] = "https://ru.wikipedia.org/wiki/Европий";
+WIKIPEDIA['Gd'] = "https://ru.wikipedia.org/wiki/Гадолиний";
+WIKIPEDIA['Tb'] = "https://ru.wikipedia.org/wiki/Тербий";
+WIKIPEDIA['Dy'] = "https://ru.wikipedia.org/wiki/Диспрозий";
+WIKIPEDIA['Ho'] = "https://ru.wikipedia.org/wiki/Гольмий";
+WIKIPEDIA['Er'] = "https://ru.wikipedia.org/wiki/Эрбий";
+WIKIPEDIA['Tm'] = "https://ru.wikipedia.org/wiki/Тулий";
+WIKIPEDIA['Yb'] = "https://ru.wikipedia.org/wiki/Иттербий";
+WIKIPEDIA['Lu'] = "https://ru.wikipedia.org/wiki/Лютеций";
+WIKIPEDIA['Hf'] = "https://ru.wikipedia.org/wiki/Гафний";
+WIKIPEDIA['Ta'] = "https://ru.wikipedia.org/wiki/Тантал_(элемент)";
+WIKIPEDIA['W'] = "https://ru.wikipedia.org/wiki/Вольфрам";
+WIKIPEDIA['Re'] = "https://ru.wikipedia.org/wiki/Рений";
+WIKIPEDIA['Os'] = "https://ru.wikipedia.org/wiki/Осмий";
+WIKIPEDIA['Ir'] = "https://ru.wikipedia.org/wiki/Иридий";
+WIKIPEDIA['Pt'] = "https://ru.wikipedia.org/wiki/Платина";
+WIKIPEDIA['Au'] = "https://ru.wikipedia.org/wiki/Золото";
+WIKIPEDIA['Hg'] = "https://ru.wikipedia.org/wiki/Ртуть";
+WIKIPEDIA['Tl'] = "https://ru.wikipedia.org/wiki/Таллий";
+WIKIPEDIA['Pb'] = "https://ru.wikipedia.org/wiki/Свинец";
+WIKIPEDIA['Bi'] = "https://ru.wikipedia.org/wiki/Висмут";
+WIKIPEDIA['Po'] = "https://ru.wikipedia.org/wiki/Полоний";
+WIKIPEDIA['At'] = "https://ru.wikipedia.org/wiki/Астат";
+WIKIPEDIA['Rn'] = "https://ru.wikipedia.org/wiki/Радон";
+WIKIPEDIA['Fr'] = "https://ru.wikipedia.org/wiki/Франций";
+WIKIPEDIA['Ra'] = "https://ru.wikipedia.org/wiki/Радий";
+WIKIPEDIA['Ac'] = "https://ru.wikipedia.org/wiki/Актиний";
+WIKIPEDIA['Th'] = "https://ru.wikipedia.org/wiki/Торий";
+WIKIPEDIA['Pa'] = "https://ru.wikipedia.org/wiki/Протактиний";
+WIKIPEDIA['U'] = "https://ru.wikipedia.org/wiki/Уран_(элемент)";
+WIKIPEDIA['Np'] = "https://ru.wikipedia.org/wiki/Нептуний";
+WIKIPEDIA['Pu'] = "https://ru.wikipedia.org/wiki/Плутоний";
+WIKIPEDIA['Am'] = "https://ru.wikipedia.org/wiki/Америций";
+WIKIPEDIA['Cm'] = "https://ru.wikipedia.org/wiki/Кюрий";
+WIKIPEDIA['Bk'] = "https://ru.wikipedia.org/wiki/Берклий";
+WIKIPEDIA['Cf'] = "https://ru.wikipedia.org/wiki/Калифорний";
+WIKIPEDIA['Es'] = "https://ru.wikipedia.org/wiki/Эйнштейний";
+WIKIPEDIA['Fm'] = "https://ru.wikipedia.org/wiki/Фермий";
+WIKIPEDIA['Md'] = "https://ru.wikipedia.org/wiki/Менделевий";
+WIKIPEDIA['No'] = "https://ru.wikipedia.org/wiki/Нобелий";
+WIKIPEDIA['Lr'] = "https://ru.wikipedia.org/wiki/Лоуренсий";
+WIKIPEDIA['Rf'] = "https://ru.wikipedia.org/wiki/Резерфордий";
+WIKIPEDIA['Db'] = "https://ru.wikipedia.org/wiki/Дубний";
+WIKIPEDIA['Sg'] = "https://ru.wikipedia.org/wiki/Сиборгий";
+WIKIPEDIA['Bh'] = "https://ru.wikipedia.org/wiki/Борий";
+WIKIPEDIA['Hs'] = "https://ru.wikipedia.org/wiki/Хассий";
+WIKIPEDIA['Mt'] = "https://ru.wikipedia.org/wiki/Мейтнерий";
+WIKIPEDIA['Ds'] = "https://ru.wikipedia.org/wiki/Дармштадтий";
+
+
 function makeLine(index)
 {
     var res = "";
@@ -153,11 +267,11 @@ function makeLine(index)
     if (TABLE[index][0] != null)
     {
 	var id = TABLE[index][0].id;
-	res = id;
+	res += id;
 	if (id.length < 2)
 	    res += " ";
     } else
-	res = "  ";
+	res += "  ";
     for(var i = 1;i < TABLE[index].length;i++)
     {
 	res += " ";
@@ -189,7 +303,7 @@ function MendeleevApp()
     this.lines.push("");
     this.lines.push("");
     this.lines.push("");
-    this.hotPointX = 0;
+    this.hotPointX = MAIN_TABLE_OFFSET;
     this.hotPointY = 0;
     this.x = 0;
     this.y = 0;
@@ -215,39 +329,41 @@ function MendeleevApp()
 			return false;
 	    Luwrain.message(MSG_NUMBER + TABLE[this.y][this.x].num);
 	    return true;
-
 	    	    case "2":
 	    	    if (TABLE[this.y][this.x] == null)
 			return false;
+	    if (TABLE[this.y][this.x].group < 0)
+		Luwrain.message(MSG_GROUP + (-1 *TABLE[this.y][this.x].group) + " " + MSG_ADDITIONAL_GROUP); else
 	    Luwrain.message(MSG_GROUP + TABLE[this.y][this.x].group);
 	    return true;
-
 	    	    	    case "3":
 	    	    if (TABLE[this.y][this.x] == null)
 			return false;
 	    Luwrain.message(MSG_PERIOD + TABLE[this.y][this.x].period);
 	    return true;
-
 	    	    	    	    case "4":
 	    	    if (TABLE[this.y][this.x] == null)
 			return false;
+	    if (this.y == 10)
+		Luwrain.message(MSG_LANTANOIDS); else
+		    if (this.y == 11)
+			Luwrain.message(MSG_ACTINOIDS); else
 	    Luwrain.message(MSG_ROW + TABLE[this.y][this.x].row);
 	    return true;
-
 	    	    	    	    	    case "5":
 	    	    if (TABLE[this.y][this.x] == null)
 			return false;
 	    Luwrain.message(MSG_MASS + TABLE[this.y][this.x].mass);
 	    return true;
-
-
-
-
-	    
 	    case "ENTER":
 	    if (TABLE[this.y][this.x] == null)
 		return false;
-	    //FIXME:wikipedia
+	    {
+		var id = TABLE[this.y][this.x].id;
+		if (!(id in WIKIPEDIA))
+		    return false;
+		Luwrain.launchApp("reader", [WIKIPEDIA[id]]);
+	    }
 	    return true;
 	    case "ARROW_LEFT":
 	    if (this.x == 0)
@@ -272,6 +388,8 @@ function MendeleevApp()
 	    default:
 	    return false;
 	}
+	if (this.x >= TABLE[this.y].length)
+	    this.x = TABLE[this.y].length - 1;
 		    this.updateHotPoint();
 	    if (TABLE[this.y][this.x] != null)
 		Luwrain.message(TABLE[this.y][this.x].name); else
@@ -312,4 +430,4 @@ function MendeleevApp()
 }
 
 Luwrain.addApp("edu-mendeleev",  MendeleevApp);
-Luwrain.addCommand("edu-mendeleev", function(){Luwrain.launchApp("edu-mendeleev");});
+Luwrain.addCommand("edu-mendeleev", function(){Luwrain.launchApp("edu-mendeleev", []);});

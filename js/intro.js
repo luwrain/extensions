@@ -54,4 +54,4 @@ sayFrameText(this.index);
 
 
 Luwrain.addApp("edu-intro-ru", IntroApp);
-Luwrain.addCommand("edu-intro-ru", function(){Luwrain.launchApp("edu-intro-ru");});
+Luwrain.addCommand("edu-intro-ru", function(){Luwrain.launchApp("edu-intro-ru", []);});
