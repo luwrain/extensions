@@ -421,11 +421,25 @@ function MendeleevApp()
 	}
 	var item = TABLE[this.y][this.x];
 	this.lines[this.lines.length - 2] = item.id + ", " + item.latin.replaceAll(",", MSG_OR);
-	this.lines[this.lines.length - 1] = ("" + item.num + ", "+
-	    MSG_GROUP + item.group + ", " +
-	    MSG_PERIOD + item.period + ", " +
-	    MSG_ROW + item.row + ", " +
-					     MSG_MASS + item.mass).toLowerCase();
+	var lastLine = "" + item.num + ", ";
+	if (item.group < 0)
+	    lastLine += MSG_GROUP + (-1 * item.group) + " " + MSG_ADDITIONAL_GROUP + ","; else
+		lastLine += MSG_GROUP + item.group + ", ";
+	lastLine += MSG_PERIOD + item.period + ", ";
+	switch(this.y)
+	{
+	    case 10:
+	    lastLine += MSG_LANTANOIDS;
+	    break;
+	    case 11:
+	    lastLine += MSG_ACTINOIDS;
+	    break;
+	    default:
+	    lastLine += MSG_ROW + item.row;
+	}
+	lastLine += ", ";
+	lastLine += MSG_MASS + item.mass;
+	this.lines[this.lines.length - 1] = lastLine.toLowerCase();
     }
 }
 
