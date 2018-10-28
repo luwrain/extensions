@@ -52,17 +52,17 @@ final class Channel implements Channel2
 	final Path configPath = Paths.get("rhvoice", "config");
 	final Path enPath = Paths.get("data", "languages", "English");
 	final Path ruPath = Paths.get("data", "languages", "Russian");
-	    TTSEngine.init();
-	    this.tts = new TTSEngine(dataPath.toString(), configPath.toString(), new String[]{
-		    enPath.toString(),
-		    ruPath.toString(),
-		    		}, null);
-		    	if (params.containsKey("voice") && !params.get("voice").isEmpty())
+	TTSEngine.init();
+	this.tts = new TTSEngine(dataPath.toString(), configPath.toString(), new String[]{
+		enPath.toString(),
+		ruPath.toString(),
+	    }, null);
+	if (params.containsKey("voice") && !params.get("voice").isEmpty())
 	    this.voiceName = params.get("voice"); else
 	    this.voiceName = suggestVoice();
-		    if (voiceName == null || voiceName.trim().isEmpty())
-			throw new Exception("Unable to get suitable voice name");
-		        }
+	if (voiceName == null || voiceName.trim().isEmpty())
+	    throw new Exception("Unable to get suitable voice name");
+    }
 
     @Override public String getChannelName()
     {
@@ -101,7 +101,6 @@ final class Channel implements Channel2
 	    voices[i++]=new RHVoice(voice.getName());
     	return voices;
     }
-
 
     @Override public long speak(String text,Listener listener,int relPitch,int relRate, boolean cancelPrevious)
     {
@@ -214,8 +213,7 @@ final class Channel implements Channel2
     	return RATE_MIN + range - (double)(value + 50) * range / 100f;
     }
 
-
-        static private double convPitch(int value)
+    static private double convPitch(int value)
     {
 	if (value < -50)
 	    return 0;
