@@ -27,16 +27,14 @@ import org.luwrain.speech.*;
 
 final class VoiceMan implements Channel2
 {
-    static private final String DEFAULT_NAME = "voiceman";
     static private final String DEFAULT_HOST = "localhost";
     static private final int DEFAULT_PORT = 5511;
+    static private final String DEFAULT_NAME = "voiceman";
+    static private final int DEFAULT_PITCH = 50;
+    static private final int DEFAULT_RATE = 50;
 
-    private Socket sock = null;
-    private PrintStream output = null;
-    private int defaultPitch = 50;
-    private int defaultRate = 50;
-    private String name = DEFAULT_NAME;
-    private boolean def = true;
+    private final Socket sock;
+    private final PrintStream output;
 
     VoiceMan(Map<String, String> params) throws Exception
     {
@@ -59,24 +57,13 @@ final class VoiceMan implements Channel2
 	    }
 	} else
 	    port = DEFAULT_PORT;
-	if (!connect(host, port))
-	    throw new Exception("Unable to establish a connection to the VoiceMan server at " + host + ":" + port);
-    }
-
-    private boolean connect(String host, int port)
-    {
 	try {
-	    sock = new Socket(host, port);
-	    output = new PrintStream(sock.getOutputStream(), true, "UTF-8");
-	    return true;
+	    this.sock = new Socket(host, port);
+	    this.output = new PrintStream(sock.getOutputStream(), true, "UTF-8");
 	}
 	catch(IOException e)
 	{
-	    sock = null;
-	    output = null;
-	    Log.error("voiceman", "unable to connect to " + host + ":" + port + ":" + e.getMessage());
-	    e.printStackTrace();
-	    return false;
+	    throw new Exception("Unable to connect to the VoiceMan server at " + host + ":" + port + ":" + e.getMessage());
 	}
     }
 
@@ -85,11 +72,9 @@ final class VoiceMan implements Channel2
     {
 	if (cancelPrevious)
 	    silence();
-	sendPitch(defaultPitch + relPitch);
-	sendRate(defaultRate + relRate);
+	sendPitch(DEFAULT_PITCH + relPitch);
+	sendRate(DEFAULT_RATE + relRate);
 	sendText(text);
-	sendPitch(defaultPitch);
-	sendRate(defaultRate);
 	return -1;
     }
 
@@ -98,16 +83,11 @@ final class VoiceMan implements Channel2
     {
 	if (cancelPrevious)
 	    silence();
-	sendPitch(defaultPitch + relPitch);
-	sendRate(defaultRate + relRate);
+	sendPitch(DEFAULT_PITCH + relPitch);
+	sendRate(DEFAULT_RATE + relRate);
 	sendLetter(letter);
-	sendPitch(defaultPitch);
-	sendRate(defaultRate);
 	return -1;
     }
-
-
-
 
     private void sendPitch(int value)
     {
@@ -155,16 +135,11 @@ final class VoiceMan implements Channel2
 	}
 	catch(IOException e)
 	{
-	    e.printStackTrace();
 	}
-	output = null;
-	sock = null;
     }
 
     @Override public void silence()
     {
-	if (output == null)
-	    return;
 	output.println("S:");
 	output.flush();
     }
@@ -173,10 +148,9 @@ final class VoiceMan implements Channel2
     {
     }
 
-
     @Override public String getChannelName()
     {
-	return name;
+	return DEFAULT_NAME;
     }
 
     @Override public String getVoiceName()
