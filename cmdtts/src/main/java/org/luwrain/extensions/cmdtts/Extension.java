@@ -16,6 +16,8 @@
 
 package org.luwrain.extensions.cmdtts;
 
+import java.util.*;
+
 import org.luwrain.base.*;
 import org.luwrain.core.*;
 import org.luwrain.core.extensions.*;
@@ -28,23 +30,25 @@ public final class Extension extends EmptyExtension
 	NullCheck.notNull(luwrain, "luwrain");
 	return new ExtensionObject[]{
 
-	    new org.luwrain.speech.Factory(){
+	    new org.luwrain.speech.Factory2(){
 		@Override public String getExtObjName()
 		{
 		    return "command";
 		}
-		@Override public Channel newChannel()
+		@Override public Channel2 newChannel(Map<String, String> params)
 		{
+		    NullCheck.notNull(params, "params");
 		    return new org.luwrain.extensions.cmdtts.Channel();
 		}
-		@Override public org.luwrain.cpanel.Section newSettingsSection(org.luwrain.cpanel.Element el, String registryPath)
+		    @Override public Set<Factory2.Features>  getFeatures()
+    {
+	    return EnumSet.of(Features.CAN_SYNTH_TO_STREAM, Features.CAN_SYNTH_TO_SPEAKERS, Features.CAN_NOTIFY_WHEN_FINISHED);
+    }
+				@Override public org.luwrain.cpanel.Section newSettingsSection(org.luwrain.cpanel.Element el, String registryPath)
 		{
 		    NullCheck.notNull(el, "el");
 		    NullCheck.notNull(registryPath, "registryPath");
-		    final Settings settings = Settings.create(luwrain.getRegistry(), registryPath);
-		    return new SimpleSection(el, settings.getName("???"),
-					     (controlPanel)->SettingsForm.create(controlPanel, registryPath)
-					     );
+		    return null;
 		}
 	    },
 	};

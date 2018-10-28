@@ -25,13 +25,11 @@ import java.io.*;
 import org.luwrain.core.*;
 import org.luwrain.speech.*;
 
-public class VoiceMan implements Channel
+final class VoiceMan implements Channel2
 {
     static private final String DEFAULT_NAME = "voiceman";
     static private final String DEFAULT_HOST = "localhost";
     static private final int DEFAULT_PORT = 5511;
-    static private final String CMDLINE_HOST = "--voiceman-host=";
-    static private final String CMDLINE_PORT = "--voiceman-hport=";
 
     private Socket sock = null;
     private PrintStream output = null;
@@ -40,58 +38,29 @@ public class VoiceMan implements Channel
     private String name = DEFAULT_NAME;
     private boolean def = true;
 
-    @Override public boolean initByRegistry(Registry registry, String regPath)
+    VoiceMan(Map<String, String> params) throws Exception
     {
-	NullCheck.notNull(registry, "registry");
-	NullCheck.notNull(regPath, "regPath");
-	String host = null;
-	int port = 0;
-	if (registry != null && regPath != null && !regPath.trim().isEmpty())
+	NullCheck.notNull(params, "params");
+	final String host;
+	if (params.containsKey("host"))
+	    host = params.get("host"); else
+	    host = DEFAULT_HOST;
+	if (host.isEmpty())
+	    throw new Exception("Empty host name given");
+	final int port;
+	if (params.containsKey("port"))
 	{
-	    final Settings s = RegistryProxy.create(registry, regPath, Settings.class);
-	    host = s.getHost(DEFAULT_HOST);
-	    port = s.getPort(DEFAULT_PORT);
-	    name = s.getName(DEFAULT_NAME);
-	    def = s.getDefault(false);
-	}
-	/*
-	final CmdLineUtils cmdLineUtils = new CmdLineUtils(cmdLine);
-	final String h = cmdLineUtils.getFirstArg(CMDLINE_HOST);
-	final String p = cmdLineUtils.getFirstArg(CMDLINE_HOST);
-	if (h != null && !h.trim().isEmpty())
-	{
-	    Log.info("voiceman", "using host value from the command line:" + h);
-	    host = h;
-	}
-	if (p != null && !p.trim().isEmpty())
-	{
-	    Log.info("voiceman", "using port value from the registry:" + p);
 	    try {
-		port = Integer.parseInt(p);
+		port = Integer.parseInt(params.get("port"));
 	    }
 	    catch(NumberFormatException e)
 	    {
-		e.printStackTrace();
+		throw new Exception("Illegal port number: " + params.get("port"));
 	    }
-	}
-	if (host == null || host.trim().isEmpty())
-	{
-	    Log.warning("voiceman", "unable to get host value, using default");
-	    host = DEFAULT_HOST;
-	}
-	if (port == 0)
-	{
-	    Log.warning("voiceman", "unable to get port value, using default");
+	} else
 	    port = DEFAULT_PORT;
-	}
-	*/
-	return connect(host, port);
-    }
-
-    @Override public boolean initByArgs(String[] args)
-    {
-	NullCheck.notNullItems(args, "args");
-	return false;
+	if (!connect(host, port))
+	    throw new Exception("Unable to establish a connection to the VoiceMan server at " + host + ":" + port);
     }
 
     private boolean connect(String host, int port)
@@ -192,12 +161,6 @@ public class VoiceMan implements Channel
 	sock = null;
     }
 
-    @Override public StreamedSpeaking createStreamedSpeaking(int pitch, int rate, AudioFormat format)
-    {
-	NullCheck.notNull(format, "format");
-	return null;
-    }
-
     @Override public void silence()
     {
 	if (output == null)
@@ -206,45 +169,17 @@ public class VoiceMan implements Channel
 	output.flush();
     }
 
-    @Override public void setCurrentVoice(String name)
+    @Override public void setVoice(String name)
     {
     }
 
-    @Override public Set<Features>  getFeatures()
-    {
-	return EnumSet.of(Features.CAN_SYNTH_TO_SPEAKERS);
-    }
-
-    @Override public boolean isDefault()
-    {
-	return def;
-    }
 
     @Override public String getChannelName()
     {
 	return name;
     }
 
-    @Override public PuncMode getCurrentPuncMode()
-    {
-	return PuncMode.ALL;
-    }
-
-    @Override public void setCurrentPuncMode(PuncMode mode)
-    {
-	NullCheck.notNull(mode, "mode");
-	switch(mode)
-	{
-	case ALL:
-	    output.println("M:all");
-	    break;
-	case NONE:
-	    output.println("M:none");
-	    break;
-	}
-    }
-
-    @Override public String getCurrentVoiceName()
+    @Override public String getVoiceName()
     {
 	return "";
     }
@@ -252,37 +187,5 @@ public class VoiceMan implements Channel
     @Override public Voice[] getVoices()
     {
 	return new Voice[0];
-    }
-
-    @Override public int getDefaultPitch()
-    {
-	return defaultPitch;
-    }
-
-    @Override public void setDefaultPitch(int value)
-    {
-	int v = value;
-	if (v < 0)
-	    v = 0;
-	    if (v > 100)
-		v = 100;
-	defaultPitch = v;
-	sendPitch(defaultPitch);
-    }
-
-    @Override public int getDefaultRate()
-    {
-	return defaultRate;
-    }
-
-    @Override public void setDefaultRate(int value)
-    {
-	int v = value;
-	if (v < 0)
-	    v = 0;
-	    if (v > 100)
-		v = 100;
-	    defaultRate = v;
-	    sendRate(defaultRate);
     }
 }

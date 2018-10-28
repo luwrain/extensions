@@ -16,6 +16,8 @@
 
 package org.luwrain.extensions.voiceman;
 
+import java.util.*;
+
 import org.luwrain.base.*;
 import org.luwrain.core.*;
 import org.luwrain.core.extensions.*;
@@ -24,34 +26,34 @@ import org.luwrain.cpanel.*;
 
 public final class Extension extends EmptyExtension
 {
-    @Override public String init(Luwrain luwrain)
-    {
-	return null;
-    }
-
+    static private  final String LOG_COMPONENT = "voiceman";
+    
     @Override public ExtensionObject[] getExtObjects(Luwrain luwrain)
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	return new ExtensionObject[]{
 
-	    new org.luwrain.speech.Factory()
+	    new org.luwrain.speech.Engine()
 	    {
 		@Override public String getExtObjName()
 		{
 		    return "voiceman";
 		}
-		@Override public Channel newChannel()
+		    @Override public Set<Engine.Features>  getFeatures()
+    {
+	return EnumSet.of(Engine.Features.CAN_SYNTH_TO_SPEAKERS);
+    }
+		@Override public Channel2 newChannel(Map<String, String> params)
 		{
-		    return new VoiceMan();
-		}
-		@Override public org.luwrain.cpanel.Section newSettingsSection(org.luwrain.cpanel.Element el, String registryPath)
-		{
-		    NullCheck.notNull(el, "el");
-		    NullCheck.notEmpty(registryPath, "registryPath");
-		    final Settings settings = Settings.create(luwrain.getRegistry(), registryPath);
-		    return new SimpleSection(el, settings.getName("VoiceMan channel"),
-					     (controlPanel)->SettingsForm.create(controlPanel, registryPath)
-					     );
+		    NullCheck.notNull(params, "params");
+		    try {
+			return new VoiceMan(params);
+		    }
+		    catch(Exception e)
+		    {
+			Log.error(LOG_COMPONENT, "unable to create the new VoiceMan channel:" + e.getMessage());
+			return null;
+		    }
 		}
 	    },
 

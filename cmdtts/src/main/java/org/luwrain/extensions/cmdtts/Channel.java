@@ -25,7 +25,7 @@ import org.luwrain.linux.ProcessGroup;
 import org.luwrain.speech.*;
 import org.luwrain.core.*;
 
-class Channel extends ChannelBase
+final class Channel implements Channel2
 {
     static final String LOG_COMPONENT = "cmdtts";
     static private final int BACKGROUND_THREAD_DELAY = 50;
@@ -45,7 +45,7 @@ class Channel extends ChannelBase
     private boolean signed = false;
     private boolean bigEndian = false;
 
-    @Override public boolean initByRegistry(Registry registry, String path)
+public boolean initByRegistry(Registry registry, String path)
     {
 	NullCheck.notNull(registry, "registry");
 	NullCheck.notNull(path, "path");
@@ -66,29 +66,12 @@ class Channel extends ChannelBase
 	return true;
     }
 
-    @Override public boolean initByArgs(String[] args)
-    {
-	NullCheck.notNullItems(args, "args");
-	if (args.length >= 1)
-	    toSpeakersCommand = args[0];
-	if (args.length >= 2)
-	    channelName = args[1];
-	if (args.length >= 3 && args[2].trim().toLowerCase().equals("default"))
-	    defaultChannel = true; else
-	    defaultChannel = false;
-	if (channelName.isEmpty())
-	channelName = "Command (" + toSpeakersCommand + ")";
-	task = createTask();
-	executor.execute(task);
-	return true;
-    }
-
-    @Override public String getCurrentVoiceName()
+    @Override public String getVoiceName()
     {
 	return "";
     }
 
-    @Override public void setCurrentVoice(String name)
+    @Override public void setVoice(String name)
     {
     }
 
@@ -97,15 +80,6 @@ class Channel extends ChannelBase
 	return new Voice[0];
     }
 
-    @Override public Set<Features>  getFeatures()
-    {
-	if (toSpeakersCommand != null && !toSpeakersCommand.isEmpty() &&
-	    toStreamCommand != null && !toStreamCommand.isEmpty())
-	    return EnumSet.of(Features.CAN_SYNTH_TO_STREAM, Features.CAN_SYNTH_TO_SPEAKERS, Features.CAN_NOTIFY_WHEN_FINISHED);
-	if (toStreamCommand != null && !toStreamCommand.isEmpty())
-	    return EnumSet.of(Features.CAN_SYNTH_TO_STREAM);
-	    return EnumSet.of(Features.CAN_SYNTH_TO_SPEAKERS, Features.CAN_NOTIFY_WHEN_FINISHED);
-    }
 
     @Override public long speak(String text, Listener listener,
 				int relPitch, int relRate, boolean cancelPrevious)
