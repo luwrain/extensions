@@ -31,7 +31,7 @@ import com.github.olga_yakovleva.rhvoice.VoiceInfo;
 import org.luwrain.core.*;
 import org.luwrain.speech.*;
 
-class Channel extends ChannelBase
+final class Channel implements Channel2
 {
     static final String LOG_COMPONENT = "rhvoice";
 
@@ -40,62 +40,38 @@ class Channel extends ChannelBase
     static private final double RATE_MAX  = 2.0;
     static private final double PITCH_MIN = 0.5;
     static private final double PITCH_MAX = 2.0;
+    static private final int DEFAULT_PITCH = 50;
+    static private final int DEFAULT_RATE = 50;
 
     private TTSEngine tts = null;
     private String voiceName = "";
     private SpeakingThread thread = null;
 
-    @Override public boolean initByRegistry(Registry registry, String path)
+    Channel(Map<String, String> params) throws Exception
     {
-	NullCheck.notNull(registry, "registry");
-	NullCheck.notEmpty(path, "path");
-	final Settings sett = Settings.create(registry, path);
-	channelName = sett.getName("");
-	defaultChannel = sett.getDefault(false);
-	if (channelName.trim().isEmpty())
-	{
-	    Log.error(LOG_COMPONENT, "channel in " + path + " does not have any name");
-	    return false;
-	}
-    	return initByArgs(new String[]{sett.getVoiceName("")});
-    }
-
-    // currently args must contains single string - voice name
-    @Override public boolean initByArgs(String[] args)
-    {
-    	NullCheck.notNullItems(args, "arg");
+	NullCheck.notNull(params, "params");
 	try {
 	    System.loadLibrary("RHVoice_core");
-	}
-	catch(Exception | UnsatisfiedLinkError e)
-	{
-	}
+	} catch(Throwable e) {}//Fails on Windows, it's absolutely normal
 	final Path dataPath = Paths.get("rhvoice", "data");
 	final Path configPath = Paths.get("rhvoice", "config");
 	final Path enPath = Paths.get("data", "languages", "English");
 	final Path ruPath = Paths.get("data", "languages", "Russian");
-	try {
 	    TTSEngine.init();
-	    tts = new TTSEngine(dataPath.toString(), configPath.toString(), new String[]{
+	    this.tts = new TTSEngine(dataPath.toString(), configPath.toString(), new String[]{
 		    enPath.toString(),
 		    ruPath.toString(),
-		}, null);
-	} 
-	catch(RHVoiceException e)
-	{
-	    Log.error(LOG_COMPONENT, "rhvoice refuses to initialize:" + e.getClass().getName() + ":" + e.getMessage());
-	    Log.error(LOG_COMPONENT, "current directory is " + (new File(".").getAbsolutePath()));
-	    return false;
-	}
-	//Selecting the voice
-	voiceName = (args.length > 0 && !args[0].isEmpty())?args[0]:suggestVoice();
-	if (voiceName == null || voiceName.trim().isEmpty())
-	{
-	    Log.error(LOG_COMPONENT, "unable to choose a suitable voice");
-	    return false;
-	}
-	Log.debug(LOG_COMPONENT, "using voice \'" + voiceName + "\'");
-	return true;
+		    		}, null);
+		    	if (params.containsKey("voice") && !params.get("voice").isEmpty())
+	    this.voiceName = params.get("voice"); else
+	    this.voiceName = suggestVoice();
+		    if (voiceName == null || voiceName.trim().isEmpty())
+			throw new Exception("Unable to get suitable voice name");
+		        }
+
+    @Override public String getChannelName()
+    {
+	return "RHVoice";
     }
 
     private String suggestVoice()
@@ -138,18 +114,14 @@ class Channel extends ChannelBase
     	return voices;
     }
 
-    @Override public Set<Features> getFeatures()
-    {
-	return EnumSet.of(Features.CAN_SYNTH_TO_SPEAKERS,Features.CAN_NOTIFY_WHEN_FINISHED); // 
-    }
 
     @Override public long speak(String text,Listener listener,int relPitch,int relRate, boolean cancelPrevious)
     {
 	NullCheck.notNull(text, "text");
 	final SynthesisParameters p = new SynthesisParameters();
 	p.setVoiceProfile(voiceName);
-	p.setRate(convRate(defaultRate + relRate));
-	p.setPitch(convPitch(defaultPitch + relPitch));
+	p.setRate(convRate(DEFAULT_RATE + relRate));
+	p.setPitch(convPitch(DEFAULT_PITCH + relPitch));
    	p.setSSMLMode(false);
 	runThread(text,listener, p);
 	return -1;
@@ -159,8 +131,8 @@ class Channel extends ChannelBase
     {
 	final SynthesisParameters p = new SynthesisParameters();
 	p.setVoiceProfile(voiceName);
-	p.setRate(convRate(defaultRate + relRate));
-	p.setPitch(convPitch(defaultPitch + relPitch) + (Character.isUpperCase(letter)?UPPER_CASE_PITCH_MODIFIER:0));
+	p.setRate(convRate(DEFAULT_RATE + relRate));
+	p.setPitch(convPitch(DEFAULT_PITCH + relPitch) + (Character.isUpperCase(letter)?UPPER_CASE_PITCH_MODIFIER:0));
    	p.setSSMLMode(false);
 	runThread("" + letter, listener, p);
    	return -1;
@@ -176,6 +148,7 @@ class Channel extends ChannelBase
 	new Thread(thread).start();
     }
 
+    /*
     @Override public StreamedSpeaking createStreamedSpeaking(int pitch, int rate, AudioFormat format)
     {
 	NullCheck.notNull(format, "format");
@@ -213,6 +186,7 @@ class Channel extends ChannelBase
 	    }
 	};
     }
+    */
 
     @Override public void silence()
     {
@@ -226,11 +200,11 @@ class Channel extends ChannelBase
 	return new AudioFormat[]{SpeakingThread.createAudioFormat()};
     }
 
-    @Override public void setCurrentVoice(String name)
+    @Override public void setVoice(String name)
     {
     }
 
-    @Override public String getCurrentVoiceName()
+    @Override public String getVoiceName()
     {
 	return voiceName;
     }
