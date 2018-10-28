@@ -60,6 +60,8 @@ final class VoiceMan implements Channel2
 	try {
 	    this.sock = new Socket(host, port);
 	    this.output = new PrintStream(sock.getOutputStream(), true, "UTF-8");
+	    this.output.println("M:none");
+	    this.output.flush();
 	}
 	catch(IOException e)
 	{
@@ -67,8 +69,7 @@ final class VoiceMan implements Channel2
 	}
     }
 
-    @Override public long speak(String text, Listener listener,
-				int relPitch, int relRate, boolean cancelPrevious)
+    @Override public long speak(String text, Listener listener, int relPitch, int relRate, boolean cancelPrevious)
     {
 	if (cancelPrevious)
 	    silence();
@@ -78,8 +79,7 @@ final class VoiceMan implements Channel2
 	return -1;
     }
 
-    @Override public long speakLetter(char letter, Listener listener,
-				      int relPitch, int relRate, boolean cancelPrevious)
+    @Override public long speakLetter(char letter, Listener listener, int relPitch, int relRate, boolean cancelPrevious)
     {
 	if (cancelPrevious)
 	    silence();
@@ -96,6 +96,7 @@ final class VoiceMan implements Channel2
 	    if (value > 100)
 		output.println("P:100"); else
 		output.println("P:" + value);
+	output.flush();
     }
 
     private void sendRate(int value)
@@ -105,12 +106,14 @@ final class VoiceMan implements Channel2
 	    if (value > 100)
 		output.println("R:100"); else
 		output.println("R:" + value);
+	output.flush();
     }
 
     private void sendText(String text)
     {
 	NullCheck.notNull(text, "text");
 	output.println("T:" + text.replaceAll("\n", " "));
+	output.flush();
     }
 
     private void sendLetter(char letter)
@@ -118,6 +121,7 @@ final class VoiceMan implements Channel2
 	String s = "L:";
 	s += letter;
 	output.println(s);
+	output.flush();
     }
 
     @Override public AudioFormat[] getSynthSupportedFormats()
