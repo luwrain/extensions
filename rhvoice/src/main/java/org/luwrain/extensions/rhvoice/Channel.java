@@ -33,18 +33,13 @@ import org.luwrain.speech.*;
 
 final class Channel implements Channel2
 {
-    static final String LOG_COMPONENT = "rhvoice";
-
+    static private final String LOG_COMPONENT = Extension.LOG_COMPONENT;
     static private final double UPPER_CASE_PITCH_MODIFIER = 3.0;
     static private final double RATE_MIN  = 0.5;
     static private final double RATE_MAX  = 2.0;
-    static private final double PITCH_MIN = 0.5;
-    static private final double PITCH_MAX = 2.0;
-    static private final int DEFAULT_PITCH = 50;
-    static private final int DEFAULT_RATE = 50;
 
-    private TTSEngine tts = null;
-    private String voiceName = "";
+    private final TTSEngine tts;
+    private final String voiceName;
     private SpeakingThread thread = null;
 
     Channel(Map<String, String> params) throws Exception
@@ -81,13 +76,6 @@ final class Channel implements Channel2
 	final List<VoiceInfo> voices = tts.getVoices();
 	for(VoiceInfo voice: voices)
 	{
-	    Log.debug(LOG_COMPONENT, "available voice:" + voice.getName() + 
-		      ", lang:" +voice.getLanguage().getName() + 
-		      " (a2s:" + voice.getLanguage().getAlpha2Code() +
-		      ",a2c:" + voice.getLanguage().getAlpha2CountryCode() +
-		      ",a3s:"+voice.getLanguage().getAlpha3Code() +
-		      ",a2c:"+voice.getLanguage().getAlpha3CountryCode() +
-		      ")");
 	    if(voiceRu == null && voice.getLanguage().getName().equals("Russian")) 
 		voiceRu = voice.getName();
 	    if(voiceEn == null && voice.getLanguage().getName().equals("English")) 
@@ -95,7 +83,7 @@ final class Channel implements Channel2
 	}
 	if(voiceRu == null && voiceEn == null)
 	{
-	    Log.warning(LOG_COMPONENT, "no voices neither Russian nor English");
+    	    Log.warning(LOG_COMPONENT, "no voices neither Russian nor English");
 	    return "";
 	}
 	if(voiceRu == null)
@@ -120,8 +108,8 @@ final class Channel implements Channel2
 	NullCheck.notNull(text, "text");
 	final SynthesisParameters p = new SynthesisParameters();
 	p.setVoiceProfile(voiceName);
-	p.setRate(convRate(DEFAULT_RATE + relRate));
-	p.setPitch(convPitch(DEFAULT_PITCH + relPitch));
+	p.setRate(convRate(relRate));
+	p.setPitch(convPitch(relPitch));
    	p.setSSMLMode(false);
 	runThread(text,listener, p);
 	return -1;
@@ -131,8 +119,8 @@ final class Channel implements Channel2
     {
 	final SynthesisParameters p = new SynthesisParameters();
 	p.setVoiceProfile(voiceName);
-	p.setRate(convRate(DEFAULT_RATE + relRate));
-	p.setPitch(convPitch(DEFAULT_PITCH + relPitch) + (Character.isUpperCase(letter)?UPPER_CASE_PITCH_MODIFIER:0));
+	p.setRate(convRate(relRate));
+	p.setPitch(convPitch(relPitch) + (Character.isUpperCase(letter)?UPPER_CASE_PITCH_MODIFIER:0));
    	p.setSSMLMode(false);
 	runThread("" + letter, listener, p);
    	return -1;
@@ -213,7 +201,6 @@ final class Channel implements Channel2
     {
 	silence();
 	//FIXME:is anything else needed there?
-	tts = null;
     }
 
     TTSEngine getTtsEngine()
@@ -224,12 +211,18 @@ final class Channel implements Channel2
     static private double convRate(int value)
     {
 	final double range = RATE_MAX - RATE_MIN;
-    	return RATE_MIN + range - (double)value * range / 100f;
+    	return RATE_MIN + range - (double)(value + 50) * range / 100f;
     }
 
-    static private double convPitch(int value)
-    { // 0.5 ... 2
-	final double range = PITCH_MAX - PITCH_MIN;
-    	return PITCH_MIN + (double)value * range / 100f;
+
+        static private double convPitch(int value)
+    {
+	if (value < -50)
+	    return 0;
+	if (value > 50)
+	    return 2.0;
+	if (value < 0)
+	    return ((double)value + 50) / 100;
+	return ((double)value / 50) * 1.5 + 0.5;
     }
 }

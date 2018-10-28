@@ -26,8 +26,8 @@ import org.luwrain.speech.*;
 
 public final class Extension extends EmptyExtension
 {
-    static private final String LOG_COMPONENT = "rhvoice";
-    
+    static final String LOG_COMPONENT = "rhvoice";
+
     @Override public ExtensionObject [] getExtObjects(Luwrain luwrain)
     {
 	NullCheck.notNull(luwrain, "luwrain");
@@ -39,17 +39,15 @@ public final class Extension extends EmptyExtension
 		{
 		    return "rhvoice";
 		}
-
-		    @Override public Set<Engine.Features> getFeatures()
-    {
-	return EnumSet.of(Engine.Features.CAN_SYNTH_TO_SPEAKERS, Engine.Features.CAN_NOTIFY_WHEN_FINISHED); // 
-    }
-
+		@Override public Set<Engine.Features> getFeatures()
+		{
+		    return EnumSet.of(Engine.Features.CAN_SYNTH_TO_SPEAKERS, Engine.Features.CAN_NOTIFY_WHEN_FINISHED); // 
+		}
 		@Override public Channel2 newChannel(Map<String, String> params)
 		{
 		    NullCheck.notNull(params, "params");
 		    try {
-		    return new Channel(params);
+			return new Channel(params);
 		    }
 		    catch(Exception e)
 		    {

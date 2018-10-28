@@ -28,7 +28,7 @@ import org.luwrain.speech.Channel2.Listener;
 
 class SpeakingThread implements Runnable
 {
-    static private final String LOG_COMPONENT = Channel.LOG_COMPONENT;
+    static private final String LOG_COMPONENT = Extension.LOG_COMPONENT;
     static private final int AUDIO_LINE_BUFFER_SIZE=3200; // minimal req value is 3200 (1600 samples max give rhvoice and each one 2 byte size
 	static private final float FRAME_RATE = 24000f;
 
