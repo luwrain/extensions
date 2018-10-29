@@ -25,30 +25,26 @@ import org.luwrain.cpanel.*;
 
 public final class Extension extends EmptyExtension
 {
+    static final String LOG_COMPONENT = "cmdtts";
+
     @Override public ExtensionObject[] getExtObjects(Luwrain luwrain)
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	return new ExtensionObject[]{
 
-	    new org.luwrain.speech.Factory2(){
+	    new org.luwrain.speech.Engine(){
 		@Override public String getExtObjName()
 		{
-		    return "command";
+		    return "cmdtts";
 		}
 		@Override public Channel2 newChannel(Map<String, String> params)
 		{
 		    NullCheck.notNull(params, "params");
 		    return new org.luwrain.extensions.cmdtts.Channel();
 		}
-		    @Override public Set<Factory2.Features>  getFeatures()
-    {
-	    return EnumSet.of(Features.CAN_SYNTH_TO_STREAM, Features.CAN_SYNTH_TO_SPEAKERS, Features.CAN_NOTIFY_WHEN_FINISHED);
-    }
-				@Override public org.luwrain.cpanel.Section newSettingsSection(org.luwrain.cpanel.Element el, String registryPath)
+		@Override public Set<Factory2.Features>  getFeatures()
 		{
-		    NullCheck.notNull(el, "el");
-		    NullCheck.notNull(registryPath, "registryPath");
-		    return null;
+		    return EnumSet.of(Features.CAN_SYNTH_TO_STREAM, Features.CAN_SYNTH_TO_SPEAKERS, Features.CAN_NOTIFY_WHEN_FINISHED);
 		}
 	    },
 	};

@@ -27,7 +27,7 @@ import org.luwrain.core.*;
 
 final class Channel implements Channel2
 {
-    static final String LOG_COMPONENT = "cmdtts";
+    static final string LOG_COMPONENT = Extension.LOG_COMPONENT;
     static private final int BACKGROUND_THREAD_DELAY = 50;
 
     private final Executor executor = Executors.newSingleThreadExecutor();
@@ -45,25 +45,59 @@ final class Channel implements Channel2
     private boolean signed = false;
     private boolean bigEndian = false;
 
-public boolean initByRegistry(Registry registry, String path)
+    Channel(Map<String, String> params) throws Exception
     {
-	NullCheck.notNull(registry, "registry");
-	NullCheck.notNull(path, "path");
-	final Settings settings = Settings.create(registry, path);
-	channelName = settings.getName("???");
-	toSpeakersCommand = settings.getToSpeakersCommand("");
-	toStreamCommand = settings.getToStreamCommand("");
-	sampleRate = settings.getSampleRate(16000);
-	sampleSize = settings.getSampleSize(16);
-	numChannels = settings.getNumChannels(1);
-	signed = settings.getSigned(true);
-	bigEndian = settings.getBigEndian(false);
-	defaultChannel = settings.getDefault(false);
-	defaultRate = properRange(settings.getDefaultRate(50));
-	defaultPitch = properRange(settings.getDefaultRate(50));
+	NullCheck.notNull(params, "params");
+	if (!params.containsKey("cmd") || params.get("cmd").isEmpty())
+	    throw new Exception("Unable to load the command speech channel: no command (must be given with \'cmd\' parameter)");
+	command = params.get("cmd");
+
+	if (params.containsKey("rate") && !params.get("rate").isEmpty())
+	{
+	    final int value;
+	    try {
+		value = Integer.parseInt("rate");
+	    }
+	    catch(NumberFormatException e)
+	    {
+		throw new Exception("Illegal sample rate value: " + params.get("rate"));
+	    }
+	    sampleRate = value;
+	}
+
+		if (params.containsKey("bits") && !params.get("bits").isEmpty())
+	{
+	    final int value;
+	    try {
+		value = Integer.parseInt("bits");
+	    }
+	    catch(NumberFormatException e)
+	    {
+		throw new Exception("Illegal sample size value: " + params.get("bits"));
+	    }
+	    sampleSize = value;
+	}
+
+				if (params.containsKey("channels") && !params.get("channels").isEmpty())
+	{
+	    final int value;
+	    try {
+		value = Integer.parseInt("channels");
+	    }
+	    catch(NumberFormatException e)
+	    {
+		throw new Exception("Illegal number of channels: " + params.get("channels"));
+	    }
+numChannels = value;
+	}
+
+								if (params.containsKey("signed") && !params.get("signed").isEmpty())
+								    signed = params.get("signed").equals("true");
+
+																if (params.containsKey("bigendian") && !params.get("bigendian").isEmpty())
+								    bigEndian = params.get("bigendian").equals("true");
 	task = createTask();
 	executor.execute(task);
-	return true;
     }
 
     @Override public String getVoiceName()
