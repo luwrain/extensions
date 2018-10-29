@@ -21,7 +21,7 @@ import java.util.*;
 import org.luwrain.base.*;
 import org.luwrain.core.*;
 import org.luwrain.core.extensions.*;
-import org.luwrain.cpanel.*;
+import org.luwrain.speech.*;
 
 public final class Extension extends EmptyExtension
 {
@@ -31,7 +31,6 @@ public final class Extension extends EmptyExtension
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	return new ExtensionObject[]{
-
 	    new org.luwrain.speech.Engine(){
 		@Override public String getExtObjName()
 		{
@@ -40,11 +39,18 @@ public final class Extension extends EmptyExtension
 		@Override public Channel2 newChannel(Map<String, String> params)
 		{
 		    NullCheck.notNull(params, "params");
-		    return new org.luwrain.extensions.cmdtts.Channel();
+		    try {
+			return new org.luwrain.extensions.cmdtts.Channel(params);
+		    }
+		    catch(Exception e)
+		    {
+			Log.error(LOG_COMPONENT, "Unable to create the command line speech channel:" + e.getClass().getName() + ":" + e.getMessage());
+			return null;
+		    }
 		}
-		@Override public Set<Factory2.Features>  getFeatures()
+		@Override public Set<Engine.Features>  getFeatures()
 		{
-		    return EnumSet.of(Features.CAN_SYNTH_TO_STREAM, Features.CAN_SYNTH_TO_SPEAKERS, Features.CAN_NOTIFY_WHEN_FINISHED);
+		    return EnumSet.of(Engine.Features.CAN_SYNTH_TO_STREAM, Engine.Features.CAN_SYNTH_TO_SPEAKERS, Engine.Features.CAN_NOTIFY_WHEN_FINISHED);
 		}
 	    },
 	};
