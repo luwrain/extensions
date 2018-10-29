@@ -237,46 +237,4 @@ numChannels = value;
 		    }
 	}, null);
     }
-
-    static private class Chunk
-{
-    final long id;
-    final Listener listener;
-    final String cmd;
-    final String text;
-
-    Chunk(long id, Listener listener, String cmd, String text)
-    {
-	NullCheck.notNull(cmd, "cmd");
-	NullCheck.notNull(text, "text");
-	this.id = id;
-	this.listener = listener;
-	this.cmd = cmd;
-	this.text = text;
-    }
-}
-
-static private class Current
-{
-    private Chunk chunk = null;
-
-    synchronized void set(Chunk chunk)
-    {
-	if (chunk == null)
-	    return;
-	this.chunk = chunk;
-    }
-
-    synchronized Chunk get()
-    {
-	final Chunk res = chunk;
-	chunk = null;
-	return res;
-    }
-
-    synchronized void clear()
-    {
-	chunk = null;
-    }
-}
 }
