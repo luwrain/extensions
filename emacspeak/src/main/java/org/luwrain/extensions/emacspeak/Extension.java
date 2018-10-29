@@ -16,6 +16,8 @@
 
 package org.luwrain.extensions.emacspeak;
 
+import java.util.*;
+
 import org.luwrain.base.*;
 import org.luwrain.core.*;
 import org.luwrain.core.extensions.*;
@@ -24,29 +26,33 @@ import org.luwrain.cpanel.*;
 
 public final class Extension extends EmptyExtension
 {
+    static final String LOG_COMPONENT = "emacspeak";
+
     @Override public ExtensionObject[] getExtObjects(Luwrain luwrain)
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	return new ExtensionObject[]{
-	    
-	    new org.luwrain.speech.Factory(){
 
+	    new org.luwrain.speech.Engine(){
 	        @Override public String getExtObjName()
     {
 	return "emacspeak";
     }
-    @Override public Channel newChannel()
+		    @Override public Set<Engine.Features>  getFeatures()
     {
-	return new Emacspeak();
+	    return EnumSet.of(Engine.Features.CAN_SYNTH_TO_SPEAKERS);
     }
-    @Override public org.luwrain.cpanel.Section newSettingsSection(org.luwrain.cpanel.Element el, String registryPath)
+		@Override public Channel2 newChannel(Map<String, String> params)
     {
-	NullCheck.notNull(el, "el");
-	NullCheck.notNull(registryPath, "registryPath");
-	final Settings settings = Settings.create(luwrain.getRegistry(), registryPath);
-	return new SimpleSection(el, settings.getName("???"),
-				 (controlPanel)->SettingsForm.create(controlPanel, registryPath)
-				 );
+	NullCheck.notNull(params, "params");
+	try {
+	return new Emacspeak(params);
+	}
+	catch(Exception e)
+	{
+	    Log.error(LOG_COMPONENT, "unable to create a emacspeak channel:" + e.getClass().getName() + ":" + e.getMessage());
+	    return null;
+	}
     }
 	    },
 

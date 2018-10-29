@@ -23,7 +23,7 @@ import javax.sound.sampled.AudioFormat;
 import org.luwrain.speech.*;
 import org.luwrain.core.*;
 
-class Emacspeak implements Channel
+final class Emacspeak implements Channel2
 {
     private long nextId = 1;
     private boolean def = false;
@@ -32,72 +32,25 @@ class Emacspeak implements Channel
     private Process process;
     private OutputStream stream;
     private BufferedWriter writer;
-    private int defPitch = DEFAULT_PARAM_VALUE;
-    private int defRate = DEFAULT_PARAM_VALUE;
+    private int defPitch = 50;
+    private int defRate = 50;
 
-    @Override public boolean initByRegistry(Registry registry, String path)
+    Emacspeak(Map<String, String> params) throws Exception
     {
-	NullCheck.notNull(registry, "registry");
-	NullCheck.notNull(path, "path");
-	final Settings settings = Settings.create(registry, path);
-	name = settings.getName("???");
-	command = settings.getCommand("");
-	def = settings.getDefault(false);
-	if (command.trim().isEmpty())
-	{
-	    Log.error("emacspeak", "unable to initialize emacspeak speech channel  from registry path " + path + ":no command given");
-	    return false;
-	}
-	if (name.trim().isEmpty())
-	    name = "Emacspeak (" + command + ")";
+	NullCheck.notNull(params, "params");
+	if (!params.containsKey("exec") || params.get("exec").isEmpty())
+	    throw new Exception("No emacspeak server given (must be provided with \'exec\' parameter)");
+	command = params.get("exec");
 	if (!startProcess())
-	{
-	    Log.error("emacspeak", "unable to start an emacspeak server for channel \'" + name + "\' with command \'" + command + "\'");
-	    return false;
-	}
-	Log.debug("emacspeak", "emacspeak speech channel with name \'" + name + "\' initialized, command=\'\'" + command + "\'");
-	return true;
+	    throw new Exception("Unable to start emacspeak server with the command \'" + command + "\'");
     }
 
-    @Override public boolean initByArgs(String[] args)
-    {
-	NullCheck.notNullItems(args, "args");
-	if (args.length < 1 || args[0].trim().isEmpty())
-	{
-	    Log.error("linux", "unable to initialize emacspeak speech channel using string arguments:no command given");
-	    return false;
-	}
-	command = args[0];
-	if (args.length >= 2)
-	    name = args[1];
-	if (args.length >= 3 && args[2].trim().toLowerCase().equals("default"))
-	    def = true;
-	if (name.trim().isEmpty())
-	    name = "Emacspeak (" + command + ")";
-	if (!startProcess())
-	{
-	    Log.error("emacspeak", "unable to start an emacspeak server for channel \'" + name + "\' by command \'" + command + "\'");
-	    return false;
-	}
-	Log.debug("emacspeak", "emacspeak speech channel with name \'" + name + "\' initialized, command=\'\'" + command + "\'");
-	return true;
-    }
-
-    @Override public PuncMode getCurrentPuncMode()
-    {
-	return PuncMode.ALL;
-    }
-
-    @Override public void setCurrentPuncMode(PuncMode mode)
-    {
-    }
-
-    @Override public String getCurrentVoiceName()
+    @Override public String getVoiceName()
     {
 	return "";
     }
 
-    @Override public void setCurrentVoice(String name)
+    @Override public void setVoice(String name)
     {
     }
 
@@ -108,41 +61,10 @@ class Emacspeak implements Channel
 
     @Override public String getChannelName()
     {
-	return name;
+	return"Emacspeak speech server (" + command + ")";
     }
 
-    @Override public Set<Features>  getFeatures()
-    {
-	    return EnumSet.of(Features.CAN_SYNTH_TO_SPEAKERS);
-    }
-
-@Override public boolean isDefault()
-    {
-	return def;
-    }
-
-    @Override public int getDefaultPitch()
-    {
-	return defPitch;
-    }
-
-    @Override public void setDefaultPitch(int value)
-    {
-	defPitch = Channel.adjustParamValue(value);
-    }
-
-    @Override public int getDefaultRate()
-    {
-	return defRate;
-    }
-
-    @Override public void setDefaultRate(int value)
-    {
-	defRate = Channel.adjustParamValue(value);
-    }
-
-    @Override public long speak(String text, Listener listener,
-				int relPitch, int relRate, boolean cancelPrevious)
+    @Override public long speak(String text, Listener listener, int relPitch, int relRate, boolean cancelPrevious)
     {
 	if (cancelPrevious)
 	    silence();
@@ -174,12 +96,6 @@ class Emacspeak implements Channel
 	    e.printStackTrace();
 	}
 	return -1;
-    }
-
-    @Override public StreamedSpeaking createStreamedSpeaking(int pitch, int rate, AudioFormat audioFormat)
-    {
-	NullCheck.notNull(audioFormat, "audioFormat");
-	return null;
     }
 
     @Override public AudioFormat[] getSynthSupportedFormats()
