@@ -43,7 +43,7 @@ public final class Extension extends EmptyExtension
 		{
 		    return EnumSet.of(Engine.Features.CAN_SYNTH_TO_STREAM, Engine.Features.CAN_SYNTH_TO_SPEAKERS); // , Features.CAN_NOTIFY_WHEN_FINISHED 
 		}
-		@Override public Channel2 newChannel(Map<String, String> params)
+		@Override public Channel newChannel(Map<String, String> params)
 		{
 		    NullCheck.notNull(params, "params");
 		    try {

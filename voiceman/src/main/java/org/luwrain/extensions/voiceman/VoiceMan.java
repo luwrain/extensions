@@ -25,7 +25,7 @@ import java.io.*;
 import org.luwrain.core.*;
 import org.luwrain.speech.*;
 
-final class VoiceMan implements Channel2
+final class VoiceMan implements org.luwrain.speech.Channel
 {
     static private final String DEFAULT_HOST = "localhost";
     static private final int DEFAULT_PORT = 5511;

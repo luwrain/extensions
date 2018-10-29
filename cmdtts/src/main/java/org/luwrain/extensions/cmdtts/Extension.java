@@ -36,7 +36,7 @@ public final class Extension extends EmptyExtension
 		{
 		    return "cmdtts";
 		}
-		@Override public Channel2 newChannel(Map<String, String> params)
+		@Override public Channel newChannel(Map<String, String> params)
 		{
 		    NullCheck.notNull(params, "params");
 		    try {

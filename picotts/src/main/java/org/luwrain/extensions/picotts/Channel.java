@@ -10,7 +10,7 @@ import javax.sound.sampled.*;
 import org.luwrain.core.*;
 import org.luwrain.speech.*;
 
-final class Channel implements Channel2
+final class Channel implements org.luwrain.speech.Channel
 {
     static final String LOG_COMPONENT = "picotts";
 

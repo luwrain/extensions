@@ -15,24 +15,20 @@ public final class Extension extends EmptyExtension
 	NullCheck.notNull(luwrain, "luwrain");
 	return new ExtensionObject[]{
 
-	    new org.luwrain.speech.Factory2()
+	    new org.luwrain.speech.Engine()
 	    {
 		@Override public String getExtObjName()
 		{
 		    return "picotts";
 		}
-		@Override public Channel2 newChannel(Map<String, Object> params)
+		@Override public Channel newChannel(Map<String, String> params)
 		{
 		    return new Channel();
 		}
-		    @Override public Set<Factory2.Features> getFeatures()
+		    @Override public Set<Engine.Features> getFeatures()
     {
 	return EnumSet.of(Features.CAN_SYNTH_TO_SPEAKERS,Features.CAN_NOTIFY_WHEN_FINISHED); // 
     }
-				@Override public org.luwrain.cpanel.Section newSettingsSection(org.luwrain.cpanel.Element el, String registryPath)
-		{
-		    return null;
-		}
 	    },
 
 	};

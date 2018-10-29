@@ -31,7 +31,7 @@ import com.github.olga_yakovleva.rhvoice.VoiceInfo;
 import org.luwrain.core.*;
 import org.luwrain.speech.*;
 
-final class Channel implements Channel2
+final class Channel implements org.luwrain.speech.Channel
 {
     static private final String LOG_COMPONENT = Extension.LOG_COMPONENT;
     static private final double UPPER_CASE_PITCH_MODIFIER = 3.0;

@@ -17,7 +17,7 @@
 package org.luwrain.extensions.cmdtts;
 
 import org.luwrain.core.*;
-import org.luwrain.speech.Channel2.Listener;
+import org.luwrain.speech.Channel.Listener;
 
 final class Current
 {

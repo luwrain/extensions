@@ -24,7 +24,7 @@ import javax.sound.sampled.AudioFormat.Encoding;
 import com.github.olga_yakovleva.rhvoice.*;
 
 import org.luwrain.core.*;
-import org.luwrain.speech.Channel2.Listener;
+import org.luwrain.speech.Channel.Listener;
 
 class SpeakingThread implements Runnable
 {

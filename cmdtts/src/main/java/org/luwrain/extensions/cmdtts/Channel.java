@@ -25,7 +25,7 @@ import org.luwrain.linux.ProcessGroup;
 import org.luwrain.speech.*;
 import org.luwrain.core.*;
 
-final class Channel implements Channel2
+final class Channel implements org.luwrain.speech.Channel
 {
     static final String LOG_COMPONENT = Extension.LOG_COMPONENT;
     static private final int BACKGROUND_THREAD_DELAY = 50;

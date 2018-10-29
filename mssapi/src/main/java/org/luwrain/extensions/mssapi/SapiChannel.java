@@ -24,7 +24,7 @@ import javax.sound.sampled.AudioFormat;
 import org.luwrain.core.*;
 import org.luwrain.speech.*;
 
-final class SapiChannel implements Channel2
+final class SapiChannel implements org.luwrain.speech.Channel
 {
         static private final String LOG_COMPONENT = Extension.LOG_COMPONENT;
 	static private final int UPPER_CASE_PITCH_MODIFIER=30;

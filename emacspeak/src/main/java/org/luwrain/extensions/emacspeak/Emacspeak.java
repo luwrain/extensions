@@ -23,7 +23,7 @@ import javax.sound.sampled.AudioFormat;
 import org.luwrain.speech.*;
 import org.luwrain.core.*;
 
-final class Emacspeak implements Channel2
+final class Emacspeak implements org.luwrain.speech.Channel
 {
     private long nextId = 1;
     private boolean def = false;
