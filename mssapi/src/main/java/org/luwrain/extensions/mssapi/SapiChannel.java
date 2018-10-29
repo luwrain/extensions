@@ -24,64 +24,28 @@ import javax.sound.sampled.AudioFormat;
 import org.luwrain.core.*;
 import org.luwrain.speech.*;
 
-class SapiChannel implements Channel
+final class SapiChannel implements Channel2
 {
+        static private final String LOG_COMPONENT = Extension.LOG_COMPONENT;
 	static private final int UPPER_CASE_PITCH_MODIFIER=30;
-    static private final String LOG_COMPONENT = "mssapi";
-
-    static private final String SAPI_ENGINE_PREFIX = "--sapi-engine=";
     static private final int COPY_WAV_BUF_SIZE=1024;
 
     private final SAPIImpl impl = new SAPIImpl();
     private int curPitch = 100;
     private int curRate = 60;
+    private final File tempFile;
 
-    private boolean def = false;
-    private String name = "";
-    private File tempFile;
-
-    @Override public boolean initByRegistry(Registry registry, String path)
+    SapiChannel(Map<String, String> params) throws Exception
     {
-	NullCheck.notNull(registry, "registry");
-	NullCheck.notEmpty(path, "path");
-	final Settings sett = Settings.create(registry, path);
-	def = sett.getDefault(false);
-	name = sett.getName("");
-	final String cond = sett.getCond("");
-	return initByArgs(new String[]{cond});
-    }
-
-    @Override public boolean initByArgs(String[] args)
-    {
-	NullCheck.notNullItems(args, "args");
-    	int cnt=impl.searchVoiceByAttributes(args==null?null:String.join(";",args));
-	if(cnt == 0)
-	{
-	    Log.warning(LOG_COMPONENT, "no voice with specified attributes, use default");
-	} else
-	    if(cnt == -1)
-	    {
-		Log.error(LOG_COMPONENT, "unable to find a suitable voice due to unexpected error");
-		return false;
-	    }
-    	String voiceId = impl.getNextVoiceIdFromList();
-	int res = impl.selectCurrentVoice();
+	NullCheck.notNull(params, "params");
+	final int count = impl.searchVoiceByAttributes(params.containsKey("cond")?params.get("cond"):null);
+	if(count == -1)
+	    throw new Exception("unable to find a suitable voice due to unexpected error");
+    	final String voiceId = impl.getNextVoiceIdFromList();
+	final int res = impl.selectCurrentVoice();
 	if(res != 0)
-	{
-	    Log.error(LOG_COMPONENT, "unable to select the voice which has been found");
-	    return false;
-	}
-	// FIXME: only for wav gen 
-	try {
-	    tempFile = File.createTempFile(name,"tmpwav");
-	} 
-	catch(IOException e)
-	{
-	    Log.error(LOG_COMPONENT, "unable to create a temporary file");
-	    e.printStackTrace();
-	    return false;
-	}
-	return true;
+	    throw new Exception("unable to select the voice which was found");
+	this.tempFile = File.createTempFile("sapi", ".tmp.wav");
     }
 
     @Override public long speak(String text,Listener listener,int relPitch,int relRate, boolean cancelPrevious)
@@ -91,7 +55,6 @@ class SapiChannel implements Channel
 	    impl.pitch(limit100(curPitch+relPitch));
 	if(relRate!=0)
 	    impl.rate(convRate(limit100(curRate+relRate)));
-	// 
 	impl.speak(text,SAPIImpl_constants.SPF_ASYNC|SAPIImpl_constants.SPF_IS_NOT_XML|(cancelPrevious?SAPIImpl_constants.SPF_PURGEBEFORESPEAK:0));
 	if(relPitch!=0)
 	    impl.pitch(curPitch);
@@ -100,6 +63,7 @@ class SapiChannel implements Channel
 	return -1;
     }
 
+    /*
     @Override public StreamedSpeaking createStreamedSpeaking(int pitch, int rate, AudioFormat format)
     {
 	return new StreamedSpeaking(){
@@ -141,6 +105,7 @@ class SapiChannel implements Channel
 	    }
 	};
     }
+    */
 
     @Override public long speakLetter(char letter,Listener listener,int relPitch,int relRate, boolean cancelPrevious)
     {
@@ -149,15 +114,12 @@ class SapiChannel implements Channel
     	    impl.pitch(limit100(curPitch+relPitch));
     	if(relRate!=0)
     	    impl.rate(convRate(limit100(curRate+relRate)));
-    	// 
     	impl.speak(SSML.upperCasePitchControl(""+letter,UPPER_CASE_PITCH_MODIFIER),SAPIImpl_constants.SPF_ASYNC|SAPIImpl_constants.SPF_IS_XML|(cancelPrevious?SAPIImpl_constants.SPF_PURGEBEFORESPEAK:0));
     	if(relPitch!=0)
     	    impl.pitch(curPitch);
     	if(relRate!=0)
     	    impl.rate(convRate(curRate));
     	return -1;
-
-	//return speak(""+letter,listener,relPitch,relRate,cancelPrevious);
     }
 
     @Override public void silence()
@@ -170,19 +132,10 @@ class SapiChannel implements Channel
 	return null;
     }
 
-    @Override public void setCurrentPuncMode(PuncMode mode)
-    {
-    }
-
-    @Override public PuncMode getCurrentPuncMode()
-    {
-	return null;
-    }
-
     @Override public Voice[] getVoices()
     {
 	impl.searchVoiceByAttributes(null);
-	final LinkedList<Voice> voices = new LinkedList<Voice>(); 
+	final List<Voice> voices = new LinkedList(); 
 	String id;
 	while((id = impl.getNextVoiceIdFromList()) != null)
 	    voices.add(new SAPIVoice(id,impl.getLastVoiceDescription(),false)); // FIXME: get male flag from SAPI if it possible
@@ -191,19 +144,10 @@ class SapiChannel implements Channel
 
     @Override public String getChannelName()
     {
-	return name;
+	return "Microsoft Speech API";
     }
 
-    @Override public Set<Features> getFeatures()
-    {
-	return EnumSet.of(Features.CAN_SYNTH_TO_STREAM, Features.CAN_SYNTH_TO_SPEAKERS); // , Features.CAN_NOTIFY_WHEN_FINISHED 
-    }
-
-    @Override public boolean isDefault()
-    {
-	return def;
-    }
-
+    /*
     @Override public void setDefaultPitch(int value)
     {
     	curPitch=limit100(value);
@@ -215,22 +159,13 @@ class SapiChannel implements Channel
     	curRate=limit100(value);
 	impl.rate(convRate(curRate));
     }
+    */
 
-    @Override public int getDefaultRate()
-    {
-	return curRate;
-    }
-
-    @Override public int getDefaultPitch()
-    {
-	return curPitch;
-    }
-
-    @Override public void setCurrentVoice(String name)
+    @Override public void setVoice(String name)
     {
     }
 
-    @Override public String getCurrentVoiceName()
+    @Override public String getVoiceName()
     {
 	return "default";
     }

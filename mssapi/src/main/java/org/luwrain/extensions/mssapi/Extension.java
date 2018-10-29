@@ -17,6 +17,8 @@
 
 package org.luwrain.extensions.mssapi;
 
+import java.util.*;
+
 import org.luwrain.base.*;
 import org.luwrain.core.*;
 import org.luwrain.core.extensions.*;
@@ -25,23 +27,33 @@ import org.luwrain.cpanel.*;
 
 public final class Extension extends EmptyExtension
 {
+    static final String LOG_COMPONENT = "mssapi";
+
     @Override public ExtensionObject[] getExtObjects(Luwrain luwrain)
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	return new ExtensionObject[]{
 
-	    new org.luwrain.speech.Factory(){
+	    new org.luwrain.speech.Engine(){
 	        @Override public String getExtObjName()
 		{
-		    return "sapi";
+		    return "mssapi";
 		}
-		@Override public Channel newChannel()
+		@Override public Set<Engine.Features> getFeatures()
 		{
-		    return new SapiChannel();
+		    return EnumSet.of(Engine.Features.CAN_SYNTH_TO_STREAM, Engine.Features.CAN_SYNTH_TO_SPEAKERS); // , Features.CAN_NOTIFY_WHEN_FINISHED 
 		}
-		@Override public org.luwrain.cpanel.Section newSettingsSection(org.luwrain.cpanel.Element el, String registryPath)
+		@Override public Channel2 newChannel(Map<String, String> params)
 		{
-		    return null;
+		    NullCheck.notNull(params, "params");
+		    try {
+			return new SapiChannel(params);
+		    }
+		    catch(Exception e)
+		    {
+			Log.error(LOG_COMPONENT, "unable to create a SAPI channel:" + e.getClass().getName() + ":" + e.getMessage());
+			return null;
+		    }
 		}
 	    },
 
