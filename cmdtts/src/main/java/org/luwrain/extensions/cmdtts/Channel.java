@@ -30,26 +30,26 @@ final class Channel implements Channel2
     static final String LOG_COMPONENT = Extension.LOG_COMPONENT;
     static private final int BACKGROUND_THREAD_DELAY = 50;
 
-    private final Executor executor = Executors.newSingleThreadExecutor();
-    private FutureTask task = null;
+    private final FutureTask task;
     private final ProcessGroup pg = new ProcessGroup();
     private final LinkedBlockingQueue<Chunk> chunks = new LinkedBlockingQueue<Chunk>(1024);
     private final Current current = new Current();
 
-    private long nextId = 1;
     private final String command;
-    private int sampleRate = 16000;
-    private int sampleSize = 16;
-    private int numChannels = 1;
-    private boolean signed = false;
-    private boolean bigEndian = false;
+    private final int sampleRate;
+    private final int sampleSize;
+    private final int numChannels;
+    private final boolean signed;
+    private final boolean bigEndian;
+
+    private long nextId = 1;
 
     Channel(Map<String, String> params) throws Exception
     {
 	NullCheck.notNull(params, "params");
 	if (!params.containsKey("cmd") || params.get("cmd").isEmpty())
 	    throw new Exception("Unable to load the command speech channel: no command (must be given with \'cmd\' parameter)");
-	command = params.get("cmd");
+	this.command = params.get("cmd");
 	if (params.containsKey("rate") && !params.get("rate").isEmpty())
 	{
 	    final int value;
@@ -60,9 +60,10 @@ final class Channel implements Channel2
 	    {
 		throw new Exception("Illegal sample rate value: " + params.get("rate"));
 	    }
-	    sampleRate = value;
-	}
-		if (params.containsKey("bits") && !params.get("bits").isEmpty())
+	    this.sampleRate = value;
+	} else
+	    this.sampleRate = 16000;
+	if (params.containsKey("bits") && !params.get("bits").isEmpty())
 	{
 	    final int value;
 	    try {
@@ -72,9 +73,10 @@ final class Channel implements Channel2
 	    {
 		throw new Exception("Illegal sample size value: " + params.get("bits"));
 	    }
-	    sampleSize = value;
-	}
-				if (params.containsKey("channels") && !params.get("channels").isEmpty())
+	    this.sampleSize = value;
+	} else
+	    this.sampleSize = 16;
+	if (params.containsKey("channels") && !params.get("channels").isEmpty())
 	{
 	    final int value;
 	    try {
@@ -84,14 +86,17 @@ final class Channel implements Channel2
 	    {
 		throw new Exception("Illegal number of channels: " + params.get("channels"));
 	    }
-numChannels = value;
-	}
-								if (params.containsKey("signed") && !params.get("signed").isEmpty())
-								    signed = params.get("signed").equals("true");
-																if (params.containsKey("bigendian") && !params.get("bigendian").isEmpty())
-								    bigEndian = params.get("bigendian").equals("true");
-	task = createTask();
-	executor.execute(task);
+	    this.numChannels = value;
+	} else
+	    this.numChannels = 1;
+	if (params.containsKey("signed") && !params.get("signed").isEmpty())
+	    this.signed = params.get("signed").equals("true"); else
+	    this.signed = false;
+	if (params.containsKey("bigendian") && !params.get("bigendian").isEmpty())
+	    this.bigEndian = params.get("bigendian").equals("true"); else
+	    this.bigEndian = false;
+	this.task = createTask();
+	Executors.newSingleThreadExecutor().execute(task);
     }
 
     @Override public String getChannelName()
@@ -112,7 +117,6 @@ numChannels = value;
     {
 	return new Voice[0];
     }
-
 
     @Override public long speak(String text, Listener listener,
 				int relPitch, int relRate, boolean cancelPrevious)
@@ -214,27 +218,27 @@ numChannels = value;
     {
 	return new FutureTask(()->{
 		while (!Thread.currentThread().interrupted())
+		{
+		    try { Thread.sleep(BACKGROUND_THREAD_DELAY); }
+		    catch (InterruptedException e)
+		    { Thread.currentThread().interrupt(); }
+		    if (!pg.busy())
 		    {
-			try { Thread.sleep(BACKGROUND_THREAD_DELAY); }
-			catch (InterruptedException e)
-			{ Thread.currentThread().interrupt(); }
-			if (!pg.busy())
-			{
-			    //Notifying listener about finishing, if there is any chunks designating current task
-			    final Chunk c = current.get();
-			    if (c != null && c.listener != null)
-				c.listener.onFinished(c.id);
-			}
-			if (chunks.isEmpty())
-			    continue;
-			try {
-			    Chunk c = chunks.take();
-			    pg.run(c.cmd, c.text);
-			    current.set(c);
-			}
-			catch (InterruptedException e)
-			{ Thread.currentThread().interrupt(); }
+			//Notifying listener about finishing, if there is any chunks designating current task
+			final Chunk c = current.get();
+			if (c != null && c.listener != null)
+			    c.listener.onFinished(c.id);
 		    }
+		    if (chunks.isEmpty())
+			continue;
+		    try {
+			Chunk c = chunks.take();
+			pg.run(c.cmd, c.text);
+			current.set(c);
+		    }
+		    catch (InterruptedException e)
+		    { Thread.currentThread().interrupt(); }
+		}
 	}, null);
     }
 }
