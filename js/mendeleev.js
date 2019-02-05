@@ -287,7 +287,7 @@ function makeLine(index)
     return res;
 }
 
-function MendeleevApp()
+function MendeleevApp(args)
 {
     this.name = "Периодическая таблица химических элементов";
     this.type = "simple-centered";
