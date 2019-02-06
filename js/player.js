@@ -63,4 +63,17 @@ Luwrain.addHook("luwrain.player.album.play", function(album){
     }
 });
 
+Luwrain.addHook("luwrain.app.player.areas.albums.input", function(event, album){
+    if (event.special == null)
+	return false;
+    switch(event.special)
+    {
+	case "f5":
+	Luwrain.message(album.title);
+	return true;
+	default:
+	return false;
+    }
+});
+
 Luwrain.createPropertyHook("luwrain.player.track.sec", "luwrain.prop.player.track.sec");
