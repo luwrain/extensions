@@ -18,6 +18,8 @@ function getFilesInDir(dir)
 {
     var res = [];
     var items = dir.listFiles();
+    if (items == null || items.length == 0)
+	return [];
     java.util.Arrays.sort(items);
     for(var i = 0;i < items.length;i++)
 	if (items[i].isDirectory())
@@ -32,22 +34,34 @@ function getFilesInDir(dir)
     return res;
 }
 
-
-
 Luwrain.addHook("luwrain.prop.player.track.sec", function(propName, propValue){
 //    Luwrain.message(propValue);
 });
 
 Luwrain.addHook("luwrain.player.album.play", function(album){
-    if (album.streaming)
+	switch(album.type)
     {
-	if (album.url.isEmpty())
+	case "dir":
+	{
+		    if (album.path.isEmpty())
+	    return false;
+	    var files = getFilesInDir(new java.io.File(album.path));
+	    var urls = [];
+	    for(var i = 0;i < files.length;i++)
+		urls.push(org.luwrain.util.Urls.toUrl(files[i]).toString());
+	    print("collected " + urls.lenght);
+	    	Luwrain.player.play(urls, {});
+	    	return true;
+	}
+	    case "streaming":
+	    if (album.url.isEmpty())
 	    return false;
     Luwrain.sounds.playing();
 	Luwrain.player.play([album.url], {streaming: true});
-	return true;
+	    return true;
+	    default:
+	    return false;
     }
-    return false;
 });
 
 Luwrain.createPropertyHook("luwrain.player.track.sec", "luwrain.prop.player.track.sec");
