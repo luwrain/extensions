@@ -23,14 +23,14 @@ function getFilesInDir(dir)
     java.util.Arrays.sort(items);
     for(var i = 0;i < items.length;i++)
 	if (items[i].isDirectory())
-    {
-	var subdirItems = getFilesInDir(items[i]);
-	for(var j = 0;j < subdirItems.length;j++)
-	    res.push(subdirItems[j]);
-    }
-        for(var i = 0;i < items.length;i++)
-	    if (items[i].isFile())
-		res.push(items[i]);
+	{
+	    var subdirItems = getFilesInDir(items[i]);
+	    for(var j = 0;j < subdirItems.length;j++)
+		res.push(subdirItems[j]);
+	}
+    for(var i = 0;i < items.length;i++)
+	if (items[i].isFile())
+	    res.push(items[i]);
     return res;
 }
 
@@ -39,31 +39,28 @@ Luwrain.addHook("luwrain.prop.player.track.sec", function(propName, propValue){
 });
 
 Luwrain.addHook("luwrain.player.album.play", function(album){
-	switch(album.type)
+    switch(album.type)
     {
 	case "dir":
 	{
-		    if (album.path.isEmpty())
-	    return false;
+	    if (album.path.isEmpty())
+		return false;
 	    var files = getFilesInDir(new java.io.File(album.path));
 	    var urls = [];
 	    for(var i = 0;i < files.length;i++)
 		urls.push(org.luwrain.util.Urls.toUrl(files[i]).toString());
-	    print("collected " + urls.lenght);
-	    	Luwrain.player.play(urls, {});
-	    	return true;
-	}
-	    case "streaming":
-	    if (album.url.isEmpty())
-	    return false;
-    Luwrain.sounds.playing();
-	Luwrain.player.play([album.url], {streaming: true});
+	    Luwrain.player.play(urls, {});
 	    return true;
-	    default:
+	}
+	case "streaming":
+	if (album.url.isEmpty())
 	    return false;
+	Luwrain.sounds.playing();
+	Luwrain.player.play([album.url], {streaming: true});
+	return true;
+	default:
+	return false;
     }
 });
 
 Luwrain.createPropertyHook("luwrain.player.track.sec", "luwrain.prop.player.track.sec");
-
-
