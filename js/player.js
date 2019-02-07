@@ -37,7 +37,6 @@ function getFilesInDir(dir)
 }
 
 Luwrain.addHook("luwrain.prop.player.track.sec", function(propName, propValue){
-//    Luwrain.message(propValue);
 });
 
 Luwrain.addHook("luwrain.player.album.play", function(album){
@@ -69,16 +68,16 @@ function commonKeys(event)
 {
     if (event.special != null)
         switch(event.special)
-    {
-	case "escape":
-	if (Luwrain.player.state === "stopped")
+        {
+	    case "escape":
+	    if (Luwrain.player.state === "stopped")
+		return false;
+	    Luwrain.sounds.playing();
+	    Luwrain.player.stop();
+	    return true;
+	    default:
 	    return false;
-		Luwrain.sounds.playing();
-	Luwrain.player.stop();
-	return true;
-	default:
-	return false;
-    }
+	}
     switch(event.ch)
     {
 	case " ":
@@ -87,11 +86,15 @@ function commonKeys(event)
 	default:
 	return false;
     }
-
-    
 }
 
 Luwrain.addHook("luwrain.app.player.areas.albums.input", function(event, album){
+    return commonKeys(event);
+});
+Luwrain.addHook("luwrain.app.player.areas.playlist.input", function(event, track){
+    return commonKeys(event);
+});
+Luwrain.addHook("luwrain.app.player.areas.control.input", function(event){
     return commonKeys(event);
 });
 
@@ -118,5 +121,5 @@ Luwrain.addCommand("player-volume-toggle", function(){
     var level = Luwrain.player.getVolume();
     if (level > 75)
 	Luwrain.player.setVolume(75); else
-	        Luwrain.player.setVolume(100);
+	    Luwrain.player.setVolume(100);
 });
