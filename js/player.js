@@ -14,6 +14,8 @@
    General Public License for more details.
 */
 
+Luwrain.createPropertyHook("luwrain.player.track.sec", "luwrain.prop.player.track.sec");
+
 function getFilesInDir(dir)
 {
     var res = [];
@@ -63,17 +65,58 @@ Luwrain.addHook("luwrain.player.album.play", function(album){
     }
 });
 
-Luwrain.addHook("luwrain.app.player.areas.albums.input", function(event, album){
-    if (event.special == null)
-	return false;
-    switch(event.special)
+function commonKeys(event)
+{
+    if (event.special != null)
+        switch(event.special)
     {
-	case "f5":
-	Luwrain.message(album.title);
+	case "escape":
+	if (Luwrain.player.state === "stopped")
+	    return false;
+		Luwrain.sounds.playing();
+	Luwrain.player.stop();
 	return true;
 	default:
 	return false;
     }
+    switch(event.ch)
+    {
+	case " ":
+	Luwrain.player.pauseResume();
+	return true;
+	default:
+	return false;
+    }
+
+    
+}
+
+Luwrain.addHook("luwrain.app.player.areas.albums.input", function(event, album){
+    return commonKeys(event);
 });
 
-Luwrain.createPropertyHook("luwrain.player.track.sec", "luwrain.prop.player.track.sec");
+Luwrain.addCommand("player-pause", function(){
+    Luwrain.player.pauseResume();
+});
+
+Luwrain.addCommand("player-stop", function(){
+    if (Luwrain.player.state === "stopped")
+	return;
+    Luwrain.sounds.playing();
+    Luwrain.player.stop();
+});
+
+Luwrain.addCommand("player-jump-forward", function(){
+    Luwrain.player.jump(5000);
+});
+
+Luwrain.addCommand("player-jump-backward", function(){
+    Luwrain.player.jump(-5000);
+});
+
+Luwrain.addCommand("player-volume-toggle", function(){
+    var level = Luwrain.player.getVolume();
+    if (level > 75)
+	Luwrain.player.setVolume(75); else
+	        Luwrain.player.setVolume(100);
+});
