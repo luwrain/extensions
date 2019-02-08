@@ -66,12 +66,52 @@ Luwrain.addHook("luwrain.player.album.play", function(album){
 
 function commonKeys(event)
 {
+    if (Luwrain.player.state === "stopped")
+    {
+	if(event.special != null)
+	    return false;
+	switch(event.ch)
+	{
+
+	    
+		case "_":
+	{
+	    if (event.modified && !event.withShiftOnly)
+		return false;
+		    var level = Luwrain.player.getVolume();
+	    if (level > 5)
+		level -= 5; else
+		    level = 0;
+	    Luwrain.message("Громкость " + level);
+	    Luwrain.player.setVolume(level);
+	    return true;
+	}
+
+	
+	case "+":
+	{
+	    	    if (event.modified && !event.withShiftOnly)
+		return false;
+
+		    var level = Luwrain.player.getVolume();
+	    if (level < 95)
+		level += 5; else
+		    level = 100;
+	    Luwrain.message("Громкость " + level);
+		    Luwrain.player.setVolume(level);
+	    return true;
+	}
+
+
+
+	default:
+	return false;
+    }
+    }
     if (event.special != null)
         switch(event.special)
         {
 	    case "escape":
-	    if (Luwrain.player.state === "stopped")
-		return false;
 	    Luwrain.sounds.playing();
 	    Luwrain.player.stop();
 	    return true;
@@ -83,6 +123,73 @@ function commonKeys(event)
 	case " ":
 	Luwrain.player.pauseResume();
 	return true;
+	case "-":
+	//FIXME:streaming
+	if (!event.modified)
+	    Luwrain.player.jump(-5000); else
+		if (event.withControlOnly)
+		    	    Luwrain.player.jump(-60000); else
+		if (event.withAltOnly)
+	{
+	    //FIXME:previous track
+	} else
+	    if (event.withShiftOnly)
+	    	{
+	    var level = Luwrain.player.getVolume();
+	    if (level > 5)
+		Luwrain.player.setVolume(level - 5); else
+		    Luwrain.player.setVolume(0);
+	} else
+		return false;
+	return true;
+
+		case "=":
+	//FIXME:streaming
+	if (!event.modified)
+	    Luwrain.player.jump(5000); else
+		if (event.withControlOnly)
+		    Luwrain.player.jump(60000); else
+			if (event.withAltOnly)
+	{
+	    //FIXME:next track
+	} else
+	    if (event.withShiftOnly)
+	{
+	    var level = Luwrain.player.getVolume();
+	    if (level < 95)
+		Luwrain.player.setVolume(level + 5); else
+		    Luwrain.player.setVolume(100);
+	} else
+		return false;
+	return true;
+
+
+		case "_":
+	{
+	    if (event.modified && !event.withShiftOnly)
+		return false;
+		    var level = Luwrain.player.getVolume();
+	    if (level > 5)
+		Luwrain.player.setVolume(level - 5); else
+		    Luwrain.player.setVolume(0);
+	    return true;
+	}
+
+	
+	case "+":
+	{
+	    	    if (event.modified && !event.withShiftOnly)
+		return false;
+
+		    var level = Luwrain.player.getVolume();
+	    if (level < 95)
+		Luwrain.player.setVolume(level + 5); else
+		    Luwrain.player.setVolume(100);
+	    return true;
+	}
+
+
+	
 	default:
 	return false;
     }
