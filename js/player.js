@@ -50,14 +50,14 @@ Luwrain.addHook("luwrain.player.album.play", function(album){
 	    var urls = [];
 	    for(var i = 0;i < files.length;i++)
 		urls.push(org.luwrain.util.Urls.toUrl(files[i]).toString());
-	    Luwrain.player.play(urls, {});
+	    Luwrain.player.play({tracks: urls}, {});
 	    return true;
 	}
 	case "streaming":
 	if (album.url.isEmpty())
 	    return false;
 	Luwrain.sounds.playing();
-	Luwrain.player.play([album.url], {streaming: true});
+	Luwrain.player.play({tracks: [album.url]}, {streaming: true});
 	return true;
 	default:
 	return false;
@@ -72,8 +72,6 @@ function commonKeys(event)
 	    return false;
 	switch(event.ch)
 	{
-
-	    
 		case "_":
 	{
 	    if (event.modified && !event.withShiftOnly)
@@ -86,13 +84,10 @@ function commonKeys(event)
 	    Luwrain.player.setVolume(level);
 	    return true;
 	}
-
-	
 	case "+":
 	{
 	    	    if (event.modified && !event.withShiftOnly)
 		return false;
-
 		    var level = Luwrain.player.getVolume();
 	    if (level < 95)
 		level += 5; else
@@ -101,9 +96,6 @@ function commonKeys(event)
 		    Luwrain.player.setVolume(level);
 	    return true;
 	}
-
-
-
 	default:
 	return false;
     }
@@ -133,16 +125,8 @@ function commonKeys(event)
 	{
 	    //FIXME:previous track
 	} else
-	    if (event.withShiftOnly)
-	    	{
-	    var level = Luwrain.player.getVolume();
-	    if (level > 5)
-		Luwrain.player.setVolume(level - 5); else
-		    Luwrain.player.setVolume(0);
-	} else
 		return false;
 	return true;
-
 		case "=":
 	//FIXME:streaming
 	if (!event.modified)
@@ -153,17 +137,8 @@ function commonKeys(event)
 	{
 	    //FIXME:next track
 	} else
-	    if (event.withShiftOnly)
-	{
-	    var level = Luwrain.player.getVolume();
-	    if (level < 95)
-		Luwrain.player.setVolume(level + 5); else
-		    Luwrain.player.setVolume(100);
-	} else
 		return false;
 	return true;
-
-
 		case "_":
 	{
 	    if (event.modified && !event.withShiftOnly)
@@ -174,22 +149,16 @@ function commonKeys(event)
 		    Luwrain.player.setVolume(0);
 	    return true;
 	}
-
-	
 	case "+":
 	{
 	    	    if (event.modified && !event.withShiftOnly)
 		return false;
-
 		    var level = Luwrain.player.getVolume();
 	    if (level < 95)
 		Luwrain.player.setVolume(level + 5); else
 		    Luwrain.player.setVolume(100);
 	    return true;
 	}
-
-
-	
 	default:
 	return false;
     }
