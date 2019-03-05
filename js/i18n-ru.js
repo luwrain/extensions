@@ -43,5 +43,5 @@ Luwrain.addHook("luwrain.i18n.ru.speech.natural.pre", function(text){
 	    res += ch;
 	}
     }
-    return res;
+    return res.replaceAll("стр. ", "страница");
 });
