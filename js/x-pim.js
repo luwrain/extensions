@@ -14,6 +14,59 @@
    General Public License for more details.
 */
 
+function stripRe(text)
+{
+    if (text.toLowerCase().startsWith("re: ") && text.length >= 5)
+	return text.substring(4);
+    if (!text.toLowerCase().startsWith("re["))
+	return text;
+    var i = 3;
+    while (i < text.length && text[i] >= "0" && text[i] <= "9")
+	i++;
+    if (i >= text.length)
+	return text;
+    if (text[i] != "]")
+	return text;
+    return text.substring(i + 1);
+}
+
+function stripCommonBeginning(items)
+{
+    if (items.length == 0)
+	return;
+    var commonTo = 0;
+    while(true)
+    {
+	var ch = items[0].subject[commonTo];
+	var i = 0;
+	for(i = 1;i < items.length;i++)
+	    if (commonTo >= items[i].subject.length || items[i].subject[commonTo] != ch)
+		break;
+	if (i < items.length)
+	    break;
+	commonTo++;
+    }
+    if (commonTo > 0)
+	for(var i = 0;i < items.length;i++)
+	    items[i].subject = items[i].subject.substring(commonTo);
+}
+
+function divideOnGroups(items)
+{
+    var groups = [];
+    for(var i = 0;i < items.length;i++)
+    {
+	var k = 0;
+	for(k = 0;k < groups.length;k++)
+	    if (groups[k].subject == items[i].subject)
+		break;
+	if (k < groups.length)
+	    groups[k].messages.push(items[i]); else
+	groups.push({subject: items[i].subject, messages: [items[i]]});
+    }
+	return groups;
+}
+
 Luwrain.addHook("luwrain.pim.message.new.save", function(mail, message){
     var listId = message.list.id;
     if (listId.isEmpty())
@@ -42,33 +95,22 @@ Luwrain.addHook("luwrain.pim.message.new.save", function(mail, message){
 Luwrain.addHook("luwrain.mail.summary.organize", function(messages){
     var res = [];
     for(var i = 0;i < messages.length;i++)
-	res.push({subject: messages[i].subject, source: messages[i]});
+	res.push({
+	    subject: stripRe(messages[i].subject),
+	    source: messages[i]});
+    stripCommonBeginning(res);
     for(var i = 0;i < res.length;i++)
-    {
-	var item = res[i];
-	if (item.subject.toLowerCase().startsWith("re: ") && item.subject.length >= 5)
-	    item.subject = item.subject.substring(4);
-    }
-    var commonTo = 0;
-    while(true)
-    {
-	var ch = res[0].subject[commonTo];
-	var i = 0;
-	for(i = 1;i < res.length;i++)
-	    if (commonTo >= res[i].subject.length || res[i].subject[commonTo] != ch)
-		break;
-	if (i < res.length)
-	    break;
-	commonTo++;
-    }
-    if (commonTo > 0)
-	for(var i = 0;i < res.length;i++)
-	    res[i].subject = res[i].subject.substring(commonTo);
+	res[i].subject = stripRe(res[i].subject);
 
-    var tmp = [];
-    for(var i = 0;i < res.length;i++)
-	tmp.push(res[i].subject);
-    return tmp;
+    var groups = divideOnGroups(res);
+    res = [];
+    for(var i = 0;i < groups.length;i++)
+    {
+	res.push("Тема " + groups[i].subject);
+	for(var j = 0;j < groups[i].messages.length;j++)
+	    res.push(groups[i].messages[j].source.from.personal);
+    }
+    return res;
 });
 
 Luwrain.addCommand("fetch-mail-incoming-bkg", function(){
