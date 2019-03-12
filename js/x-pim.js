@@ -19,6 +19,11 @@ Luwrain.addHook("luwrain.pim.message.new.save", function(mail, message){
     if (listId.isEmpty())
 	return true;
     var existingFolder = mail.folders.findFirstByProperty("list", listId)
+    if (existingFolder != null)
+    {
+	existingFolder.saveMessage(message);
+	return true;
+    }
     if (existingFolder == null)
     {
 	var listsFolder = mail.folders.findFirstByProperty("lists", "true");
@@ -32,6 +37,38 @@ Luwrain.addHook("luwrain.pim.message.new.save", function(mail, message){
 	newFolder.saveProperties();
     }
     return true;
+});
+
+Luwrain.addHook("luwrain.mail.summary.organize", function(messages){
+    var res = [];
+    for(var i = 0;i < messages.length;i++)
+	res.push({subject: messages[i].subject, source: messages[i]});
+    for(var i = 0;i < res.length;i++)
+    {
+	var item = res[i];
+	if (item.subject.toLowerCase().startsWith("re: ") && item.subject.length >= 5)
+	    item.subject = item.subject.substring(4);
+    }
+    var commonTo = 0;
+    while(true)
+    {
+	var ch = res[0].subject[commonTo];
+	var i = 0;
+	for(i = 1;i < res.length;i++)
+	    if (commonTo >= res[i].subject.length || res[i].subject[commonTo] != ch)
+		break;
+	if (i < res.length)
+	    break;
+	commonTo++;
+    }
+    if (commonTo > 0)
+	for(var i = 0;i < res.length;i++)
+	    res[i].subject = res[i].subject.substring(commonTo);
+
+    var tmp = [];
+    for(var i = 0;i < res.length;i++)
+	tmp.push(res[i].subject);
+    return tmp;
 });
 
 Luwrain.addCommand("fetch-mail-incoming-bkg", function(){
