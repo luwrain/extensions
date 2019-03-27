@@ -19,7 +19,9 @@ function onIoException(ex, lines)
     lines.push("Ошибка ввода/вывода:");
     if (ex.getClass().getName().equals("java.io.FileNotFoundException"))
 	lines.push("Файл не найден"); else
-	    lines.push(ex.getClass().getName());
+	    if (ex.getClass().getName().equals("java.net.UnknownHostException"))
+		lines.push("Неизвестный хост"); else
+		    lines.push(ex.getClass().getName());
     var msg = ex.getMessage();
     if (msg != null && !msg.trim().isEmpty())
 	lines.push(msg.trim());
@@ -30,12 +32,12 @@ function onException (ex, lines)
     var cause = ex.getCause();
     if (ex.getClass().getName().equals("java.lang.RuntimeException") && cause != null)
     {
-	if (java.io.IOException.class.isInstance(cause))
-	{
-	    onIoException(cause, lines);
-	    return;
-	}
 	onException(cause);
+	return;
+    }
+    if (java.io.IOException.class.isInstance(ex))
+    {
+	onIoException(ex, lines);
 	return;
     }
     lines.push(ex.getClass().getName());
@@ -48,7 +50,17 @@ Luwrain.addHook("luwrain.reader.doc.error", function(props, ex){
     var res = [];
     res.push("Невозможно открыть документ");
     res.push("");
+    res.push("Адрес: " + props.url);
+    var contentType = "" + props.contentType;
+    var charset = "" + props.charset;
+    if (!contentType.isEmpty())
+	res.push("Тип: " + contentType);
+    if (!charset.isEmpty())
+	res.push("Кодировка: " + charset);
+    res.push("");
     if (ex != null)
 	onException(ex, res);
+    res.push("");
+    res.push("Нажмите Esc для возврата");
     return res;
     });
