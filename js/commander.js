@@ -14,12 +14,18 @@
    General Public License for more details.
 */
 
-Luwrain.addHook("luwrain.app.commander.preview.local.default", function(file){
+Luwrain.addHook("luwrain.commander.preview.local.default", function(file){
     if (!file.isFile())
 	return false;
-    if (file.getName().toLowerCase().endsWith(".txt"))
+    if (file.getName().toLowerCase().endsWith(".txt") ||
+	file.getName().toLowerCase().endsWith(".doc") ||
+	file.getName().toLowerCase().endsWith(".docx") ||
+	file.getName().toLowerCase().endsWith(".htm") ||
+	file.getName().toLowerCase().endsWith(".html") ||
+	file.getName().toLowerCase().endsWith(".pdf"))
     {
-	Luwrain.message("txt " + file.getName());
+	var url = org.luwrain.util.UrlUtils.fileToUrl(file);
+	Luwrain.launchApp("reader", [url]);
 	return true;
     }
     return false;
