@@ -43,5 +43,15 @@ Luwrain.addHook("luwrain.i18n.ru.speech.natural.pre", function(text){
 	    res += ch;
 	}
     }
-    return res.replaceAll("стр. ", "страница");
+
+    res = res.toLowerCase();
+
+    res = res.replaceAll("см\\. на стр\\. ", "смотрите на странице ");
+    res = res.replaceAll("см\\. стр\\. ", "смотрите на странице ");
+
+    res = res.replaceAll("до н\\. *э\\.", "до нашей эры");
+    res = res.replaceAll("н\\. *э\\.", "нашей эры");
+
+    res = res.replaceAll("стр\\. ", "страница ");
+    return res;
 });
