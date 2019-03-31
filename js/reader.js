@@ -16,7 +16,18 @@
 
 function onIoException(ex, lines)
 {
+    if (ex.getMessage() != null && ex.getMessage().startsWith("No suitable handler for"))
+    {
+	lines.push("Формат файла не поддерживается.");
+	return;
+    }
     lines.push("Ошибка ввода/вывода:");
+    if (ex.getClass().getName().equals("org.luwrain.util.Connections$InvalidHttpResponseCodeException"))
+    {
+	lines.push("Неверный код ответа HTTP-сервера");
+	lines.push("Код ответа: " + ex.getHttpCode());
+	return;
+    }
     if (ex.getClass().getName().equals("java.io.FileNotFoundException"))
 	lines.push("Файл не найден"); else
 	    if (ex.getClass().getName().equals("java.net.UnknownHostException"))
@@ -49,7 +60,6 @@ function onException (ex, lines)
 Luwrain.addHook("luwrain.reader.doc.error", function(props, ex){
     var res = [];
     res.push("Невозможно открыть документ");
-    res.push("");
     res.push("Адрес: " + props.url);
     var contentType = "" + props.contentType;
     var charset = "" + props.charset;
@@ -63,4 +73,26 @@ Luwrain.addHook("luwrain.reader.doc.error", function(props, ex){
     res.push("");
     res.push("Нажмите Esc для возврата");
     return res;
+});
+
+function makeParagraphsEachLine(lines)
+{
+    var res = [];
+    for(var i = 0;i < lines.length;i++)
+    {
+	var line = lines[i];
+	if (line.trim().isEmpty())
+	    continue;
+	res.push({type: "paragraph", runs: [{text: line.trim()}]});
+    }
+    return res;
+}
+
+Luwrain.addHook("luwrain.reader.doc.builder", function(contentType, props, path){
+    if (!contentType.equals("text/plain"))
+	return null;
+    var text = org.luwrain.util.FileUtils.readTextFileSingleString(new java.io.File(path), "UTF-8");
+    var lines = org.luwrain.util.FileUtils.universalLineSplitting(text);
+    return {nodes: makeParagraphsEachLine(lines)};
+
     });
