@@ -42,27 +42,30 @@ Luwrain.addHook("luwrain.prop.player.track.sec", function(propName, propValue){
 Luwrain.addHook("luwrain.player.album.play", function(album){
     switch(album.type)
     {
-	case "dir":
+    case "dir":
 	{
-	    if (album.path.isEmpty())
+	    var path = "" + album.properties.path;
+	    if (path.isEmpty())
 		return false;
-	    var files = getFilesInDir(new java.io.File(album.path));
+	    var files = getFilesInDir(new java.io.File(path));
+	    if (files.length == 0)
+		return false;
 	    var urls = [];
 	    for(var i = 0;i < files.length;i++)
-		urls.push(org.luwrain.util.Urls.toUrl(files[i]).toString());
-	    Luwrain.player.play({tracks: urls}, {});
+		urls.push(org.luwrain.util.UrlUtils.fileToUrl(files[i]).toString());
+	    Luwrain.player.play(urls, 0, 0, [], album.properties);
 	    return true;
 	}
-	case "streaming":
+    case "streaming":
 	{
 	    var url = "" + album.properties.url;
-	if (url.isEmpty())
-	    return false;
+	    if (url.isEmpty())
+		return false;
 	    Luwrain.sounds.playing();
 	    Luwrain.player.play([album.properties.url], 0, 0, ["streaming"], album.properties);
 	    return true;
 	}
-	default:
+    default:
 	return false;
     }
 });
