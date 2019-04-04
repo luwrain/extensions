@@ -16,6 +16,15 @@
 
 Luwrain.createPropertyHook("luwrain.player.track.sec", "luwrain.prop.player.track.sec");
 
+function isStreaming()
+{
+    var flags = Luwrain.player.flags;
+    for(var i = 0;i < flags.length;i++)
+	if (flags[i] === "streaming")
+	    return true;
+    return false;
+}
+
 function getFilesInDir(dir)
 {
     var res = [];
@@ -181,28 +190,63 @@ Luwrain.addHook("luwrain.app.player.areas.control.input", function(event){
 });
 
 Luwrain.addCommand("player-pause", function(){
-    var streaming = false;
-    var flags = Luwrain.player.flags;
-    for(var i = 0;i < flags.length;i++)
-	if (flags[i] === "streaming")
-	    streaming = true;
-    if (streaming)
+    if (Luwrain.player.state === "stopped")
+    {
+	Luwrain.sounds.eventNotProcessed();
+	return;
+    }
+    if (isStreaming())
 	Luwrain.sounds.playing();
     Luwrain.player.pauseResume();
 });
 
 Luwrain.addCommand("player-stop", function(){
     if (Luwrain.player.state === "stopped")
+    {
+	Luwrain.sounds.eventNotProcessed();
 	return;
+    }
     Luwrain.sounds.playing();
     Luwrain.player.stop();
 });
 
+Luwrain.addCommand("player-next", function(){
+    if (Luwrain.player.state === "stopped" || isStreaming())
+    {
+	Luwrain.sounds.eventNotProcessed();
+	return;
+    }
+    if (Luwrain.player.nextTrack())
+	Luwrain.sounds.playing(); else
+	    Luwrain.sounds.eventNotProcessed();
+});
+
+Luwrain.addCommand("player-prev", function(){
+    if (Luwrain.player.state === "stopped" || isStreaming())
+    {
+	Luwrain.sounds.eventNotProcessed();
+	return;
+    }
+    if (Luwrain.player.prevTrack())
+	Luwrain.sounds.playing(); else
+	    Luwrain.sounds.eventNotProcessed();
+});
+
 Luwrain.addCommand("player-jump-forward", function(){
+    if (Luwrain.player.state === "stopped" || isStreaming())
+    {
+	Luwrain.sounds.eventNotProcessed();
+	return;
+    }
     Luwrain.player.jump(5000);
 });
 
 Luwrain.addCommand("player-jump-backward", function(){
+    if (Luwrain.player.state === "stopped" || isStreaming())
+    {
+	Luwrain.sounds.eventNotProcessed();
+	return;
+    }
     Luwrain.player.jump(-5000);
 });
 
