@@ -54,11 +54,14 @@ Luwrain.addHook("luwrain.player.album.play", function(album){
 	    return true;
 	}
 	case "streaming":
-	if (album.url.isEmpty())
+	{
+	    var url = "" + album.properties.url;
+	if (url.isEmpty())
 	    return false;
-	Luwrain.sounds.playing();
-	Luwrain.player.play({tracks: [album.url]}, {streaming: true});
-	return true;
+	    Luwrain.sounds.playing();
+	    Luwrain.player.play([album.properties.url], 0, 0, ["streaming"], album.properties);
+	    return true;
+	}
 	default:
 	return false;
     }
@@ -175,6 +178,13 @@ Luwrain.addHook("luwrain.app.player.areas.control.input", function(event){
 });
 
 Luwrain.addCommand("player-pause", function(){
+    var streaming = false;
+    var flags = Luwrain.player.flags;
+    for(var i = 0;i < flags.length;i++)
+	if (flags[i] === "streaming")
+	    streaming = true;
+    if (streaming)
+	Luwrain.sounds.playing();
     Luwrain.player.pauseResume();
 });
 

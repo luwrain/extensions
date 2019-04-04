@@ -33,9 +33,21 @@ function getTypeDescr(type)
     }
 }
 
-Luwrain.addHook("luwrain.linux.popups.disks.list", function(volumes){
+Luwrain.addHook("luwrain.linux.popups.disks.list", function(volumes, disks){
     var res = [];
+
+        //disks contains removable disks only
+        for(var i = 0;i < disks.length;i++)
+	    res.push({title: disks[i].device + " съёмный диск"});
+
+
+    
     for(var i = 0;i < volumes.length;i++)
+	if (!volumes[i].type.equals("volume_regular"))
 	res.push({title: volumes[i].name + " " + getTypeDescr(volumes[i].type)});
+
+
+
+    
     return res;
 });
