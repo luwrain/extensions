@@ -88,8 +88,8 @@ function commonKeys(event)
 	switch(event.ch)
 	{
 		case "_":
-	{
-	    if (event.modified && !event.withShiftOnly)
+	    {
+		if (!event.withShiftOnly)
 		return false;
 		    var level = Luwrain.player.getVolume();
 	    if (level > 5)
@@ -101,7 +101,7 @@ function commonKeys(event)
 	}
 	case "+":
 	{
-	    	    if (event.modified && !event.withShiftOnly)
+	    	    if (!event.withShiftOnly)
 		return false;
 		    var level = Luwrain.player.getVolume();
 	    if (level < 95)
@@ -115,6 +115,7 @@ function commonKeys(event)
 	return false;
     }
     }
+    //The player has a playlist
     if (event.special != null)
         switch(event.special)
         {
@@ -128,35 +129,43 @@ function commonKeys(event)
     switch(event.ch)
     {
 	case " ":
+	if (isStreaming())
+	    Luwrain.sounds.playing();
 	Luwrain.player.pauseResume();
 	return true;
 	case "-":
-	//FIXME:streaming
+	if (isStreaming())
+	    return false;
 	if (!event.modified)
 	    Luwrain.player.jump(-5000); else
 		if (event.withControlOnly)
 		    	    Luwrain.player.jump(-60000); else
 		if (event.withAltOnly)
 	{
-	    //FIXME:previous track
+	    if (Luwrain.player.prevTrack())
+		Luwrain.sounds.playing(); else
+		    return false;
 	} else
 		return false;
 	return true;
 		case "=":
-	//FIXME:streaming
+	if (isStreaming())
+	    return false;
 	if (!event.modified)
 	    Luwrain.player.jump(5000); else
 		if (event.withControlOnly)
 		    Luwrain.player.jump(60000); else
 			if (event.withAltOnly)
 	{
-	    //FIXME:next track
+	    if (Luwrain.player.nextTrack())
+		Luwrain.sounds.playing(); else
+		    return false;
 	} else
 		return false;
 	return true;
 		case "_":
 	{
-	    if (event.modified && !event.withShiftOnly)
+	    if (!event.withShiftOnly)
 		return false;
 		    var level = Luwrain.player.getVolume();
 	    if (level > 5)
@@ -166,7 +175,7 @@ function commonKeys(event)
 	}
 	case "+":
 	{
-	    	    if (event.modified && !event.withShiftOnly)
+	    	    if (!event.withShiftOnly)
 		return false;
 		    var level = Luwrain.player.getVolume();
 	    if (level < 95)
