@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
    Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
 
    This file is part of LUWRAIN.
@@ -21,13 +21,11 @@ import org.luwrain.base.*;
 import org.luwrain.core.*;
 import org.luwrain.core.extensions.*;
 
-public class Extension extends EmptyExtension
+public final class Extension extends EmptyExtension
 {
-    private final Player player = new Player();
-
     @Override public ExtensionObject[] getExtObjects(Luwrain luwrain)
     {
 	NullCheck.notNull(luwrain, "luwrain");
-		return new ExtensionObject[]{ player };
+	return new ExtensionObject[]{ new Player(luwrain) };
     }
 }

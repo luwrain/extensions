@@ -36,8 +36,12 @@ Luwrain.addHook("luwrain.reader.doc.builder", function(contentType, props, path)
 	    switch(cellType.toLowerCase())
 	    {
 		case "string":
-		var newCell = {type: "table_cell", nodes: [{type: "paragraph", runs: [{text: "" + cell.getStringCellValue()}]}]};
+newCell = {type: "table_cell", nodes: [{type: "paragraph", runs: [{text: "" + cell.getStringCellValue()}]}]};
 		break;
+		case "formula":
+		print("");
+		default:
+		print("unprocessed type " + cellType);
 	    }
 	    cells.push(newCell);
 	}

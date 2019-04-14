@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
    Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
 
    This file is part of LUWRAIN.
@@ -20,12 +20,20 @@ package org.luwrain.extensions.plmp3;
 import org.luwrain.base.*;
 import org.luwrain.core.*;
 
-class Player implements MediaResourcePlayer
+final class Player implements MediaResourcePlayer
 {
+    private final Luwrain luwrain;
+
+    Player(Luwrain luwrain)
+    {
+	NullCheck.notNull(luwrain, "luwrain");
+	this.luwrain = luwrain;
+    }
+
     @Override public Instance newMediaResourcePlayer(Listener listener)
     {
 	NullCheck.notNull(listener, "listener");
-	return new org.luwrain.extensions.plmp3.Instance(listener);
+	return new org.luwrain.extensions.plmp3.Instance(luwrain, listener);
     }
 
     @Override public String getSupportedMimeType()

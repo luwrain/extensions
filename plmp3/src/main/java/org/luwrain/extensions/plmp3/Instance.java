@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
    Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
 
    This file is part of LUWRAIN.
@@ -17,7 +17,6 @@
 
 package org.luwrain.extensions.plmp3;
 
-import java.nio.file.*;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.*;
@@ -32,31 +31,33 @@ import javazoom.jl.player.*;
 import org.luwrain.base.*;
 import org.luwrain.core.*;
 
-class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
+final class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
 {
     static final String LOG_COMPONENT = "jlayer";
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Luwrain luwrain;
     private final MediaResourcePlayer.Listener listener;
     private FutureTask task = null; 
     private boolean interrupting = false;
     private CustomDevice device = null;
 
-    Instance(MediaResourcePlayer.Listener listener)
+    Instance(Luwrain luwrain, MediaResourcePlayer.Listener listener)
     {
+	NullCheck.notNull(luwrain, "luwrain");
 	NullCheck.notNull(listener, "listener");
+	this.luwrain = luwrain;
 	this.listener = listener;
     }
 
     @Override public MediaResourcePlayer.Result play(URL url, MediaResourcePlayer.Params params)
     {
 	NullCheck.notNull(url, "url");
-	    NullCheck.notNull(params, "params");
-	    NullCheck.notNull(params.flags, "params.flags");
-	    if (params.playFromMsec < 0)
-		throw new IllegalArgumentException("params.playFromMsec (" + params.playFromMsec + ") may not be negative");
-	    if (params.volume < 0 || params.volume > 100)
-		throw new IllegalArgumentException("params.volume (" + params.volume + ") must be between 0 and 100 inclusively");
+	NullCheck.notNull(params, "params");
+	NullCheck.notNull(params.flags, "params.flags");
+	if (params.playFromMsec < 0)
+	    throw new IllegalArgumentException("params.playFromMsec (" + params.playFromMsec + ") may not be negative");
+	if (params.volume < 0 || params.volume > 100)
+	    throw new IllegalArgumentException("params.volume (" + params.volume + ") must be between 0 and 100 inclusively");
 	interrupting = false;
 	task = new FutureTask(()->{
 		try {
@@ -94,7 +95,6 @@ class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
 			listener.onPlayerTime(Instance.this, new Float(currentPosition).longValue());
 			while(true)
 			{
-			    //			    System.out.println("proba step");
 			    if(interrupting || Thread.currentThread().isInterrupted())
 				return;
 			    final Header frame = bitstream.readFrame();
@@ -130,10 +130,11 @@ class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
 		catch (Exception e)
 		{
 		    Log.error(LOG_COMPONENT, e.getClass().getName() + ":" + e.getMessage());
+		    e.printStackTrace();
 		    listener.onPlayerError(e);
 		}
 	    }, null);
-	executor.execute(task);
+	luwrain.executeBkg(task);
 	return new MediaResourcePlayer.Result();
     }
 
