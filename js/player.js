@@ -15,6 +15,18 @@
 */
 
 Luwrain.createPropertyHook("luwrain.player.track.sec", "luwrain.prop.player.track.sec");
+Luwrain.addHook("luwrain.prop.player.track.sec", function(propName, propValue){
+});
+
+Luwrain.createPropertyHook("luwrain.player.track.url", "luwrain.prop.player.track.url");
+Luwrain.addHook("luwrain.prop.player.track.url", function(propName, propValue){
+});
+
+Luwrain.createPropertyHook("luwrain.player.track.index", "luwrain.prop.player.track.index");
+Luwrain.addHook("luwrain.prop.player.track.index", function(propName, propValue){
+    if (!propValue.equals("0"))
+    	Luwrain.sounds.playing();
+});
 
 function isStreaming()
 {
@@ -45,8 +57,6 @@ function getFilesInDir(dir)
     return res;
 }
 
-Luwrain.addHook("luwrain.prop.player.track.sec", function(propName, propValue){
-});
 
 Luwrain.addHook("luwrain.player.album.play", function(album){
     switch(album.type)
@@ -225,8 +235,8 @@ Luwrain.addCommand("player-next", function(){
 	Luwrain.sounds.eventNotProcessed();
 	return;
     }
-    if (Luwrain.player.nextTrack())
-	Luwrain.sounds.playing(); else
+    if (!Luwrain.player.nextTrack())
+/*	Luwrain.sounds.playing(); else*/
 	    Luwrain.sounds.eventNotProcessed();
 });
 
@@ -236,8 +246,8 @@ Luwrain.addCommand("player-prev", function(){
 	Luwrain.sounds.eventNotProcessed();
 	return;
     }
-    if (Luwrain.player.prevTrack())
-	Luwrain.sounds.playing(); else
+    if (!Luwrain.player.prevTrack())
+/*	Luwrain.sounds.playing(); else*/
 	    Luwrain.sounds.eventNotProcessed();
 });
 

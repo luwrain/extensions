@@ -38,7 +38,7 @@ final class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
     private final Luwrain luwrain;
     private final MediaResourcePlayer.Listener listener;
     private FutureTask task = null; 
-    private boolean interrupting = false;
+    private boolean finishing = false;
     private CustomDevice device = null;
 
     Instance(Luwrain luwrain, MediaResourcePlayer.Listener listener)
@@ -58,7 +58,7 @@ final class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
 	    throw new IllegalArgumentException("params.playFromMsec (" + params.playFromMsec + ") may not be negative");
 	if (params.volume < 0 || params.volume > 100)
 	    throw new IllegalArgumentException("params.volume (" + params.volume + ") must be between 0 and 100 inclusively");
-	interrupting = false;
+	finishing = false;
 	task = new FutureTask(()->{
 		try {
 		    AudioInputStream stream = null;
@@ -95,7 +95,7 @@ final class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
 			listener.onPlayerTime(Instance.this, new Float(currentPosition).longValue());
 			while(true)
 			{
-			    if(interrupting || Thread.currentThread().isInterrupted())
+			    if(finishing || Thread.currentThread().isInterrupted())
 				return;
 			    final Header frame = bitstream.readFrame();
 			    if(frame == null)
@@ -119,18 +119,18 @@ final class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
 		    }
 		    finally
 		    {
-			Log.debug(LOG_COMPONENT, "closing jlayer playing procedure (finally block)");
 			if(device != null)
 			    device.close();
 			if(stream != null)
 			    stream.close();
+			finishing = true;
 			listener.onPlayerFinish(Instance.this);
 		    }
 		}
 		catch (Exception e)
 		{
 		    Log.error(LOG_COMPONENT, e.getClass().getName() + ":" + e.getMessage());
-		    e.printStackTrace();
+		    finishing = true;
 		    listener.onPlayerError(e);
 		}
 	    }, null);
@@ -148,7 +148,9 @@ final class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
 
     @Override public void stop()
     {
-	interrupting = true;
+	if (finishing)
+	    return;
+	finishing = true;
 	task.cancel(true);
     }
 }
