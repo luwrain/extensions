@@ -24,8 +24,7 @@ Luwrain.addHook("luwrain.prop.player.track.url", function(propName, propValue){
 
 Luwrain.createPropertyHook("luwrain.player.track.index", "luwrain.prop.player.track.index");
 Luwrain.addHook("luwrain.prop.player.track.index", function(propName, propValue){
-    if (!propValue.equals("0"))
-    	Luwrain.sounds.playing();
+    Luwrain.sounds.playing();
 });
 
 function isStreaming()
@@ -236,8 +235,7 @@ Luwrain.addCommand("player-next", function(){
 	return;
     }
     if (!Luwrain.player.nextTrack())
-/*	Luwrain.sounds.playing(); else*/
-	    Luwrain.sounds.eventNotProcessed();
+	Luwrain.sounds.eventNotProcessed();
 });
 
 Luwrain.addCommand("player-prev", function(){
@@ -247,8 +245,7 @@ Luwrain.addCommand("player-prev", function(){
 	return;
     }
     if (!Luwrain.player.prevTrack())
-/*	Luwrain.sounds.playing(); else*/
-	    Luwrain.sounds.eventNotProcessed();
+	Luwrain.sounds.eventNotProcessed();
 });
 
 Luwrain.addCommand("player-jump-forward", function(){
