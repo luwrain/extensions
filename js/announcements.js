@@ -14,6 +14,10 @@
    General Public License for more details.
 */
 
-Luwrain.addHook("luwrain.startup", function(){
-    Luwrain.sounds.startup();
+Luwrain.addHook("luwrain.announcement", function(obj){
+    var text = obj;
+    if (text.match("RT @[a-zA-Z0-9_]+: .*"))
+	text = text.substring(text.indexOf(":") + 1);
+    print("announce " + obj);
+    Luwrain.message.chat(text);
 });
