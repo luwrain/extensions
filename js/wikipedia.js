@@ -14,9 +14,14 @@
    General Public License for more details.
 */
 
+function stripTags(line)
+{
+    return line.replaceAll("</span>", "").replaceAll("<span class=.searchmatch.>", "");
+}
+
 Luwrain.addHook("luwrain.wiki.search", function(query){
     var url = "https://" + java.net.URLEncoder.encode("ru") + ".wikipedia.org/w/api.php?action=query&list=search&srsearch=" + java.net.URLEncoder.encode(query, "UTF-8") + "&format=xml";
-        var con = org.jsoup.Jsoup.connect(url);
+    var con = org.jsoup.Jsoup.connect(url);
     var doc = con.get();
     var pages = doc.getElementsByTag("p");
     var res = [];
@@ -30,6 +35,7 @@ Luwrain.addHook("luwrain.wiki.search", function(query){
 	    continue;
 	if (comment == null)
 	    comment = "";
+	comment = stripTags(comment);
 	res.push({title: title, lang: lang, comment: comment});
     }
     return res;
