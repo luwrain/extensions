@@ -14,6 +14,71 @@
    General Public License for more details.
 */
 
+function getSize(f)
+{
+    if (f.isFile())
+	return f.length();
+    if (!f.isDirectory())
+	return 0;
+    var items = f.listFiles();
+    if (items == null)
+	throw new java.io.IOException("Unable to get the content of " + f.getAbsolutePath());
+    var res = 0;
+    for(var i = 0;i < items.length;i++)
+	if (items[i].isFile())
+	    res += items[i].length(); else
+		res += getSize(items[i]);
+    return res;
+}
+
+Luwrain.addHook("luwrain.commander.info.local", function(files){
+    /*
+    var res = [];
+    for(var i = 0;i < files.length;i++)
+    {
+	var file = files[i];
+	var basic = java.nio.file.Files.getFileAttributeView(file.toPath(), java.nio.file.attribute.BasicFileAttributeView.class, java.nio.file.LinkOption.NOFOLLOW_LINKS);
+	var posix = java.nio.file.Files.getFileAttributeView(file.toPath(), java.nio.file.attribute.PosixFileAttributeView.class, java.nio.file.LinkOption.NOFOLLOW_LINKS);
+	var attr = basic.readAttributes();
+	if (attr.isDirectory())
+	    res.push(Luwrain.i18n.static.commanderDirectory);
+	if (attr.isSymbolicLink())
+	    res.push(Luwrain.i18n.static.commanderSymlink);
+	if (posix != null)
+	{
+	    res.push("posix");
+	    var posixAttr = posix.readAttributes();
+	    var perm = posixAttr.permissions();
+	    try {
+		res.push(perm.toString());
+		throw new java.lang.Exception("llll");
+	    }
+	    catch(e)
+	    {
+		res.push("catch" + e.toString());
+	    }
+		}
+	res.push(files[i].getName());
+    }
+    return res;
+    */
+    return null;
+});
+
+Luwrain.addHook("luwrain.commander.size.local", function(files){
+    try {
+    var res = 0;
+    for(var i = 0;i < files.length;i++)
+	res += getSize(new java.io.File(files[i]));
+    Luwrain.message.done("" + res);
+    }
+    catch(e)
+    {
+	Luwrain.sounds.error();
+    }
+});
+
+
 Luwrain.addHook("luwrain.commander.preview.local.default", function(file){
     if (!file.isFile())
 	return false;
