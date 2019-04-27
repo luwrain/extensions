@@ -14,6 +14,17 @@
    General Public License for more details.
 */
 
+function getSizeStr(bytes)
+{
+    if (bytes < 1024)
+	return "" + bytes;
+    if (bytes < 1048576)
+	return "" + java.lang.Math.floor(bytes / 1024) + "K";
+    if (bytes < 1048576 * 1024)
+	return "" + java.lang.Math.floor(bytes / 1048576) + "M";
+	return "" + java.lang.Math.floor(bytes / 1048576 / 1024) + "G";
+}
+
 function getSize(f)
 {
     if (f.isFile())
@@ -70,7 +81,7 @@ Luwrain.addHook("luwrain.commander.size.local", function(files){
     var res = 0;
     for(var i = 0;i < files.length;i++)
 	res += getSize(new java.io.File(files[i]));
-    Luwrain.message.done("" + res);
+	Luwrain.message.done(getSizeStr(res));
     }
     catch(e)
     {

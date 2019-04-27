@@ -38,5 +38,6 @@ Luwrain.addHook("luwrain.wiki.search", function(query){
 	comment = stripTags(comment);
 	res.push({title: title, lang: lang, comment: comment});
     }
+    Luwrain.sounds.ok();
     return res;
 });
