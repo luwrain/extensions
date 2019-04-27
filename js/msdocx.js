@@ -72,3 +72,6 @@ Luwrain.addHook("luwrain.reader.doc.builder", function(contentType, props, path)
     }
     return {nodes: paragraphs};
 });
+
+org.apache.poi.openxml4j.util.ZipSecureFile.setMinInflateRatio(0.0009);
+

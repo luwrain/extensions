@@ -47,7 +47,7 @@ Luwrain.addHook("luwrain.wiki.search", function(query){
 	for(var i = 0;i < pages.length;i++)
 	{
 	    var page = pages[i];
-	    var lang = "ru";
+	    var lang = langs[l];
 	    var title = page.attr("title");
 	    var comment = page.attr("snippet");
 	    if (title == null || title.isEmpty())
