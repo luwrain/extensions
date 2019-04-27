@@ -19,24 +19,44 @@ function stripTags(line)
     return line.replaceAll("</span>", "").replaceAll("<span class=.searchmatch.>", "");
 }
 
-Luwrain.addHook("luwrain.wiki.search", function(query){
-    var url = "https://" + java.net.URLEncoder.encode("ru") + ".wikipedia.org/w/api.php?action=query&list=search&srsearch=" + java.net.URLEncoder.encode(query, "UTF-8") + "&format=xml";
-    var con = org.jsoup.Jsoup.connect(url);
-    var doc = con.get();
-    var pages = doc.getElementsByTag("p");
+function getLangs()
+{
+    var value = Luwrain.registry.ext.luwrain.wiki.langs;
+    if (value.isEmpty())
+	return ["en"];
+    value = value.replaceAll(",", " ").replaceAll(";", " ").replaceAll(":", " ");
     var res = [];
-    for(var i = 0;i < pages.length;i++)
+    var values = value.split(" ", -1);
+    for(var i = 0;i < values.length;i++)
+	if (!values[i].trim().isEmpty())
+	    res.push(values[i].trim());
+    if (res.length == 0)
+	return ["en"];
+    return res;
+}
+
+Luwrain.addHook("luwrain.wiki.search", function(query){
+    var res = [];
+    var langs = getLangs();
+    for (var l=0;l < langs.length;l++)
     {
-	var page = pages[i];
-	var lang = "ru";
-	var title = page.attr("title");
-	var comment = page.attr("snippet");
-	if (title == null || title.isEmpty())
-	    continue;
-	if (comment == null)
-	    comment = "";
-	comment = stripTags(comment);
-	res.push({title: title, lang: lang, comment: comment});
+	var url = "https://" + java.net.URLEncoder.encode(langs[l]) + ".wikipedia.org/w/api.php?action=query&list=search&srsearch=" + java.net.URLEncoder.encode(query, "UTF-8") + "&format=xml";
+	var con = org.jsoup.Jsoup.connect(url);
+	var doc = con.get();
+	var pages = doc.getElementsByTag("p");
+	for(var i = 0;i < pages.length;i++)
+	{
+	    var page = pages[i];
+	    var lang = "ru";
+	    var title = page.attr("title");
+	    var comment = page.attr("snippet");
+	    if (title == null || title.isEmpty())
+		continue;
+	    if (comment == null)
+		comment = "";
+	    comment = stripTags(comment);
+	    res.push({title: title, lang: lang, comment: comment});
+	}
     }
     Luwrain.sounds.ok();
     return res;
