@@ -60,6 +60,7 @@ Luwrain.addHook("luwrain.reader.doc.builder", function(contentType, props, path)
     if (!contentType.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document"))
 	return null;
     var f = new java.io.FileInputStream(path);
+        try {
     var doc = new org.apache.poi.xwpf.usermodel.XWPFDocument(f);
     var body = doc.getBodyElements();
     var paragraphs = [];
@@ -70,7 +71,11 @@ Luwrain.addHook("luwrain.reader.doc.builder", function(contentType, props, path)
 	if (obj != null)
 	paragraphs.push(obj);
     }
-    return {nodes: paragraphs};
+	    return {nodes: paragraphs};
+	}
+    finally {
+	f.close();
+    }
 });
 
 org.apache.poi.openxml4j.util.ZipSecureFile.setMinInflateRatio(0.0009);
