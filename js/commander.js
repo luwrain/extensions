@@ -96,6 +96,7 @@ Luwrain.addHook("luwrain.commander.preview.local.default", function(file){
     if (file.getName().toLowerCase().endsWith(".txt") ||
 	file.getName().toLowerCase().endsWith(".doc") ||
 	file.getName().toLowerCase().endsWith(".docx") ||
+		file.getName().toLowerCase().endsWith(".xlsx") ||
 	file.getName().toLowerCase().endsWith(".htm") ||
 	file.getName().toLowerCase().endsWith(".html") ||
 	file.getName().toLowerCase().endsWith(".pdf"))

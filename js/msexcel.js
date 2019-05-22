@@ -30,7 +30,6 @@ Luwrain.addHook("luwrain.reader.doc.builder", function(contentType, props, path)
 	while(cellIt.hasNext())
 	{
 	    var cell = cellIt.next();
-	    //	    print(cell.getCellType());
 	    var cellType = "" + cell.getCellType();
 		var newCell = {type: "table_cell", nodes: [{type: "paragraph", runs: [{text: "" + cellType}]}]};
 	    switch(cellType.toLowerCase())
@@ -38,8 +37,28 @@ Luwrain.addHook("luwrain.reader.doc.builder", function(contentType, props, path)
 		case "string":
 newCell = {type: "table_cell", nodes: [{type: "paragraph", runs: [{text: "" + cell.getStringCellValue()}]}]};
 		break;
+
+				case "numeric":
+newCell = {type: "table_cell", nodes: [{type: "paragraph", runs: [{text: "" + cell.getNumericCellValue()}]}]};
+		break;
+
+		
 		case "formula":
-		print("");
+		{
+		    var cachedValueType = "" + cell.getCachedFormulaResultType();
+		    switch(cachedValueType.toLowerCase())
+		{
+		    case "numeric":
+		    newCell = {type: "table_cell", nodes: [{type: "paragraph", runs: [{text: "" + cell.getNumericCellValue()}]}]};
+                break;
+		    case "string":
+		    newCell = {type: "table_cell", nodes: [{type: "paragraph", runs: [{text: "" + cell.getRichStringCellValue()}]}]};
+                    break;
+		    default:
+		    newCell = {type: "table_cell", nodes: [{type: "paragraph", runs: [{text: "" + "formula:" + cell.getCachedFormulaResultType()}]}]};
+		}
+		    break;
+		}
 		default:
 		print("unprocessed type " + cellType);
 	    }
