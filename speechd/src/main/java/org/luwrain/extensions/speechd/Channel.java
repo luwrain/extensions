@@ -36,8 +36,13 @@ final class Channel implements org.luwrain.speech.Channel
     {
 	NullCheck.notNull(params, "params");
 	client = new SSIPClient("LUWRAIN", null, null);
-	if (client != null && params.containsKey("lang"))
-	    client.setLanguage(params.get("lang"));
+	if (client != null)
+	{
+	    if (params.containsKey("lang"))
+		client.setLanguage(params.get("lang"));
+	    if (params.containsKey("voice"))
+		client.setLanguage(params.get("voice"));
+	}
     }
 
     @Override public String getChannelName()
