@@ -40,17 +40,17 @@ final class Channel implements org.luwrain.speech.Channel, SSIPEventHandler
 	client = new SSIPClient("LUWRAIN", null, null);
 	if (client == null)
 	    throw new Exception("Unable to create a speech dispatcher client");
-	    if (params.containsKey("output"))
-		client.setOutputModule(params.get("output"));
-	    if (params.containsKey("lang"))
-		client.setLanguage(params.get("lang"));
-	    if (params.containsKey("voice"))
-		client.setVoice(params.get("voice"));
-	    client.setNotification(true);
-	    client.setEventHandler(this);
+	if (params.containsKey("output"))
+	    client.setOutputModule(params.get("output"));
+	if (params.containsKey("lang"))
+	    client.setLanguage(params.get("lang"));
+	if (params.containsKey("voice"))
+	    client.setVoice(params.get("voice"));
+	client.setNotification(true);
+	client.setEventHandler(this);
     }
 
-      @Override public void handleSSIPEvent (SSIPEvent event)
+    @Override public void handleSSIPEvent (SSIPEvent event)
     {
 	if (event == null || event.getType() == null)
 	    return;
