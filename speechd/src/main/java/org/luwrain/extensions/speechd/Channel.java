@@ -26,24 +26,44 @@ import org.luwrain.linux.ProcessGroup;
 import org.luwrain.speech.*;
 import org.luwrain.core.*;
 
-final class Channel implements org.luwrain.speech.Channel
+final class Channel implements org.luwrain.speech.Channel, SSIPEventHandler
 {
     static final String LOG_COMPONENT = Extension.LOG_COMPONENT;
 
     final SSIPClient client;
 
+    private Listener listener = null;
+
     Channel(Map<String, String> params) throws Exception
     {
 	NullCheck.notNull(params, "params");
 	client = new SSIPClient("LUWRAIN", null, null);
-	if (client != null)
-	{
+	if (client == null)
+	    throw new Exception("Unable to create a speech dispatcher client");
 	    if (params.containsKey("output"))
 		client.setOutputModule(params.get("output"));
 	    if (params.containsKey("lang"))
 		client.setLanguage(params.get("lang"));
 	    if (params.containsKey("voice"))
 		client.setVoice(params.get("voice"));
+	    client.setNotification(true);
+	    client.setEventHandler(this);
+    }
+
+      @Override public void handleSSIPEvent (SSIPEvent event)
+    {
+	if (event == null || event.getType() == null)
+	    return;
+	if (this.listener == null)
+	    return;
+	switch(event.getType())
+	{
+	case END:
+	    listener.onFinished(-1);
+	    listener = null;
+	    break;
+	default:
+	    return;
 	}
     }
 
@@ -72,6 +92,7 @@ final class Channel implements org.luwrain.speech.Channel
 	try {
 	    client.setPitch(relPitch * 2);
 	    client.setRate(-1 * relRate * 2);
+	    this.listener = listener;
 	    client.say(SSIPPriority.TEXT, text);
 	}
 	catch(Exception e)
@@ -87,6 +108,7 @@ final class Channel implements org.luwrain.speech.Channel
 	try {
 	    client.setPitch(relPitch * 2);
 	    client.setRate(-1 * relRate * 2);
+	    this.listener = listener;
 	    client.sayChar(SSIPPriority.TEXT, letter);
 	}
 	catch(Exception e)
@@ -104,6 +126,7 @@ final class Channel implements org.luwrain.speech.Channel
     @Override public void silence()
     {
 	try {
+	    this.listener = null;
 	    client.stop();
 	}
 	catch(Exception e)
@@ -115,6 +138,7 @@ final class Channel implements org.luwrain.speech.Channel
     @Override public void close()
     {
 	try {
+	    this .listener = null;
 	    client.close();
 	}
 	catch(Exception e)
