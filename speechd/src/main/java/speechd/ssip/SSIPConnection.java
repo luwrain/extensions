@@ -94,11 +94,19 @@ public class SSIPConnection {
 	private class InputThread implements Runnable {
 		public void run() {
 			while (SSIPConnection.this.isConnected()) {
-				java.util.List<String> data = new LinkedList<String>();
+			    try {
+				Thread.currentThread().sleep(1);
+			    }
+			    catch(InterruptedException e)
+			    {
+				Thread.currentThread().interrupt();
+			    }
+			    java.util.List<String> data = new LinkedList<String>();
 				int code;
 				// read lines
 				try {
 					while (_reader.ready()) {
+
 						String line = readLine();
 						assert (line.length() >= 4 && (line.charAt(3) == '-' || line
 								.charAt(3) == ' '));
