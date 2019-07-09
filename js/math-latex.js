@@ -1,4 +1,3 @@
-#!/usr/bin/jjs
 
 function commit(item, res)
 {
