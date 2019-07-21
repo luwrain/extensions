@@ -14,23 +14,52 @@
    General Public License for more details.
 */
 
-Luwrain.addHook("luwrain.notepad.actions", function(){
-    return [];
+Luwrain.addHook("luwrain.notepad.properties.basic", function(arg){
+    var res = [];
+    res.push("Имя файла: " + arg.fileName);
+    res.push("Кодировка: " + arg.charset);
+    res.push("Количество строк: " + arg.lines.length);
+
+    var charCount = 0;
+    var nonSpaceCharCount = 0;
+    for(var i = 0;i < arg.lines.length;i++)
+    {
+	var line = arg.lines[i];
+	charCount += line.length;
+	for(var j = 0;j < line.length;j++)
+	    if (!java.lang.Character.isSpace(line[j]))
+		nonSpaceCharCount++;
+    }
+    res.push("Количество символов: " + charCount);
+    res.push("Количество непробельных символов: " + nonSpaceCharCount);
+    return res;
 });
 
-Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
-    if (!event.withAlt || event.special != "arrow_right")
+Luwrain.addHook("luwrain.notepad.actions", function(){
+    return [
+	{name: "goto-line", title: "Перейти на строку по номеру", event: {special: "f5"}},
+	{name: "punc-remove-spaces-before", title: "Удалить пробелы перед знаками препинания"},
+	{name: "comments-remove", title: "Удалить знаки комментария в начале строк"},
+    ];
+});
+
+Luwrain.addHook("luwrain.notepad.action", function(action, args){
+    if (action != "goto-line")
 	return false;
-    var lines = args.lines;
-    var hotPoint = args.hotPoint;
-    var line = lines[hotPoint.y];
-    if (line == null || hotPoint.x >= line.length)
+    //FIXME:
+    return true;
+});
+
+Luwrain.addHook("luwrain.notepad.action", function(action, args){
+    if (action != "punc-remove-spaces-before")
 	return false;
-    var deleted = line.substring(hotPoint.x);
-    lines[hotPoint.y] = line.substring(0, hotPoint.x);
-    Luwrain.sounds.deleted();
-    if (deleted != line)
-	Luwrain.speak("Удалена правая часть строки : " + deleted); else //FIXME:
-	    Luwrain.speak("Строка очищена"); //FIXME:
+    //FIXME:
+    return true;
+});
+
+Luwrain.addHook("luwrain.notepad.action", function(action, args){
+    if (action != "comments-remove")
+	return false;
+    //FIXME:
     return true;
 });
