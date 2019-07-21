@@ -2,6 +2,7 @@
 
 function ddgQuery(query)
 {
+    
 var url = 'http://duckduckgo.com/html/?q=' + java.net.URLEncoder.encode(query);
 
 
@@ -20,24 +21,31 @@ for(var i = 0;i < items.length;i++)
     if (text.indexOf("results_links_deep") >= 0)
 	continue;
 
-//            print("new tag");
     var title = '';
     var h2 = items[i].getElementsByTag("h2");
     for(var j = 0;j < h2.length;j++)
 	title = h2[j].text();
 
     var snippet = '';
+    var displayUrl = '';
+    var clickUrl = '';
     var children = Java.from(items[i].childNodes());
     for(var j = 0;j < children.length;j++)
     {
 	if (children[j].getClass().getSimpleName() != "Element")
 	    continue;
+	if (children[j].attr("class") === 'result__extras')
+	{
+displayUrl = children[j].text();
+	    var a = children[j].getElementsByTag("a");
+	    for(var k = 0;k < a.length;k++)
+clickUrl = a[k].attr("href");
+		     }
 	if (children[j].attr("class") === 'result__snippet')
 snippet = children[j].text();
     }
 
-    res.push({title: title, snippet: snippet});
+    res.push({title: title, snippet: snippet, displayUrl: displayUrl, clickUrl: clickUrl});
 }
-
     return res;
 }
