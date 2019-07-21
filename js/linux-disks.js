@@ -14,18 +14,14 @@
    General Public License for more details.
 */
 
-Luwrain.addHook("luwrain.popups.disks.click", function(disk){
-    return disk.name;
-    Luwrain.message.error(disk.name);
-    return false;
-});
+var BLOCK_DEVICES_DIR = '/sys/block';
 
-Luwrain.addHook("luwrain.popups.disks.list", function(volumes, disks){
-var fileSystem = java.nio.file.FileSystems.getDefault();
+function getMountedVolumes()
+{
+    var fileSystem = java.nio.file.FileSystems.getDefault();
     var stores = fileSystem.getFileStores();
     var it = stores.iterator();
     var res = [];
-    res.push({name: fileSystem.toString()});
     while(it.hasNext())
     {
 	var item = it.next();
@@ -38,11 +34,48 @@ var fileSystem = java.nio.file.FileSystems.getDefault();
 		    continue;
 	if (name.startsWith("/run"))
 	    continue;
-	    var pos = name.indexOf(" (");
+	res.push(name);
+    }
+    return res;
+}
+
+Luwrain.addHook("luwrain.popups.disks.click", function(disk){
+    return disk.name;
+    Luwrain.message.error(disk.name);
+    return false;
+});
+
+
+
+Luwrain.addHook("luwrain.popups.disks.list", function(volumes, disks){
+    var res = [];
+    var mounted = getMountedVolumes();
+    for(var i = 0;i < mounted.length;i++)
+    {
+	var name = mounted[i];
+	var pos = name.indexOf(" (");
 	if (pos < 0)
 	    continue;
 	name = name.substring(0, pos);
 	res.push({name: name});
     }
+
+
+    var blockDevDir = new java.io.File(BLOCK_DEVICES_DIR);
+    var devices = blockDevDir.listFiles();
+    if (devices != null)
+	for(var i = 0;i < devices.length;i++)
+    {
+
+	var device = devices[i];
+
+	var removable = new java.io.File(device, "removable");
+	var line = org.luwrain.util.FileUtils.readTextFileSingleString(removable, "US-ASCII");
+	if (!line.trim().equals('1'))
+	    continue;
+
+	
+	res.push({name: device.getName()});
+    }
     return res;
-    });
+	});
