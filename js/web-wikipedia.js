@@ -35,8 +35,9 @@ function getLangs()
     return res;
 }
 
-Luwrain.addHook("luwrain.wiki.search", function(query){
-    var res = [];
+function wikiQuery(query)
+{
+        var res = [];
     var langs = getLangs();
     for (var l=0;l < langs.length;l++)
     {
@@ -60,4 +61,25 @@ Luwrain.addHook("luwrain.wiki.search", function(query){
     }
     Luwrain.sounds.ok();
     return res;
+}
+
+Luwrain.addHook("luwrain.wiki.search", function(query){
+    return wikiQuery(query);
+});
+
+Luwrain.addHook("luwrain.web.search", function(query){
+    var q = query.trim();
+    if (!q.toLowerCase().startsWith("w ") && !q.toLowerCase().startsWith("в "))
+	return null;
+    q = q.substring(2).trim();
+    var res = wikiQuery(q);
+    for(var i = 0;i < res.length;i++)
+    {
+	res[i].snippet = res[i].comment;
+	res[i].comment = undefined;
+	res[i].displayUrl = res[i].lang + ".wikipedia.org/" + res[i].title;
+	res[i].clickUrl = res[i].displayUrl;
+	res[i].lang = undefined;
+    }
+    return {title: q + " (Поиск в Википедии)", items: res};
 });

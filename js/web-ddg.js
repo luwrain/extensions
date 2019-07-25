@@ -43,8 +43,9 @@ function extractSearchItemData(el)
 
 function ddgQuery(query)
 {
-    var url = 'http://duckduckgo.com/html/?q=' + java.net.URLEncoder.encode(query);
+    var url = 'https://duckduckgo.com/html/?q=' + java.net.URLEncoder.encode(query);
     var con = org.jsoup.Jsoup.connect(url);
+    con.userAgent("Mozilla/4.0");
     var doc = con.get();
     var items = doc.getElementsByTag("div");
     var res = []; 
@@ -57,7 +58,20 @@ function ddgQuery(query)
 	    continue;
 	if (text.indexOf("results_links_deep") >= 0)
 	    continue;
-	res.push(extractSearchItemData(item[i]));
+	res.push(extractSearchItemData(items[i]));
     }
     return res;
 }
+
+
+Luwrain.addHook("luwrain.web.search", function(query){
+
+        var q = query.trim();
+    if (!q.toLowerCase().startsWith("d ") && !q.toLowerCase().startsWith("д "))
+	return null;
+    q = q.substring(2).trim();
+
+    
+
+    return {title: q + " (Поиск в DuckDuckGo)", items: ddgQuery(q)};
+});
