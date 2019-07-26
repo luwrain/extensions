@@ -22,7 +22,7 @@ Luwrain.addCommand("url", function(){
     var url = Luwrain.popups.simple("Открыть URL", "URL:", "");
     if (url == null)
 	return;
-    Luwrain.openUrl("http://marigostra.ru");
+    Luwrain.openUrl(url);
 });
 
 Luwrain.addHook("luwrain.web.open", function(query){
