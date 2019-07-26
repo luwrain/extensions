@@ -43,7 +43,7 @@ function extractSearchItemData(el)
 
 function ddgQuery(query)
 {
-    var url = 'https://duckduckgo.com/html/?q=' + java.net.URLEncoder.encode(query);
+    var url = 'https://duckduckgo.com/html/?q=' + java.net.URLEncoder.encode(query, "UTF-8");
     var con = org.jsoup.Jsoup.connect(url);
     con.userAgent("Mozilla/4.0");
     var doc = con.get();
@@ -64,7 +64,7 @@ function ddgQuery(query)
 }
 
 
-Luwrain.addHook("luwrain.web.search", function(query){
+Luwrain.addHook("luwrain.web.open", function(query){
 
         var q = query.trim();
     if (!q.toLowerCase().startsWith("d ") && !q.toLowerCase().startsWith("д "))

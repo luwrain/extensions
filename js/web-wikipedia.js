@@ -67,7 +67,7 @@ Luwrain.addHook("luwrain.wiki.search", function(query){
     return wikiQuery(query);
 });
 
-Luwrain.addHook("luwrain.web.search", function(query){
+Luwrain.addHook("luwrain.web.open", function(query){
     var q = query.trim();
     if (!q.toLowerCase().startsWith("w ") && !q.toLowerCase().startsWith("в "))
 	return null;
@@ -77,8 +77,8 @@ Luwrain.addHook("luwrain.web.search", function(query){
     {
 	res[i].snippet = res[i].comment;
 	res[i].comment = undefined;
-	res[i].displayUrl = res[i].lang + ".wikipedia.org/" + res[i].title;
-	res[i].clickUrl = res[i].displayUrl;
+	res[i].displayUrl = res[i].lang + ".wikipedia.org/wiki/" + java.net.URLEncoder.encode(res[i].title, "UTF-8").replaceAll("\\+", "%20");
+	res[i].clickUrl = "https://" + res[i].displayUrl;
 	res[i].lang = undefined;
     }
     return {title: q + " (Поиск в Википедии)", items: res};

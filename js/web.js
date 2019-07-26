@@ -24,3 +24,13 @@ Luwrain.addCommand("url", function(){
 	return;
     Luwrain.openUrl("http://marigostra.ru");
 });
+
+Luwrain.addHook("luwrain.web.open", function(query){
+    if (query.trim().toLowerCase().startsWith("http://") ||
+	query.trim().toLowerCase().startsWith("https://"))
+    {
+	Luwrain.openUrl(query.trim());
+	return true;
+    }
+    return null;
+});
