@@ -11,8 +11,7 @@ Luwrain.addHook("luwrain.studio.project.types", function(){
 
 function escapeTex(line)
 {
-    //FIXME:
-    return line;
+    return line.replaceAll('\\\\', '\\\\\\\\').replaceAll('%', '\\\\%');
 }
 
 function writeTextFile(file, lines)
@@ -51,7 +50,6 @@ function createTexPresentation(destDir, author, title, frameTitles)
 	'',
 	'\\maketitle',
     ];
-
     for(var i = 0;i < frameTitles.length;i++)
     {
 	mainFileLines.push('');
@@ -59,14 +57,10 @@ function createTexPresentation(destDir, author, title, frameTitles)
 	mainFileLines.push('\\frametitle{' + escapeTex(frameTitles[i]) + '}');
 	mainFileLines.push('');
 	mainFileLines.push('Текст нового слайда');
-		mainFileLines.push('');
-	
-		mainFileLines.push('\\end{frame}');
-	
+	mainFileLines.push('');
+	mainFileLines.push('\\end{frame}');
     }
     mainFileLines.push('');
-
-    
     mainFileLines.push('\\begin{frame}');
     mainFileLines.push('\\begin{center}');
     mainFileLines.push('{\\LARGE Спасибо за внимание!}');
@@ -77,12 +71,7 @@ function createTexPresentation(destDir, author, title, frameTitles)
     mainFileLines.push('');
     mainFileLines.push('\\end{center}');
     mainFileLines.push('\\end{frame}');
-
-
-    
-
-
-        mainFileLines.push('');
+    mainFileLines.push('');
     mainFileLines.push('\\end{document}');
     writeTextFile(mainFile, mainFileLines);
 }
