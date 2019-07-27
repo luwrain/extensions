@@ -26,6 +26,7 @@ function createTexPresentation(destDir, author, title, frameTitles)
 {
     var destDirFile = new java.io.File(destDir);
     var mainFile = new java.io.File(destDirFile, "presentation.tex");
+    var projFile = new java.io.File(destDirFile, "Презентация.lwrproj");
     var mainFileLines = [
 	'\\documentclass{beamer}',
 	'',
@@ -73,7 +74,20 @@ function createTexPresentation(destDir, author, title, frameTitles)
     mainFileLines.push('\\end{frame}');
     mainFileLines.push('');
     mainFileLines.push('\\end{document}');
+    var projFileContent = {
+	key: 'luwrain-project-tex-presentation',
+	name: title,
+	folders: {
+	    name: title,
+	    subfolders: [],
+	    files: [
+		{name: "Главный файл презентации", path: mainFile.getName()},
+	    ],
+	}
+    };
     writeTextFile(mainFile, mainFileLines);
+    writeTextFile(projFile, [JSON.stringify(projFileContent)]);
+    return projFIle.getAbsolutePath();
 }
 
 Luwrain.addHook("luwrain.studio.project.create", function(projType){
