@@ -80,14 +80,14 @@ function createTexPresentation(destDir, author, title, frameTitles)
 	folders: {
 	    name: title,
 	    subfolders: [],
-	    files: [
+	    sourceFiles: [
 		{name: "Главный файл презентации", path: mainFile.getName()},
 	    ],
 	}
     };
     writeTextFile(mainFile, mainFileLines);
     writeTextFile(projFile, [JSON.stringify(projFileContent)]);
-    return projFIle.getAbsolutePath();
+    return projFile.getAbsolutePath();
 }
 
 Luwrain.addHook("luwrain.studio.project.create", function(projType){
@@ -115,5 +115,5 @@ Luwrain.addHook("luwrain.studio.project.create", function(projType){
     } while(!newFrameTitle.isEmpty());
     var destDir = new java.io.File("/tmp/pr");
     destDir.mkdir();
-    createTexPresentation("/tmp/pr", author, title, frameTitles);
+    return createTexPresentation("/tmp/pr", author, title, frameTitles);
 });
