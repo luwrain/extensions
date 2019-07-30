@@ -75,7 +75,7 @@ function createTexPresentation(destDir, author, title, frameTitles)
     mainFileLines.push('');
     mainFileLines.push('\\end{document}');
     var projFileContent = {
-	key: 'luwrain-project-tex-presentation',
+	key: org.luwrain.studio.ProjectFactory.KEY_TEX_PRESENTATION,
 	name: title,
 	folders: {
 	    name: title,
@@ -117,3 +117,10 @@ Luwrain.addHook("luwrain.studio.project.create", function(projType){
     destDir.mkdir();
     return createTexPresentation("/tmp/pr", author, title, frameTitles);
 });
+
+Luwrain.addHook("luwrain.studio.tex.appearance", function(index, line){
+    var  text = line;
+    text = text.replaceAll("\\{", " левая фигурная ").replaceAll("\\}", " правая фигурная ");
+    Luwrain.speak(text);
+    return true;
+})
