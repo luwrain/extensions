@@ -1,6 +1,20 @@
+/*
+   Copyright 2019 Michael Pozhidaev <msp@luwrain.org>
 
+   This file is part of LUWRAIN.
 
-//FIXME:ctrl+alt+end разбить длинные строки
+   LUWRAIN is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public
+   License as published by the Free Software Foundation; either
+   version 3 of the License, or (at your option) any later version.
+
+   LUWRAIN is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+*/
+
+//FIXME: Shift+end - wrap the words on the line
 
 function replaceText(lines, region, func)
 {
@@ -18,7 +32,6 @@ function replaceText(lines, region, func)
     }
     return false;
 }
-
 
 //Cleaning the line ending: Ctrl+Alt+End
 Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
@@ -69,8 +82,3 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
 	Luwrain.sounds.error();
     return true;
 });
-
-
-
-
-
