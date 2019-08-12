@@ -63,3 +63,20 @@ Luwrain.addHook("luwrain.notepad.action", function(action, args){
     //FIXME:
     return true;
 });
+
+
+//Making automatic indentation in programming mode
+Luwrain.addHook("luwrain.notepad.mode.programming.split.post", function(args){
+    //Doing nothing, if we are on the first line (what actually must never happen)
+    if (args.hotPoint.y == 0)
+	return;
+    var index = args.hotPoint.y;
+    var prevLine = args.lines[index - 1];
+    var prefix = prevLine;
+    args.lines[index] = prefix + args.lines[index];
+    print("kaka " + args.hotPoint.x);
+    args.hotPoint.x = args.hotPoint.x + prefix.length();
+    print("after " + args.hotPoint.x);
+});
+    
+
