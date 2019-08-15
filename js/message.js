@@ -16,6 +16,12 @@
 
 var MAX_LINE_LEN = 60;
 
+/*
+ * Makes word wrapping on long lines during message editing. This hook
+ * checks that the state of the edit control not modified by other hooks
+ * and inserts new line with the rest of the line which exceeds
+ * MAX_LINE_LEN.
+ */
 Luwrain.addHook("luwrain.message.edit.insert.chars.post", function(args){
     if (args.chars != ' ')
 	return;
@@ -41,14 +47,14 @@ Luwrain.addHook("luwrain.message.edit.insert.chars.post", function(args){
 	pos = i;
 	break;
     }
-        if (pos < 0)
-	    return;
+    if (pos < 0)
+	return;
     //Cutting the current line on pos with  removing trailing spaces
     var line1 = line.substring(0, pos);
     var cutPos = pos - 1;
     while (cutPos >= 0 && line1[cutPos] == ' ')
 	cutPos--;
-	line1 = line1.substring(0, cutPos + 1);
+    line1 = line1.substring(0, cutPos + 1);
     //Skipping all spaces on split point at the beginning of the next line
     cutPos = pos;
     while(cutPos < args.x && line[cutPos] == ' ')
