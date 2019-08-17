@@ -33,7 +33,7 @@ function extractSearchItemData(el)
 	    displayUrl = children[j].text();
 	    var a = children[j].getElementsByTag("a");
 	    for(var k = 0;k < a.length;k++)
-		clickUrl = a[k].attr("href");
+		clickUrl = 'https://duckduckgo.com' + a[k].attr("href");
 	}
 	if (children[j].attr("class") === 'result__snippet')
 	    snippet = children[j].text();
