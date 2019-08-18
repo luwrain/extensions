@@ -65,13 +65,16 @@ function ddgQuery(query)
 
 
 Luwrain.addHook("luwrain.web.open", function(query){
-
         var q = query.trim();
     if (!q.toLowerCase().startsWith("d ") && !q.toLowerCase().startsWith("д "))
 	return null;
     q = q.substring(2).trim();
-
-    
-
     return {title: q + " (Поиск в DuckDuckGo)", items: ddgQuery(q)};
 });
+
+Luwrain.addHook("luwrain.web.search", function(query){
+    var q = query.trim();
+    //FIXME:checking the default search engine
+    return {title: q + " (Поиск в DuckDuckGo)", items: ddgQuery(q)};
+});
+
