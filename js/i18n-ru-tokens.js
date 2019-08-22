@@ -16,7 +16,6 @@
 
 var RULES = [
 
-
     //centures
     {conds: [
 	{class: "pred", text: "в"},
@@ -25,10 +24,37 @@ var RULES = [
 	{type: "space"},
     ],
      groupFunc: function(tokens, posFrom, posTo){
-	 return {groupType: "cent", value: tokens[posFrom + 2].romanNum, form: "prep"};
+	 return {groupType: "cent", value: tokens[posFrom + 2].romanNum, form: "in"};
      }},
 
 ];
+
+function buildCentGroupText(group)
+{
+    switch(group.form)
+    {
+	case 'in':
+	if (group.value === 19)
+	    return 'в девятнадцатом веке';
+		if (group.value === 20)
+	    	return 'в двадцатом веке';
+		return 'в ' + group.value + ' веке';
+	default:
+	return '' + group.value + ' век';
+    }
+}
+
+function buildGroupText(group)
+{
+    switch(group.groupType)
+    {
+	case 'cent':
+	return buildCentGroupText(group);
+	default:
+	return '';
+    }
+}
+
 
 
 var RU_PREDS = [
@@ -1149,26 +1175,25 @@ function applyRules(tokens)
     return res;
 }
 
+function insertGroups(tokens, groups)
+{
+    for(var i in groups)
+    {
+	var g = groups[i];
+	tokens[g.posFrom] = {type: 'group', text: buildGroupText(g)};
+	for(var j = g.posFrom + 1;j < g.posTo;j++)
+	    tokens[j] = null;
+    }
+}
+
 function buildResult(tokens)
 {
     var res = '';
     for(var i in tokens)
     {
 	var token = tokens[i];
-	if (token.isRomanNum)
-	{
-	    res += 'roman';
-	    continue;
-	}
-
-		if (token.isPred)
-	{
-	    res += 'pred';
-	    continue;
-	}
-
-	
-	res += token.text;
+	if (token != null && token != undefined)
+	    res += token.text;
     }
     return res;
 }
@@ -1179,6 +1204,6 @@ Luwrain.addHook("luwrain.i18n.ru.speakable.natural", function(tokensList){
 	tokens.push({type: tokensList[i].type, text: tokensList[i].text});
     assignClasses(tokens);
     var groups = applyRules(tokens);
-    return groups.length;
+    insertGroups(tokens, groups);
     return buildResult(tokens);
-})
+    })
