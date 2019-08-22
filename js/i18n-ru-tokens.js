@@ -16,6 +16,8 @@
 
 var RULES = [
 
+
+    //centures
     {conds: [
 	{class: "pred", text: "в"},
 	{type: "space"},
@@ -1040,12 +1042,20 @@ var ROMAN_NUMS = [
     "M",
 ];
 
+function findRomanNum(value)
+{
+    for(var i = 1;i < ROMAN_NUMS.length;i++)
+	if (ROMAN_NUMS[i] == value)
+	    return i;
+    return -1;
+}
+
 function markRomanNumbers(tokens)
 {
     for(var i = 0;i < tokens.length;i++)
     {
 	var token = tokens[i];
-	if (token.type == "latin")
+	if (token.type == 'latin')
 	{
 	    var value = findRomanNum(token.text);
 	    if (value >= 0)
@@ -1060,13 +1070,13 @@ function markRomanNumbers(tokens)
 
 function markPreds(tokens)
 {
-    for(var i = 0;i < tokens.length;i++)
+    for(var i in tokens)
     {
 	if (tokens[i].type != "cyril")
 	    continue;
 	var j = 0;
 	for(j = 0;j < RU_PREDS.length;j++)
-	    if (RU_PREDS[j].toLowerCase() == tokens[i].text)
+	    if (RU_PREDS[j] == tokens[i].text.toLowerCase())
 		break;
 	if (j >= RU_PREDS.length)
 	    continue;
@@ -1075,25 +1085,13 @@ function markPreds(tokens)
     }
 }
 
-function markClasses(tokens)
+function assignClasses(tokens)
 {
-    for(var i = 0;i < tokens.length;i++)
+    for(var i in tokens)
 	tokens[i].classes = [];
     markRomanNumbers(tokens);
     markPreds(tokens);
 }
-
-
-
-function findRomanNum(value)
-{
-    for(var i = 1;i < ROMAN_NUMS.length;i++)
-	if (ROMAN_NUMS[i] == value)
-	    return i;
-    return -1;
-}
-
-
 
 function condSatisfies(cond, token)
 {
@@ -1115,18 +1113,20 @@ function condSatisfies(cond, token)
 
 function condsSatisfy(conds, tokens, pos)
 {
-    for(var i = 0;i < conds.length;i++)
-	if (!condSatisfies(conds[i], tokens[pos + i]))
-	    return false;
+    for(var i in conds)
+	if (!condSatisfies(conds[i], tokens[parseInt(pos) + parseInt(i)]))
+	    	    return false;
     return true;
 }
 
 function applyRule(rule, tokens)
 {
-    if (rule.conds.length > tokens.length)
+    var conds = rule.conds;
+    if (conds.length > tokens.length)
 	return [];
+    print('checking ' + conds.length + ' ' + tokens.length);
     var res = [];
-    for(var i = 0;i < tokens.length - rule.conds.length + 1;i++)
+    for(var i = 0;i < tokens.length - conds.length + 1;i++)
 	if (condsSatisfy(rule.conds, tokens, i))
     {
 	var r = rule.groupFunc(tokens, i, i + rule.conds.length);
@@ -1137,21 +1137,48 @@ function applyRule(rule, tokens)
     return res;
 }
 
-function insertGroups(tokens, groups)
+function applyRules(tokens)
 {
-    
+    var res = [];
+    for(var i in RULES)
+    {
+	var r = applyRule(RULES[i], tokens);
+	for(var j in r)
+	    res.push(r[j]);
+    }
+    return res;
 }
 
-var tokens = TOKENS;
-markClasses(tokens);
-groups = [];
-
-for(var i = 0;i < RULES.length;i++)
+function buildResult(tokens)
 {
-    var g = applyRule(RULES[i], tokens);
-    for(var j = 0;j < g.length;j++)
-	groups.push(g[j]);
+    var res = '';
+    for(var i in tokens)
+    {
+	var token = tokens[i];
+	if (token.isRomanNum)
+	{
+	    res += 'roman';
+	    continue;
+	}
+
+		if (token.isPred)
+	{
+	    res += 'pred';
+	    continue;
+	}
+
+	
+	res += token.text;
+    }
+    return res;
 }
 
-for(var i = 0;i < groups.length;i++)
-    print(JSON.stringify(groups[i]));
+Luwrain.addHook("luwrain.i18n.ru.speakable.natural", function(tokensList){
+    var tokens = [];
+    for(var i = 0;i < tokensList.length;i++)
+	tokens.push({type: tokensList[i].type, text: tokensList[i].text});
+    assignClasses(tokens);
+    var groups = applyRules(tokens);
+    return groups.length;
+    return buildResult(tokens);
+})
