@@ -16,32 +16,49 @@
 
 var RULES = [
 
-    //centures
+    //в ... в.
     {conds: [
 	{class: "pred", text: "в"},
 	{type: "space"},
 	{class: "romannum"},
 	{type: "space"},
+		{type: "cyril", text: "в"},
     ],
      groupFunc: function(tokens, posFrom, posTo){
-	 return {groupType: "cent", value: tokens[posFrom + 2].romanNum, form: "in"};
+	 return {groupType: "cent", value: tokens[posFrom + 2].romanNum, form: 'ord_prae', prefix: 'в'};
+     }},
+
+    //на ...%
+    {conds: [
+	{class: "pred", text: "на"},
+	{type: "space"},
+	{type: "num"},
+		{type: "punc", text: "%"},
+    ],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {groupType: 'percent', value: tokens[posFrom + 2].text, form: 'nom', prefix: 'на'};
      }},
 
 ];
 
 function buildCentGroupText(group)
 {
-    switch(group.form)
-    {
-	case 'in':
-	if (group.value === 19)
-	    return 'в девятнадцатом веке';
-		if (group.value === 20)
-	    	return 'в двадцатом веке';
-		return 'в ' + group.value + ' веке';
-	default:
-	return '' + group.value + ' век';
-    }
+    res = '';
+    if (group.prefix != null && !group.prefix.isEmpty())
+	res += (group.prefix + ' ');
+    res += group.value;//FIXME:proper form
+    res += ' веке';
+    return res;
+}
+
+function buildPercentGroupText(group)
+{
+    res = '';
+    if (group.prefix != null && !group.prefix.isEmpty())
+	res += (group.prefix + ' ');
+    res += group.value;//FIXME:proper form
+    res += ' процентов';
+    return res;
 }
 
 function buildGroupText(group)
@@ -50,12 +67,12 @@ function buildGroupText(group)
     {
 	case 'cent':
 	return buildCentGroupText(group);
+		case 'percent':
+	return buildPercentGroupText(group);
 	default:
 	return '';
     }
 }
-
-
 
 var RU_PREDS = [
     "в",
