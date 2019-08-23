@@ -14,7 +14,7 @@
    General Public License for more details.
 */
 
-var MAX_LINE_LEN = 60;
+var MAX_LINE_LEN = 80;
 
 /*
  * Makes word wrapping on long lines during message editing. This hook
