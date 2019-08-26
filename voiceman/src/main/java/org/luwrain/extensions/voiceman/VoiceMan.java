@@ -152,6 +152,12 @@ final class VoiceMan implements org.luwrain.speech.Channel
     {
     }
 
+            @Override public Result synth(String text, OutputStream stream, AudioFormat format, SyncParams params, Set<Flags> flags)
+    {
+	return new Result(Result.Type.NOT_IMPLEMENTED);
+    }
+
+
     @Override public String getChannelName()
     {
 	return DEFAULT_NAME;

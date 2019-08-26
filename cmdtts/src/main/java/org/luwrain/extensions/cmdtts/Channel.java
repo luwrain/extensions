@@ -150,6 +150,12 @@ final class Channel implements org.luwrain.speech.Channel
 	return id;
     }
 
+        @Override public Result synth(String text, OutputStream stream, AudioFormat format, SyncParams params, Set<Flags> flags)
+    {
+	return new Result(Result.Type.NOT_IMPLEMENTED);
+    }
+
+
     /*
     @Override public StreamedSpeaking createStreamedSpeaking(int pitch, int rate, AudioFormat format)
     {
@@ -202,6 +208,7 @@ final class Channel implements org.luwrain.speech.Channel
 			    )};
     }
 
+    
     @Override public void silence()
     {
 	current.clear();

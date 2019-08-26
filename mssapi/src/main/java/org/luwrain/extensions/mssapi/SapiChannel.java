@@ -147,6 +147,12 @@ final class SapiChannel implements org.luwrain.speech.Channel
 	return "Microsoft Speech API";
     }
 
+            @Override public Result synth(String text, OutputStream stream, AudioFormat format, SyncParams params, Set<Flags> flags)
+    {
+	return new Result(Result.Type.NOT_IMPLEMENTED);
+    }
+
+
     /*
     @Override public void setDefaultPitch(int value)
     {

@@ -98,6 +98,11 @@ final class Emacspeak implements org.luwrain.speech.Channel
 	return -1;
     }
 
+            @Override public Result synth(String text, OutputStream stream, AudioFormat format, SyncParams params, Set<Flags> flags)
+    {
+	return new Result(Result.Type.NOT_IMPLEMENTED);
+    }
+
     @Override public AudioFormat[] getSynthSupportedFormats()
     {
 	return new AudioFormat[0];
