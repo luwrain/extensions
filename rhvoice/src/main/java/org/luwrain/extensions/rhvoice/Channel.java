@@ -135,46 +135,47 @@ final class Channel implements org.luwrain.speech.Channel
 	new Thread(thread).start();
     }
 
-    /*
-    @Override public StreamedSpeaking createStreamedSpeaking(int pitch, int rate, AudioFormat format)
-    {
-	NullCheck.notNull(format, "format");
-	return new StreamedSpeaking(){
-	    @Override public boolean speak(String text, OutputStream stream)
-	    {
-		NullCheck.notNull(text, "text");
-		NullCheck.notNull(stream, "stream");
-		if (tts == null)
-		    return false;
-		try {
-		    tts.speak(text, null, (samples)->{
-			    try {
-				final ByteBuffer buffer=ByteBuffer.allocate(samples.length * 4);//FIXME:real frame size
-				buffer.order(ByteOrder.LITTLE_ENDIAN);
-				buffer.asShortBuffer().put(samples);
-				final byte[] bytes = buffer.array();
-			    }
-			    catch(Exception e)
-			    {
-				Log.error(LOG_COMPONENT, "unable to speak");
-				return false;
-			    }
-			    return true;
-			});
-		} 
-		catch(RHVoiceException e)
-		{
-		    Log.error(LOG_COMPONENT, "rhvoice error:" + e.getClass().getName() + ":" + e.getMessage());
-		}
-		return true;
-	    }
-	    @Override public void close()
-	    {
-	    }
-	};
-    }
-    */
 
+    @Override public Result synth(String text, OutputStream stream, AudioFormat format, SyncParams params, Set<Flags> flags)
+    {
+	NullCheck.notNull(text, "text");
+	NullCheck.notNull(stream, "stream");
+	NullCheck.notNull(format, "format");
+	NullCheck.notNull(params, "params");
+	NullCheck.notNull(flags, "flags");
+	if (text.trim().isEmpty())
+	    return new Result();
+	final SynthesisParameters p = new SynthesisParameters();
+	p.setVoiceProfile(voiceName);
+	p.setRate(convRate(params.getRate()));
+	p.setPitch(convPitch(params.getPitch()));
+   	p.setSSMLMode(false);
+	try {
+	    tts.speak(text, p, (samples)->{
+		    try {
+			final ByteBuffer buffer=ByteBuffer.allocate(samples.length * 2);//FIXME:real frame size
+			buffer.order(ByteOrder.LITTLE_ENDIAN);
+			buffer.asShortBuffer().put(samples);
+			final byte[] bytes = buffer.array();
+			stream.write(bytes);
+			Log.debug(LOG_COMPONENT, "written " + bytes.length + " bytes");
+		    }
+		    catch(IOException e)
+		    {
+			Log.error(LOG_COMPONENT, "unable to speak");
+			return false;
+		    }
+		    return true;
+		});
+	    return new Result();
+	} 
+	catch(RHVoiceException e)
+	{
+	    Log.error(LOG_COMPONENT, "rhvoice error:" + e.getClass().getName() + ":" + e.getMessage());
+	    return new Result(Result.Type.FAILED, e);
+	}
+    }
+    
     @Override public void silence()
     {
 	if (thread != null)
