@@ -158,7 +158,6 @@ final class Channel implements org.luwrain.speech.Channel
 			buffer.asShortBuffer().put(samples);
 			final byte[] bytes = buffer.array();
 			stream.write(bytes);
-			Log.debug(LOG_COMPONENT, "written " + bytes.length + " bytes");
 		    }
 		    catch(IOException e)
 		    {
