@@ -28,3 +28,23 @@ Luwrain.addWorker("startup-announcement-worker", 5, 60 * 60 * 24 * 365, function
     var text = format.format(new java.util.Date());
     Luwrain.message.announcement(text);
 });
+
+
+//The announcement after waking up, measures the time elapsed from the previous step
+var prevStepTime = -1;
+Luwrain.addWorker("waking-announcement-worker", 1, 1, function(){
+    var d = new java.util.Date();
+    if (prevStepTime < 0)
+    {
+	prevStepTime = d.getTime();
+	return;
+    }
+    var c = d.getTime();
+    if (c - prevStepTime > 10000)
+    {
+	var format = new java.text.SimpleDateFormat("EEEEE, dd MMMM, HH:mm");
+	var text = format.format(new java.util.Date());
+	Luwrain.message.announcement(text);
+    }
+    prevStepTime = c;
+});
