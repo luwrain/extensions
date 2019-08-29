@@ -51,11 +51,17 @@ final class SapiChannel implements org.luwrain.speech.Channel
     @Override public long speak(String text,Listener listener,int relPitch,int relRate, boolean cancelPrevious)
     {
 	NullCheck.notNull(text, "text");
-	if(relPitch!=0)
-	    impl.pitch(limit100(curPitch+relPitch));
-	if(relRate!=0)
-	    impl.rate(convRate(limit100(curRate+relRate)));
-	impl.speak(text,SAPIImpl_constants.SPF_ASYNC|SAPIImpl_constants.SPF_IS_NOT_XML|(cancelPrevious?SAPIImpl_constants.SPF_PURGEBEFORESPEAK:0));
+	//	if(relPitch!=0)
+	impl.pitch(/*limit100(curPitch+relPitch)*/10);
+	
+	//	if(relRate!=0)
+	    impl.rate(/*convRate(limit100(curRate+relRate))*/10);
+	    //	impl.speak(text,SAPIImpl_constants.SPF_ASYNC|SAPIImpl_constants.SPF_IS_NOT_XML|(cancelPrevious?SAPIImpl_constants.SPF_PURGEBEFORESPEAK:0));
+	    new Thread(()->{
+		    	impl.speak(text,SAPIImpl_constants.SPF_IS_NOT_XML| SAPIImpl_constants.SPF_PURGEBEFORESPEAK);
+			listener.onFinished(-1);
+			
+	    }).start();
 	if(relPitch!=0)
 	    impl.pitch(curPitch);
 	if(relRate!=0)
