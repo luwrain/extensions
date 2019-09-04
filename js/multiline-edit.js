@@ -33,7 +33,42 @@ function replaceText(lines, region, func)
     return false;
 }
 
-//alt+nd: Finds the first spacing character on the line which doesn't have any non-spacing characters after
+//alt+home: Finds the first non-spacing character on the line
+Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
+    if (!event.withAltOnly || event.special != "home")
+	return false;
+    var lines = args.lines;
+    if (lines.length == 0)
+    {
+	Luwrain.sounds.emptyLine();
+	Luwrain.speak(Luwrain.i18n.static.EmptyLine);
+	return true;
+    }
+    var hotPoint = args.hotPoint;
+    var line = lines[hotPoint.y];
+    if (line.length == 0)
+    {
+	Luwrain.sounds.emptyLine();
+	Luwrain.speak(Luwrain.i18n.static.EmptyLine);
+	return true;
+    }
+    for(var i = 0;i < line.length;i++)
+	if (line[i] != ' ')
+    {
+	hotPoint.x = i;
+	Luwrain.sounds.ok();
+	if (i > 0)
+	    Luwrain.speak('' + i + " пробелов от начала строки"); else //FIXME:
+		Luwrain.speak(Luwrain.i18n.static.BeginOfLine);
+	return true;
+    }
+    hotPoint.x = line.length();
+    Luwrain.sounds.ok();
+    Luwrain.speak('' + line.length + " пробелов от начала строки");//FIXME:
+    return true;
+});
+
+//alt+end: Finds the first spacing character on the line which doesn't have any non-spacing following characters
 Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     if (!event.withAltOnly || event.special != "end")
 	return false;
@@ -48,7 +83,7 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     var line = lines[hotPoint.y];
     if (line.length == 0)
     {
-		Luwrain.sounds.emptyLine();
+	Luwrain.sounds.emptyLine();
 	Luwrain.speak(Luwrain.i18n.static.EmptyLine);
 	return true;
     }
@@ -63,10 +98,10 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
 	return true;
     }
     hotPoint.x = 0;
-    	Luwrain.sounds.ok();
-	    Luwrain.speak('' + line.length + " пробелов до конца строки");//FIXME:
+    Luwrain.sounds.ok();
+    Luwrain.speak('' + line.length + " пробелов до конца строки");//FIXME:
     return true;
-    });
+});
 
 
 //Cleaning the line ending: Ctrl+Alt+End
