@@ -33,6 +33,42 @@ function replaceText(lines, region, func)
     return false;
 }
 
+//alt+nd: Finds the first spacing character on the line which doesn't have any non-spacing characters after
+Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
+    if (!event.withAltOnly || event.special != "end")
+	return false;
+    var lines = args.lines;
+    if (lines.length == 0)
+    {
+	Luwrain.sounds.emptyLine();
+	Luwrain.speak(Luwrain.i18n.static.EmptyLine);
+	return true;
+    }
+    var hotPoint = args.hotPoint;
+    var line = lines[hotPoint.y];
+    if (line.length == 0)
+    {
+		Luwrain.sounds.emptyLine();
+	Luwrain.speak(Luwrain.i18n.static.EmptyLine);
+	return true;
+    }
+    for(var i = line.length - 1;i >= 0;i--)
+	if (line[i] != ' ')
+    {
+	hotPoint.x = i + 1;
+	Luwrain.sounds.ok();
+	if (i + 1 < line.length)
+	    Luwrain.speak('' + line.length - i - 1 + " пробелов до конца строки"); else //FIXME:
+		Luwrain.speak(Luwrain.i18n.static.EndOfLine);
+	return true;
+    }
+    hotPoint.x = 0;
+    	Luwrain.sounds.ok();
+	    Luwrain.speak('' + line.length + " пробелов до конца строки");//FIXME:
+    return true;
+    });
+
+
 //Cleaning the line ending: Ctrl+Alt+End
 Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     if (!event.withAlt || !event.withControl || event.withShift ||
