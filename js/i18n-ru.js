@@ -55,3 +55,63 @@ Luwrain.addHook("luwrain.i18n.ru.speech.natural.pre", function(text){
     res = res.replaceAll("стр\\. ", "страница ");
     return res;
 });
+
+
+Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
+    var res = "";
+    var rusLang = false;
+    for(var i = 0;i < text.length;i++)
+    {
+	var ch = text[i];
+	switch(ch)
+	{
+	    case '/':
+	    res += ' слэш ';
+	    break;
+	    case '(':
+	    res += " левая круглая ";
+	    break;
+	    case ')':
+	    res += " правая круглая ";
+	    break;
+	    	    case '[':
+	    res += " в левая квадратная ";
+	    break;
+	    case ']':
+	    res += " правая квадратная ";
+	    break;
+	    case '%':
+	    if (rusLang)
+		res += " процент "; else
+		    res += ' percent ';
+	    break;
+	    case '.':
+	    if (rusLang)
+		res += ' точка '; else
+		    res += ' dot ';
+	    break;
+	    case ':':
+	    if (rusLang)
+		res += " двоеточие "; else
+		    res += ' colon ';
+	    break;
+	    case '-':
+	    if (rusLang)
+		res += ' дефис '; else
+		    res += ' dash ';
+	    break;
+	    default:
+	    if ((ch >= 'а' && ch <= 'я') ||
+		(ch >= 'А' && ch <= 'Я'))
+		rusLang = true;
+
+	    	    if ((ch >= 'a' && ch <= 'z') ||
+		(ch >= 'A' && ch <= 'Z'))
+		rusLang = false;
+
+	    
+	    res += ch;
+	}
+    }
+    return res;
+    });
