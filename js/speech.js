@@ -14,13 +14,50 @@
    General Public License for more details.
 */
 
+function isUpperCase(ch)
+{
+    return (ch >= 'A' && ch <= 'Z') ||
+	(ch >= 'А' && ch <= 'Я');
+}
+
+function isLowerCase(ch)
+{
+    return (ch >= 'a' && ch <= 'z') ||
+	(ch >= 'а' && ch <= 'я');
+}
+
+function spaceBeforeCap(text)
+{
+    if (text.length <= 1)
+	return text;
+    var res = '';
+    for(var i = 0;i < text.length - 1;i++)
+    {
+	var ch1 = text[i];
+	var ch2 = text[i + 1];
+	if (!isLowerCase(ch1) || !isUpperCase(ch2))
+	{
+	    res += ch1;
+	    continue;
+	}
+	res += ch1;
+	res += ' ';
+	    }
+    res += text[text.length - 1];
+    return res;
+}
+
 Luwrain.addHook("luwrain.speech.text.regular", function(text){
-    /*
+    return spaceBeforeCap(text);
+});
+
+		    /*
+Luwrain.addHook("luwrain.speech.text.regular", function(text){
     for(var i = 0;i < text.length;i++)
     {
 	var ch = new java.lang.Character(text[i]);
 	if (java.lang.Character.isLetterOrDigit(ch.charValue()))
-	    return text;
+	return text;
     }
     var res = '';
     for(var i = 0;i < text.length;i++)
@@ -30,6 +67,6 @@ Luwrain.addHook("luwrain.speech.text.regular", function(text){
 	res += "символ ";
     }
     return res.trim();
-    */
-    return text;
 });
+		    */
+		
