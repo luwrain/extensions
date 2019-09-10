@@ -64,11 +64,11 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
     for(var i = 0;i < text.length;i++)
     {
 	var ch = text[i];
-		    if ((ch >= 'а' && ch <= 'я') ||
-		(ch >= 'А' && ch <= 'Я'))
-break;
-	    	    if ((ch >= 'a' && ch <= 'z') ||
-			(ch >= 'A' && ch <= 'Z'))
+	if ((ch >= 'а' && ch <= 'я') ||
+	    (ch >= 'А' && ch <= 'Я'))
+	    break;
+	if ((ch >= 'a' && ch <= 'z') ||
+	    (ch >= 'A' && ch <= 'Z'))
 	{
 	    rusLang = false;
 	    break;
