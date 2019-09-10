@@ -59,7 +59,21 @@ Luwrain.addHook("luwrain.i18n.ru.speech.natural.pre", function(text){
 
 Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
     var res = "";
-    var rusLang = false;
+    //Checking the first letter to understand what language must be the default
+    var rusLang = true;
+    for(var i = 0;i < text.length;i++)
+    {
+	var ch = text[i];
+		    if ((ch >= 'а' && ch <= 'я') ||
+		(ch >= 'А' && ch <= 'Я'))
+break;
+	    	    if ((ch >= 'a' && ch <= 'z') ||
+			(ch >= 'A' && ch <= 'Z'))
+	{
+	    rusLang = false;
+	    break;
+	}
+    }
     for(var i = 0;i < text.length;i++)
     {
 	var ch = text[i];
@@ -103,13 +117,10 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 	    default:
 	    if ((ch >= 'а' && ch <= 'я') ||
 		(ch >= 'А' && ch <= 'Я'))
-		rusLang = true;
-
+		rusLang = true; else
 	    	    if ((ch >= 'a' && ch <= 'z') ||
 		(ch >= 'A' && ch <= 'Z'))
 		rusLang = false;
-
-	    
 	    res += ch;
 	}
     }
