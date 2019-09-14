@@ -80,13 +80,19 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 	switch(ch)
 	{
 	    case '/':
-	    res += ' слэш ';
+	    	    if (rusLang)
+			res += ' слэш '; else
+			    res += ' slash ';
 	    break;
 	    case '(':
-	    res += " левая круглая ";
+	    	    if (rusLang)
+			res += " левая круглая "; else
+			    res += ' left parent ';
 	    break;
 	    case ')':
-	    res += " правая круглая ";
+	    	    if (rusLang)
+			res += " правая круглая "; else
+			    res += ' right parent ';
 	    break;
 	    	    case '[':
 	    res += " в левая квадратная ";
@@ -99,6 +105,16 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 		res += " процент "; else
 		    res += ' percent ';
 	    break;
+	    	    case '<':
+	    if (rusLang)
+		res += ' меньше '; else
+		    res += ' less than ';
+	    break;
+	    	    	    case '>':
+	    if (rusLang)
+		res += ' больше '; else
+		    res += ' greater than ';
+	    break;
 	    case '.':
 	    if (rusLang)
 		res += ' точка '; else
@@ -109,10 +125,25 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 		res += " двоеточие "; else
 		    res += ' colon ';
 	    break;
+	    	    case ';':
+	    if (rusLang)
+		res += " точка с запятой "; else
+		    res += ' semicolon ';
+	    break;
 	    case '-':
 	    if (rusLang)
 		res += ' дефис '; else
 		    res += ' dash ';
+	    break;
+	    	    case '+':
+	    if (rusLang)
+		res += ' плюс '; else
+		    res += ' plus ';
+	    break;
+	    	    	    case '=':
+	    if (rusLang)
+		res += ' равно '; else
+		    res += ' equals ';
 	    break;
 	    default:
 	    if ((ch >= 'а' && ch <= 'я') ||
