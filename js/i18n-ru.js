@@ -94,11 +94,25 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 			res += " правая круглая "; else
 			    res += ' right parent ';
 	    break;
-	    	    case '[':
-	    res += " в левая квадратная ";
+	    case '[':
+	    	    	    if (rusLang)
+				res += ' левая квадратная '; else
+				    res += ' left bracket ';
 	    break;
 	    case ']':
-	    res += " правая квадратная ";
+	    	    if (rusLang)
+			res += ' правая квадратная '; else
+			    res += ' right bracket ';
+	    break;
+	    	    case '{':
+	    	    	    if (rusLang)
+				res += ' левая фигурная '; else
+				    res += ' left brace ';
+	    break;
+	    case '}':
+	    	    if (rusLang)
+			res += ' правая фигурная '; else
+			    res += ' right brace ';
 	    break;
 	    case '%':
 	    if (rusLang)
