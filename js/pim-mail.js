@@ -14,10 +14,19 @@
    General Public License for more details.
 */
 
+function saveToDefaultIncoming(mail, message)
+{
+    var defaultIncoming = mail.folders.findFirstByProperty("defaultIncoming", 'true')
+    if (defaultIncoming == null)
+	return false;
+    	defaultIncoming.saveMessage(message);
+	return true;
+}
+
 Luwrain.addHook("luwrain.pim.message.new.save", function(mail, message){
     var listId = message.list.id;
     if (listId.isEmpty())
-	return true;
+	return saveToDefaultIncoming(mail, message);
     var existingFolder = mail.folders.findFirstByProperty("list", listId)
     if (existingFolder != null)
     {
@@ -26,9 +35,9 @@ Luwrain.addHook("luwrain.pim.message.new.save", function(mail, message){
     }
     if (existingFolder == null)
     {
-	var listsFolder = mail.folders.findFirstByProperty("lists", "true");
+	var listsFolder = mail.folders.findFirstByProperty("lists", 'true');
 	if (listsFolder == null)
-	    return true;
+	    return saveToDefaultIncoming(mail, message);
 	var newFolder = listsFolder.newSubfolder();
 	if (!message.list.name.isEmpty())
 	    newFolder.title = message.list.name; else
