@@ -67,31 +67,6 @@ function divideOnGroups(items)
 	return groups;
 }
 
-Luwrain.addHook("luwrain.pim.message.new.save", function(mail, message){
-    var listId = message.list.id;
-    if (listId.isEmpty())
-	return true;
-    var existingFolder = mail.folders.findFirstByProperty("list", listId)
-    if (existingFolder != null)
-    {
-	existingFolder.saveMessage(message);
-	return true;
-    }
-    if (existingFolder == null)
-    {
-	var listsFolder = mail.folders.findFirstByProperty("lists", "true");
-	if (listsFolder == null)
-	    return true;
-	var newFolder = listsFolder.newSubfolder();
-	if (!message.list.name.isEmpty())
-	    newFolder.title = message.list.name; else
-		newFolder.title = listId;
-	newFolder.properties.list = listId;
-	newFolder.saveProperties();
-    }
-    return true;
-});
-
 Luwrain.addHook("luwrain.mail.summary.organize", function(messages){
     var res = [];
     for(var i = 0;i < messages.length;i++)
@@ -111,9 +86,4 @@ Luwrain.addHook("luwrain.mail.summary.organize", function(messages){
 	    res.push(groups[i].messages[j].source.from.personal);
     }
     return res;
-});
-
-Luwrain.addCommand("fetch-mail-incoming-bkg", function(){
-    if (!Luwrain.runWorker("luwrain.pim.fetch.pop3"))
-	Luwrain.message("already");
 });
