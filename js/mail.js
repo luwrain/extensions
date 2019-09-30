@@ -72,18 +72,26 @@ Luwrain.addHook("luwrain.mail.summary.organize", function(messages){
     for(var i = 0;i < messages.length;i++)
 	res.push({
 	    subject: stripRe(messages[i].subject),
-	    source: messages[i]});
+	    source: messages[i]
+	});
     stripCommonBeginning(res);
     for(var i = 0;i < res.length;i++)
 	res[i].subject = stripRe(res[i].subject);
-
     var groups = divideOnGroups(res);
     res = [];
     for(var i = 0;i < groups.length;i++)
     {
 	res.push("Тема " + groups[i].subject);
 	for(var j = 0;j < groups[i].messages.length;j++)
-	    res.push(groups[i].messages[j].source.from.personal);
+	    res.push({message: groups[i].messages[j].source, title: groups[i].messages[j].source.from.personal});
     }
     return res;
+});
+
+Luwrain.addHook("luwrain.mail.reply", function(message){
+    var to = message.from.full;
+    var subject = message.subject;
+    var text = message.text;
+    Luwrain.launchApp("message", [to, "", subject, text]);
+    return true;
 });
