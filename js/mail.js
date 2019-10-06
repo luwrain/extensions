@@ -17,19 +17,6 @@
 function stripRe(text)
 {
     return text.replaceAll('^[Rr][Ee](\\[[0-9]+\\])*: ', '').trim();
-    //FIXME: better to use regex
-    /*
-    if (text.toLowerCase().startsWith("re: ") && text.length >= 5)
-	return text.substring(4);
-    if (!text.toLowerCase().startsWith("re["))
-	return text;
-    var i = 3;
-    while (i < text.length && text[i] >= "0" && text[i] <= "9")
-	i++;
-    if (i >= text.length || text[i] != ']')
-	return text;
-    return text.substring(i + 1);
-*/
 }
 
 function stripCommonBeginning(items)
@@ -80,12 +67,19 @@ Luwrain.addHook("luwrain.mail.summary.organize", function(messages){
 	    source: messages[i]
 	});
     stripCommonBeginning(res);
+    //Stripping RE: once more time
     for(var i = 0;i < res.length;i++)
 	res[i].subject = stripRe(res[i].subject);
     var groups = divideOnGroups(res);
     res = [];
+
+    for(var i = 0;i < groups.length;i++)
+	if (groups[i].messages.length == 1)
+		    res.push({message: groups[i].messages[0].source, title: groups[i].messages[0].source.from.personal + ' ' + groups[i].messages[0].source.subject});
     for(var i = 0;i < groups.length;i++)
     {
+	if (groups[i].messages.length < 2)
+	    continue;
 	res.push("Тема " + groups[i].subject);
 	for(var j = 0;j < groups[i].messages.length;j++)
 	    res.push({message: groups[i].messages[j].source, title: groups[i].messages[j].source.from.personal});
