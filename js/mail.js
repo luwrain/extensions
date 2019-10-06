@@ -54,16 +54,16 @@ function divideOnGroups(items)
 		break;
 	if (k < groups.length)
 	    groups[k].messages.push(items[i]); else
-	groups.push({subject: items[i].subject, messages: [items[i]]});
+		groups.push({subject: items[i].subject, messages: [items[i]]});
     }
-	return groups;
+    return groups;
 }
 
 Luwrain.addHook("luwrain.mail.summary.organize", function(messages){
     var res = [];
     for(var i = 0;i < messages.length;i++)
 	res.push({
-	    	    subject: stripRe(messages[i].subject),
+	    subject: stripRe(messages[i].subject),
 	    source: messages[i]
 	});
     stripCommonBeginning(res);
@@ -72,10 +72,9 @@ Luwrain.addHook("luwrain.mail.summary.organize", function(messages){
 	res[i].subject = stripRe(res[i].subject);
     var groups = divideOnGroups(res);
     res = [];
-
     for(var i = 0;i < groups.length;i++)
 	if (groups[i].messages.length == 1)
-		    res.push({message: groups[i].messages[0].source, title: groups[i].messages[0].source.from.personal + ' ' + groups[i].messages[0].source.subject});
+	    res.push({message: groups[i].messages[0].source, title: groups[i].messages[0].source.from.personal + ' ' + groups[i].messages[0].source.subject});
     for(var i = 0;i < groups.length;i++)
     {
 	if (groups[i].messages.length < 2)
