@@ -16,6 +16,7 @@
 
 function stripRe(text)
 {
+    //FIXME: better to use regex
     if (text.toLowerCase().startsWith("re: ") && text.length >= 5)
 	return text.substring(4);
     if (!text.toLowerCase().startsWith("re["))
@@ -23,9 +24,7 @@ function stripRe(text)
     var i = 3;
     while (i < text.length && text[i] >= "0" && text[i] <= "9")
 	i++;
-    if (i >= text.length)
-	return text;
-    if (text[i] != "]")
+    if (i >= text.length || text[i] != ']')
 	return text;
     return text.substring(i + 1);
 }
@@ -37,8 +36,11 @@ function stripCommonBeginning(items)
     var commonTo = 0;
     while(true)
     {
+	if (commonTo >= items[0].subject.length)
+	    break;
 	var ch = items[0].subject[commonTo];
-	var i = 0;
+	//Looking for the item not matching the ch
+	var i;
 	for(i = 1;i < items.length;i++)
 	    if (commonTo >= items[i].subject.length || items[i].subject[commonTo] != ch)
 		break;
@@ -71,7 +73,7 @@ Luwrain.addHook("luwrain.mail.summary.organize", function(messages){
     var res = [];
     for(var i = 0;i < messages.length;i++)
 	res.push({
-	    subject: stripRe(messages[i].subject),
+	    	    subject: stripRe(messages[i].subject),
 	    source: messages[i]
 	});
     stripCommonBeginning(res);
