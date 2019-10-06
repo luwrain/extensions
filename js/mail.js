@@ -16,7 +16,9 @@
 
 function stripRe(text)
 {
+    return text.replaceAll('^[Rr][Ee](\\[[0-9]+\\])*: ', '').trim();
     //FIXME: better to use regex
+    /*
     if (text.toLowerCase().startsWith("re: ") && text.length >= 5)
 	return text.substring(4);
     if (!text.toLowerCase().startsWith("re["))
@@ -27,6 +29,7 @@ function stripRe(text)
     if (i >= text.length || text[i] != ']')
 	return text;
     return text.substring(i + 1);
+*/
 }
 
 function stripCommonBeginning(items)
