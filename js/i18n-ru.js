@@ -79,6 +79,21 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 	var ch = text[i];
 	switch(ch)
 	{
+	    	    	    case '~':
+	    	    if (rusLang)
+			res += ' тильда '; else
+			    res += ' tilde  ';
+	    break;
+	    	    	    	    case '!':
+	    	    if (rusLang)
+			res += ' восклицательный знак '; else
+			    res += ' exclamation  ';
+	    break;
+	    	    case '#':
+	    	    if (rusLang)
+			res += ' диез '; else
+			    res += ' sharp ';
+	    break;
 	    case '/':
 	    	    if (rusLang)
 			res += ' слэш '; else
