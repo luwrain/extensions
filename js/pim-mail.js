@@ -14,6 +14,41 @@
    General Public License for more details.
 */
 
+var SERVERS
+
+{suffixes: ['@yandex.ru', '@yandex.com'],
+smtp: {
+host: 'smtp.yandex.ru',
+    port: 587,
+    ssl: no,
+    tls: yes}
+},
+
+{suffixes: ['@gmail.com'],
+ smtp: {
+     host: 'smtp.gmail.com',
+     port: 587,
+     ssl: no,
+     tls: yes}
+},
+
+{suffixes: ['@mail.ru'],
+ smtp: {
+     host: 'smtp.mail.ru',
+     port: 587,
+     ssl: no,
+     tls: yes}
+},
+
+suffixes: ['@rambler.ru'],
+smtp: {
+    host: 'smtp.rambler.ru',
+    port: 465,
+    ssl: yes,
+    tls: no}
+}
+
+
 function saveToDefaultIncoming(mail, message)
 {
     var defaultIncoming = mail.folders.findFirstByProperty("defaultIncoming", 'true')
