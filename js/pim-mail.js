@@ -14,40 +14,38 @@
    General Public License for more details.
 */
 
-var SERVERS
+var SERVERS = [
+    {suffixes: ['@yandex.ru', '@yandex.com'],
+     smtp: {
+	 host: 'smtp.yandex.ru',
+	 port: 587,
+	 ssl: false,
+	 tls: true}
+    },
 
-{suffixes: ['@yandex.ru', '@yandex.com'],
-smtp: {
-host: 'smtp.yandex.ru',
-    port: 587,
-    ssl: no,
-    tls: yes}
-},
+    {suffixes: ['@gmail.com'],
+     smtp: {
+	 host: 'smtp.gmail.com',
+	 port: 587,
+	 ssl: false,
+	 tls: true}
+    },
 
-{suffixes: ['@gmail.com'],
- smtp: {
-     host: 'smtp.gmail.com',
-     port: 587,
-     ssl: no,
-     tls: yes}
-},
+    {suffixes: ['@mail.ru'],
+     smtp: {
+	 host: 'smtp.mail.ru',
+	 port: 587,
+	 ssl: false,
+	 tls: true}
+    },
 
-{suffixes: ['@mail.ru'],
- smtp: {
-     host: 'smtp.mail.ru',
-     port: 587,
-     ssl: no,
-     tls: yes}
-},
-
-suffixes: ['@rambler.ru'],
-smtp: {
-    host: 'smtp.rambler.ru',
-    port: 465,
-    ssl: yes,
-    tls: no}
-}
-
+    {suffixes: ['@rambler.ru'],
+     smtp: {
+	 host: 'smtp.rambler.ru',
+	 port: 465,
+	 ssl: true,
+	 tls: false}
+    }]
 
 function saveToDefaultIncoming(mail, message)
 {
@@ -83,7 +81,12 @@ Luwrain.addHook("luwrain.pim.message.new.save", function(mail, message){
     return true;
 });
 
-Luwrain.addCommand("fetch-mail-incoming-bkg", function(){
+Luwrain.addCommand("worker-mail-incoming", function(){
     if (!Luwrain.runWorker("luwrain.pim.fetch.pop3"))
 	Luwrain.message("already");
+});
+
+
+Luwrain.addHook("luwrain.wizards.mail.account", function(){
+    Luwrain.message("mail");
 });
