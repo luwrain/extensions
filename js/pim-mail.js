@@ -47,6 +47,23 @@ var SERVERS = [
 	 tls: false}
     }]
 
+function findServer(addr)
+{
+    for(var i = 0;i < SERVERS.length;i++)
+    {
+	var s = SERVERS[i];
+	var j = 0;
+	for(var j = 0;j < s.suffixes.length;j++)
+	    if (addr.trim().toLowerCase().endsWith(s.suffixes[j].trim().toLowerCase()))
+		break;
+	if (j >= s.suffixes.length)
+	    continue;
+	return s;
+    }
+    return null;
+}
+
+
 function saveToDefaultIncoming(mail, message)
 {
     var defaultIncoming = mail.folders.findFirstByProperty("defaultIncoming", 'true')
@@ -87,6 +104,20 @@ Luwrain.addCommand("worker-mail-incoming", function(){
 });
 
 
-Luwrain.addHook("luwrain.wizards.mail.account", function(){
-    Luwrain.message("mail");
-});
+Luwrain.addHook("luwrain.wizards.mail.account", function(mail){
+    var title = "Подключение почтового ящика";
+    var fullName = Luwrain.popups.simple(title, "Ваше полное имя:", "");
+    if (fullName == null)
+	return;
+    var addr = Luwrain.popups.simple(title, "Ваш адрес электронной почты:", "")
+    if (addr == null)
+	return;
+    var server = findServer(addr);
+    if (server == null)
+    {
+	Luwrain.message.error("К сожалению, не удалос подобрать известный сервер для вашего адреса");
+	return;
+    }
+    Luwrain.message(server.smtp.host);
+
+    });

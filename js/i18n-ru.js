@@ -94,6 +94,21 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 			res += ' диез '; else
 			    res += ' sharp ';
 	    break;
+
+	    	    	    	    case '&':
+	    	    if (rusLang)
+			res += ' амперсанд '; else
+			    res += ' ampersand ';
+	    break;
+
+
+	    	    	    case '*':
+	    	    if (rusLang)
+			res += ' звезда '; else
+			    res += ' star ';
+	    break;
+
+	    
 	    case '/':
 	    	    if (rusLang)
 			res += ' слэш '; else
