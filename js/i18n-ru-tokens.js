@@ -46,6 +46,17 @@ function punc(text)
     return {type: PUNC, text: text};
 }
 
+function buildNumText(group)
+{
+    var res = '';
+    if (group.prefix != null && group.prefix != undefined)
+	res += group.prefix;
+    res += (' ' + group.value + ' ');
+    if (group.suffix != null && group.suffix != undefined)
+	res += suffix;
+    return res.trim();
+}
+
 function buildFixedText(group)
 {
     if (group.text != null && group.text != undefined)
@@ -93,6 +104,15 @@ SPACE,
 SPACE,
 	      {type: 'cyril', text: 'э'}, {type: 'punc', text: '.'}],
      groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'до нашей эры'}; }},
+
+                //см. на стр. n
+    {conds: [
+	cyril('см'), punc('.'), SPACE, pred('на'), SPACE, cyril('стр'), punc('.'), SPACE, num(null)
+	], 
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildNumText, value: tokens[posFrom + 8].text, prefix: 'смотрите на странице '};
+						   }},
+
 
 
             //$num
