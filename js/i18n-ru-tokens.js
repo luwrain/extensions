@@ -14,32 +14,49 @@
    General Public License for more details.
 */
 
-var RULES = [
+var CYRIL = 'cyril';
+var LATIN = 'latin';
+var NUM = 'num';
+var PRED = 'pred';
+var PUNC = 'punc';
+var SPACE = {type: 'space'};
 
-    //в ... в.
-    {conds: [
-	{class: "pred", text: "в"},
-	{type: "space"},
-	{class: "romannum"},
-	{type: "space"},
-		{type: "cyril", text: "в"},
-    ],
-     groupFunc: function(tokens, posFrom, posTo){
-	 return {groupType: "cent", value: tokens[posFrom + 2].romanNum, form: 'ord_prae', prefix: 'в'};
-     }},
+function cyril(text)
+{
+    return {type: CYRIL, text: text};
+}
 
-    //на ...%
-    {conds: [
-	{class: "pred", text: "на"},
-	{type: "space"},
-	{type: "num"},
-		{type: "punc", text: "%"},
-    ],
-     groupFunc: function(tokens, posFrom, posTo){
-	 return {groupType: 'percent', value: tokens[posFrom + 2].text, form: 'nom', prefix: 'на'};
-     }},
+function latin(text)
+{
+    return {type: LATIN, text: text};
+}
 
-];
+function num(text)
+{
+    return {type: NUM, text: text};
+}
+
+function pred(text)
+{
+    return {class: PRED, text: text};
+}
+
+function punc(text)
+{
+    return {type: PUNC, text: text};
+}
+
+function buildFixedText(group)
+{
+    if (group.text != null && group.text != undefined)
+	return group.text;
+    return "";
+}
+
+function buildDollarsText(group)
+{
+    return group.value + ' долларов';
+}
 
 function buildCentGroupText(group)
 {
@@ -61,23 +78,84 @@ function buildPercentGroupText(group)
     return res;
 }
 
+var RULES = [
+
+        //90-е
+    {conds: [ {type: 'num', text: '90'},
+	{type: "punc", text: '-'},
+		{type: "cyril", text: "е"},],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'девяностые'}; }},
+
+            //до н. э.
+    {conds: [ {class: 'pred', text: 'до'},
+SPACE,
+	      {type: 'cyril', text: 'н'}, {type: 'punc', text: '.'},
+SPACE,
+	      {type: 'cyril', text: 'э'}, {type: 'punc', text: '.'}],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'до нашей эры'}; }},
+
+
+            //$num
+    {conds: [ {сclass: 'punc', text: '$'},
+	      {type: "num"}],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildDollarsText, value: tokens[posFrom + 1].text};}},
+
+
+
+    //в ... в.
+    {conds: [
+	{class: "pred", text: "в"},
+	{type: "space"},
+	{class: "romannum"},
+	{type: "space"},
+		{type: "cyril", text: "в"},
+    ],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildCentGroupText, value: tokens[posFrom + 2].romanNum, form: 'ord_prae', prefix: 'в'};
+     }},
+
+        // n %
+    {conds: [
+	num(null), SPACE, punc('%')],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildPercentGroupText, value: tokens[posFrom].text, form: 'nom'};}},
+
+
+    //на ...%
+    {conds: [
+	{class: "pred", text: "на"},
+SPACE,
+	{type: "num"},
+SPACE,
+    ],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildPercentGroupText, value: tokens[posFrom + 2].text, form: 'nom', prefix: 'на'};
+     }},
+
+    //в СК сообщили
+    {conds: [
+	pred('в'), SPACE, cyril('СК'), SPACE, cyril('сообщили')
+    ],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildFixedText, text: 'в следственном комитете сообщили'};
+     }},
+
+
+];
+
 function buildGroupText(group)
 {
-    switch(group.groupType)
-    {
-	case 'cent':
-	return buildCentGroupText(group);
-		case 'percent':
-	return buildPercentGroupText(group);
-	default:
-	return '';
-    }
+    if (group.textFunc == null || group.textFunc == undefined)
+	return "No text function";
+    return group.textFunc(group);
 }
 
 var RU_PREDS = [
     "в",
     "к",
     "на",
+    'до',
     "от",
 ];
 
@@ -1140,7 +1218,7 @@ function condSatisfies(cond, token)
 {
     if (cond.type != undefined && cond.type != token.type)
 	    return false;
-    if (cond.text != undefined && cond.text != token.text)
+    if (cond.text != undefined && cond.text.toLowerCase() != token.text.toLowerCase())
 	return false;
     if (cond.class != undefined)
     {
@@ -1224,3 +1302,16 @@ Luwrain.addHook("luwrain.i18n.ru.speakable.natural", function(tokensList){
     insertGroups(tokens, groups);
     return buildResult(tokens);
     })
+
+
+//Creating regex patterns
+for(var i = 0;i < RULES.length;i++)
+    for(var j = 0;j < RULES[i].conds.length;j++)
+{
+    var c = RULES[i].conds[j];
+    if (c.text == null || c.text == undefined)
+	continue;
+    if (c.type === 'punc')
+	continue;
+    c.patt = java.util.regex.Pattern.compile(c.text);
+}
