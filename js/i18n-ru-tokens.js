@@ -1352,6 +1352,8 @@ var RULES = [
 	cyril('АЗС')
 	],
      groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'азээс'}; }},
+    //ГСС
+    fixed([cyril('ГСС')], 'гээсэс'),
                                         //МФЦ
     {conds: [
 	cyril('МФЦ')
@@ -1411,12 +1413,37 @@ var RULES = [
 	 return {textFunc: buildNumText, value: tokens[posFrom + 2].text, prefix: ' минус '};
      }},
 
-    //$num
-    {conds: [ {сclass: 'punc', text: '$'},
-	      {type: "num"}],
+    //$num млрд.
+    {conds: [
+	punc('$'), num(null), SPACE, cyril('млрд'), punc('.')
+],
      groupFunc: function(tokens, posFrom, posTo){
-	 return {textFunc: buildDollarsText, value: tokens[posFrom + 1].text};
+	 return {textFunc: buildNumText, value: tokens[posFrom + 1].text, suffix: 'миллиардов долларов'};
      }},
+        //$num млн.
+    {conds: [
+	punc('$'), num(null), SPACE, cyril('млн'), punc('.')
+],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildNumText, value: tokens[posFrom + 1].text, suffix: 'миллионов долларов'};
+     }},
+
+        //num млрд. руб.
+    {conds: [
+	num(null), SPACE, cyril('млрд'), punc('.'), SPACE, cyril('руб'), punc('.')
+],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildNumText, value: tokens[posFrom].text, suffix: 'миллиардов рублей'};
+     }},
+        //num млн. руб.
+    {conds: [
+	num(null), SPACE, cyril('млн'), punc('.'), SPACE, cyril('руб'), punc('.')
+],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildNumText, value: tokens[posFrom].text, suffix: 'миллионов рублей'};
+     }},
+
+
 
     // (n век)
     {conds: [
@@ -1424,7 +1451,6 @@ var RULES = [
     ], groupFunc: function(tokens, posFrom, posTo){
 	return {textFunc: buildNumText, value: tokens[posFrom + 1].romanNum, suffix: ' век '};
     }},
-
     //в ... в.
     {conds: [
 	{class: "pred", text: "в"},
