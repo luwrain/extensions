@@ -79,11 +79,13 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 	var ch = text[i];
 	switch(ch)
 	{
+	    /*
 	    	    	    case '~':
 	    	    if (rusLang)
 			res += ' тильда '; else
 			    res += ' tilde  ';
 	    break;
+*/
 	    	    	    	    case '!':
 	    	    if (rusLang)
 			res += ' восклицательный знак '; else
@@ -95,11 +97,13 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 			    res += ' sharp ';
 	    break;
 
+	    /*
 	    	    	    	    case '&':
 	    	    if (rusLang)
 			res += ' амперсанд '; else
 			    res += ' ampersand ';
 	    break;
+*/
 
 
 	    	    	    case '*':
@@ -108,12 +112,14 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 			    res += ' star ';
 	    break;
 
-	    
+
+	    /*
 	    case '/':
 	    	    if (rusLang)
 			res += ' слэш '; else
 			    res += ' slash ';
 	    break;
+*/
 	    case '(':
 	    	    if (rusLang)
 			res += " левая круглая "; else
@@ -159,6 +165,7 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 		res += ' больше '; else
 		    res += ' greater than ';
 	    break;
+	    /*
 	    case '.':
 	    if (rusLang)
 		res += ' точка '; else
@@ -174,11 +181,13 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 		res += " точка с запятой "; else
 		    res += ' semicolon ';
 	    break;
+*/
 	    case '-':
 	    if (rusLang)
-		res += ' дефис '; else
+		res += ' минус '; else
 		    res += ' dash ';
 	    break;
+	    /*
 	    	    case '+':
 	    if (rusLang)
 		res += ' плюс '; else
@@ -189,6 +198,7 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 		res += ' равно '; else
 		    res += ' equals ';
 	    break;
+*/
 	    default:
 	    if (Luwrain.i18n.isLetter(ch))
 	    {
