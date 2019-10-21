@@ -55,7 +55,7 @@ function buildNumText(group)
 	res += group.prefix;
     res += (' ' + group.value + ' ');
     if (group.suffix != null && group.suffix != undefined)
-	res += suffix;
+	res += group.suffix;
     return res.trim();
 }
 
@@ -93,6 +93,25 @@ function buildPercentGroupText(group)
 
 var RULES = [
 
+    //brackets
+            {conds: [ punc('(') ],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: ' в круглых скобках '}; }},
+    {conds: [ punc(')') ],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: ' закрылась круглая скобка '}; }},
+                {conds: [ punc('[') ],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: ' в квадратных скобках '}; }},
+    {conds: [ punc(']') ],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: ' закрылась квадратная скобка '}; }},
+                    {conds: [ punc('{') ],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: ' в фигурных скобках '}; }},
+    {conds: [ punc('}') ],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: ' закрылась фигурная скобка '}; }},
+
+
+
+
+
+
         //90-е
     {conds: [ {type: 'num', text: '90'},
 	{type: "punc", text: '-'},
@@ -106,13 +125,11 @@ SPACE,
 SPACE,
 	      {type: 'cyril', text: 'э'}, {type: 'punc', text: '.'}],
      groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'до нашей эры'}; }},
-
                 //н. э.
     {conds: [ 
 	cyril('н'),punc('.'),SPACE, cyril('э'), punc('.')
 ],
      groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'нашей эры'}; }},
-
 
                 //см. на стр. n
     {conds: [
@@ -120,7 +137,24 @@ SPACE,
 	], 
      groupFunc: function(tokens, posFrom, posTo){
 	 return {textFunc: buildNumText, value: tokens[posFrom + 8].text, prefix: 'смотрите на странице '};
+     }},
+                    //стр. n
+    {conds: [
+cyril('стр'), punc('.'), SPACE, num(null)
+	], 
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildNumText, value: tokens[posFrom + 3].text, prefix: 'страница '};
+     }},
+
+                        //-n
+    {conds: [
+	SPACE, punc('-'), num(null)
+	], 
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildNumText, value: tokens[posFrom + 2].text, prefix: ' минус '};
 						   }},
+
+
 
 
 
@@ -129,6 +163,14 @@ SPACE,
 	      {type: "num"}],
      groupFunc: function(tokens, posFrom, posTo){
 	 return {textFunc: buildDollarsText, value: tokens[posFrom + 1].text};}},
+
+    // (n век)
+    {conds: [
+	punc('('), {class: "romannum"}, SPACE, cyril('век'), punc(')')
+    ], groupFunc: function(tokens, posFrom, posTo){
+	return {textFunc: buildNumText, value: tokens[posFrom + 1].romanNum, suffix: ' век '};
+     }},
+
 
 
 
@@ -143,6 +185,28 @@ SPACE,
      groupFunc: function(tokens, posFrom, posTo){
 	 return {textFunc: buildCentGroupText, value: tokens[posFrom + 2].romanNum, form: 'ord_prae', prefix: 'в'};
      }},
+
+        // Гл. n
+    {conds: [
+	cyril('Гл'), punc('.'), SPACE, {class: "romannum"}
+    ], groupFunc: function(tokens, posFrom, posTo){
+	return {textFunc: buildNumText, value: tokens[posFrom + 3].romanNum, prefix: ' Глава '};
+    }},
+
+            //лат. число
+    {conds: [
+{class: "romannum"}
+    ], groupFunc: function(tokens, posFrom, posTo){
+	return {textFunc: buildNumText, value: tokens[posFrom].romanNum, suffix: ' римскими '};
+    }},
+
+
+            // Глава n
+    {conds: [
+	cyril('Глава'), SPACE, {class: "romannum"}
+    ], groupFunc: function(tokens, posFrom, posTo){
+	return {textFunc: buildNumText, value: tokens[posFrom + 2].romanNum, prefix: ' Глава '};
+    }},
 
         // n %
     {conds: [
