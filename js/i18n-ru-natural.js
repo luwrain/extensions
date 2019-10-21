@@ -1368,6 +1368,9 @@ var RULES = [
     fixed([latin('Deutsche')], 'Дойче'),
     fixed([latin('Deutsche'), SPACE, latin('Telekom')], 'Дойче Телеком'),
 
+        //ЦБ
+    fixed([cyril('ЦБ')], 'цэбэ'),
+    fixed([cyril('ЦБРФ')], 'цэбээрэф'),
 
     //до н. э.
     {conds: [ {class: 'pred', text: 'до'},
@@ -1427,7 +1430,20 @@ var RULES = [
      groupFunc: function(tokens, posFrom, posTo){
 	 return {textFunc: buildNumText, value: tokens[posFrom + 1].text, suffix: 'миллионов долларов'};
      }},
-
+        //$num млрд
+    {conds: [
+	punc('$'), num(null), SPACE, cyril('млрд')
+],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildNumText, value: tokens[posFrom + 1].text, suffix: 'миллиардов долларов'};
+     }},
+        //$num млн
+    {conds: [
+	punc('$'), num(null), SPACE, cyril('млн')
+],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildNumText, value: tokens[posFrom + 1].text, suffix: 'миллионов долларов'};
+     }},
         //num млрд. руб.
     {conds: [
 	num(null), SPACE, cyril('млрд'), punc('.'), SPACE, cyril('руб'), punc('.')
@@ -1442,8 +1458,20 @@ var RULES = [
      groupFunc: function(tokens, posFrom, posTo){
 	 return {textFunc: buildNumText, value: tokens[posFrom].text, suffix: 'миллионов рублей'};
      }},
-
-
+            //num млрд руб.
+    {conds: [
+	num(null), SPACE, cyril('млрд'), SPACE, cyril('руб'), punc('.')
+],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildNumText, value: tokens[posFrom].text, suffix: 'миллиардов рублей'};
+     }},
+        //num млн руб.
+    {conds: [
+	num(null), SPACE, cyril('млн'), SPACE, cyril('руб'), punc('.')
+],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildNumText, value: tokens[posFrom].text, suffix: 'миллионов рублей'};
+     }},
 
     // (n век)
     {conds: [
@@ -1498,19 +1526,32 @@ var RULES = [
     {conds: [
 	num(null), SPACE, punc('%')],
      groupFunc: function(tokens, posFrom, posTo){
-	 return {textFunc: buildPercentGroupText, value: tokens[posFrom].text, form: 'nom'};
+	 return {textFunc: buildNumText, value: tokens[posFrom].text, suffix: ' процентов'};
+     }},
+//n%
+        {conds: [
+	num(null), punc('%')],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildNumText, value: tokens[posFrom].text, suffix: ' процентов'};
      }},
 
-    //на ...%
+
+    //на n%
     {conds: [
-	{class: "pred", text: "на"},
-	SPACE,
-	{type: "num"},
-	SPACE,
-    ],
+	pred('на'),SPACE, num(null), punc('%')
+],
      groupFunc: function(tokens, posFrom, posTo){
-	 return {textFunc: buildPercentGroupText, value: tokens[posFrom + 2].text, form: 'nom', prefix: 'на'};
+	 return {textFunc: buildNumText, value: tokens[posFrom + 2].text, prefix: 'на ', suffix: ' процентов'};
      }},
+
+        //на n %
+    {conds: [
+	pred('на'),SPACE, num(null), SPACE, punc('%')
+],
+     groupFunc: function(tokens, posFrom, posTo){
+	 return {textFunc: buildNumText, value: tokens[posFrom + 2].text, prefix: 'на ', suffix: ' процентов'};
+     }},
+
 
     //в СК сообщили
     {conds: [
