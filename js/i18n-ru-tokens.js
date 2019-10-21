@@ -14,6 +14,8 @@
    General Public License for more details.
 */
 
+//ск показал
+
 var CYRIL = 'cyril';
 var LATIN = 'latin';
 var NUM = 'num';
@@ -104,6 +106,13 @@ SPACE,
 SPACE,
 	      {type: 'cyril', text: 'э'}, {type: 'punc', text: '.'}],
      groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'до нашей эры'}; }},
+
+                //н. э.
+    {conds: [ 
+	cyril('н'),punc('.'),SPACE, cyril('э'), punc('.')
+],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'нашей эры'}; }},
+
 
                 //см. на стр. n
     {conds: [
@@ -1290,6 +1299,30 @@ function applyRules(tokens)
     return res;
 }
 
+function resolveGroupConflicts(groups)
+{
+    var res = groups;
+    for(var i = 0;i < res.length;i++)
+	for(var j = 0;j < res.length;j++)
+	    if (i != j && res[i] != null && res[j] != null)
+    {
+	var g1 = res[i];
+	var g2 = groups[j];
+	    if (g1.posFrom >= g2.posTo || g2.posFrom >= g1.posTo)
+		continue;
+	var len1 = g1.posTo - g1.posFrom;
+	var len2 = g2.posTo - g2.posFrom;
+	if (len1 > len2)
+	    res[j] = null; else
+		res[i] = null;
+    }
+    var cleaned = [];
+    for(var i = 0;i < res.length;i++)
+	if (res[i] != null)
+	    cleaned.push(res[i]);
+    return cleaned;
+}
+
 function insertGroups(tokens, groups)
 {
     for(var i in groups)
@@ -1319,6 +1352,7 @@ Luwrain.addHook("luwrain.i18n.ru.speakable.natural", function(tokensList){
 	tokens.push({type: tokensList[i].type, text: tokensList[i].text});
     assignClasses(tokens);
     var groups = applyRules(tokens);
+    groups = resolveGroupConflicts(groups);
     insertGroups(tokens, groups);
     return buildResult(tokens);
     })
