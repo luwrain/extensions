@@ -190,13 +190,26 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 		    res += ' equals ';
 	    break;
 	    default:
+	    if (Luwrain.i18n.isLetter(ch))
+	    {
 	    if ((ch >= 'а' && ch <= 'я') ||
 		(ch >= 'А' && ch <= 'Я'))
 		rusLang = true; else
-	    	    if ((ch >= 'a' && ch <= 'z') ||
-		(ch >= 'A' && ch <= 'Z'))
 		rusLang = false;
-	    res += ch;
+		res += ch;
+		continue;
+	    }
+	    if (Luwrain.i18n.isDigit(ch) || Luwrain.i18n.isSpace(ch))
+	    {
+		res += ch;
+		continue;
+	    }
+	    {
+				var value = rusLang?Luwrain.i18n.langs.ru.getSpecialNameOfChar(ch):Luwrain.i18n.langs.en.getSpecialNameOfChar(ch);
+		if (value != null && !value.trim().isEmpty())
+		    res += (' ' + value + ' '); else
+			res += ch;
+	    }
 	}
     }
     return res;

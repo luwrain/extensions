@@ -48,25 +48,21 @@ function spaceBeforeCap(text)
 }
 
 Luwrain.addHook("luwrain.speech.text.regular", function(text){
-    return spaceBeforeCap(text);
-});
-
-		    /*
-Luwrain.addHook("luwrain.speech.text.regular", function(text){
-    for(var i = 0;i < text.length;i++)
-    {
-	var ch = new java.lang.Character(text[i]);
-	if (java.lang.Character.isLetterOrDigit(ch.charValue()))
-	return text;
-    }
     var res = '';
     for(var i = 0;i < text.length;i++)
     {
-	var ch = new java.lang.Character(text[i]);
-	//	res += (java.lang.Character.getName(ch.intValue()) + " ");
-	res += "символ ";
+	if (Luwrain.i18n.isLetterOrDigit(text[i]))
+	    return spaceBeforeCap(text);
+	if (Luwrain.i18n.isSpace(text[i]))
+	{
+	    res += ' ';
+	    continue;
+	}
+	var value = Luwrain.i18n.lang.getSpecialNameOfChar(text[i]);
+	if (value != null)
+	    res += (' ' + value + ' '); else
+		res += text[i];
     }
-    return res.trim();
-});
-		    */
+    return res;
+    	});
 		
