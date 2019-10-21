@@ -48,6 +48,7 @@ function punc(text)
     return {type: PUNC, text: text};
 }
 
+
 function buildNumText(group)
 {
     var res = '';
@@ -65,6 +66,13 @@ function buildFixedText(group)
 	return group.text;
     return "";
 }
+
+function fixed(conds, text)
+{
+    return {conds: conds,
+	    groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: text}; }};
+}
+
 
 function buildDollarsText(group)
 {
@@ -1302,6 +1310,63 @@ var RULES = [
 	      {type: "cyril", text: "е"},],
      groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'девяностые'}; }},
 
+        //ФСБ
+    {conds: [
+	cyril('ФСБ')
+	],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'фээсбэ'}; }},
+            //ФСО
+    {conds: [
+	cyril('ФСО')
+	],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'фэсэо'}; }},
+
+                //МГУ
+    {conds: [
+	cyril('МГУ')
+	],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'эмгэу'}; }},
+                    //ТГУ
+    {conds: [
+	cyril('ТГУ')
+	],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'тэгэу'}; }},
+
+                        //ТГПУ
+    {conds: [
+	cyril('ТГПУ')
+	],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'тэгэпэу'}; }},
+                            //ТПУ
+    {conds: [
+	cyril('ТПУ')
+	],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'тэпэу'}; }},
+                                //РЖД
+    {conds: [
+	cyril('РЖД')
+	],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'эржэдэ'}; }},
+                                    //АЗС
+    {conds: [
+	cyril('АЗС')
+	],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'азээс'}; }},
+                                        //МФЦ
+    {conds: [
+	cyril('МФЦ')
+	],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'эмэфцэ'}; }},
+    //Huawei
+    fixed([latin('Huawei')], 'Хуавэй'),
+    fixed([latin('Huawei'), SPACE, latin('Corporation')], 'Хуавэй Корпорейшэн'),
+    //Xiaomi
+    fixed([latin('Xiaomi')], 'Сиаоми'),
+    //Deutsche
+    fixed([latin('Deutsche')], 'Дойче'),
+    fixed([latin('Deutsche'), SPACE, latin('Telekom')], 'Дойче Телеком'),
+
+
     //до н. э.
     {conds: [ {class: 'pred', text: 'до'},
 	      SPACE,
@@ -1314,6 +1379,14 @@ var RULES = [
 	cyril('н'),punc('.'),SPACE, cyril('э'), punc('.')
     ],
      groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'нашей эры'}; }},
+
+    //род.
+    //FIXME:только с последующей полной датой
+    {conds: [ 
+	cyril('род'), punc('.')
+    ],
+     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'рождение'}; }},
+
 
     //см. на стр. n
     {conds: [
@@ -1371,12 +1444,22 @@ var RULES = [
 	return {textFunc: buildNumText, value: tokens[posFrom + 3].romanNum, prefix: ' Глава '};
     }},
 
+        // n созыва
+    {conds: [
+	{class: "romannum"}, SPACE, cyril('созыва')
+    ], groupFunc: function(tokens, posFrom, posTo){
+	return {textFunc: buildNumText, value: tokens[posFrom].romanNum, suffix: ' созыва '};
+    }},
+
+
     //лат. число
+    /*
     {conds: [
 	{class: "romannum"}
     ], groupFunc: function(tokens, posFrom, posTo){
 	return {textFunc: buildNumText, value: tokens[posFrom].romanNum, suffix: ' римскими '};
     }},
+*/
 
     // Глава n
     {conds: [
