@@ -14,7 +14,8 @@
    General Public License for more details.
 */
 
-//ск показал
+//ск показал, СК возбудил
+
 
 var CYRIL = 'cyril';
 var LATIN = 'latin';
@@ -1310,6 +1311,24 @@ var RULES = [
 	      {type: "cyril", text: "е"},],
      groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'девяностые'}; }},
 
+            //РСПП
+    fixed([cyril('РСПП')], 'эрэспэпэ'),
+
+                    //nginx
+    fixed([latin('nginx')], 'enginx'),
+                        //апл
+    fixed([cyril('АПЛ')], 'апээл'),
+    //FIXME:анб
+                //ГИБДД
+    fixed([cyril('ГИБДД')], 'гибэдэдэ'),
+        //ВКС
+    fixed([cyril('ВКС')], 'вэкаэс'),
+    //СССР
+    fixed([cyril('СССР')], 'эсэсэсэр'),
+        //Макдоналдс
+    fixed([cyril('Макдоналдс')], 'макдональдс'),
+    //УМВД
+        fixed([cyril('УМВД')], 'уэмвэдэ'),
         //ФСБ
     {conds: [
 	cyril('ФСБ')
@@ -1320,7 +1339,6 @@ var RULES = [
 	cyril('ФСО')
 	],
      groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'фэсэо'}; }},
-
                 //МГУ
     {conds: [
 	cyril('МГУ')
@@ -1372,6 +1390,12 @@ var RULES = [
     fixed([cyril('ЦБ')], 'цэбэ'),
     fixed([cyril('ЦБРФ')], 'цэбээрэф'),
 
+            //РБК
+    fixed([cyril('РБК')], 'эрбэка'),
+    //CNEWS
+    fixed([latin('CNEWS')], 'cineus'),
+
+
     //до н. э.
     {conds: [ {class: 'pred', text: 'до'},
 	      SPACE,
@@ -1384,6 +1408,11 @@ var RULES = [
 	cyril('н'),punc('.'),SPACE, cyril('э'), punc('.')
     ],
      groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'нашей эры'}; }},
+
+    //FIXME:ст. ч.
+
+    //СК  завёл
+    fixed([cyril('СК'), SPACE, cyril('завел')], 'следственный комитет завёл'),
 
     //род.
     //FIXME:только с последующей полной датой
