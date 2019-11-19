@@ -270,4 +270,4 @@ function SolubilityApp(args)
 }
 
 Luwrain.addApp("edu-chemistry-solubility",  SolubilityApp);
-Luwrain.addCommand("edu-chemistry -solubility", function(){Luwrain.launchApp("edu-chemistry-solubility", []);});
+Luwrain.addCommand("edu-chemistry-solubility", function(){Luwrain.launchApp("edu-chemistry-solubility", []);});
