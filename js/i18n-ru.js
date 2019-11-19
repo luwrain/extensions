@@ -181,7 +181,10 @@ Luwrain.addHook("luwrain.i18n.ru.speech.programming.pre", function(text){
 		res += " точка с запятой "; else
 		    res += ' semicolon ';
 	    break;
-*/
+	    */
+	    case '\t':
+	    res += ' ';
+	    break;
 	    case '-':
 	    if (rusLang)
 		res += ' минус '; else

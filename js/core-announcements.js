@@ -14,8 +14,18 @@
    General Public License for more details.
 */
 
-Luwrain.addHook("luwrain.desktop.announce", function(){
-    var date = new java.util.Date();
-    Luwrain.message(Luwrain.i18n.static.desktop + ", " + date.getHours() + " " + date.getMinutes());
-    return true;
+var inputEventTime = -1
+
+Luwrain.addHook("luwrain.announcement", function(text, announcementClass, announcementSubclass){
+    var d = new java.util.Date();
+    if (inputEventTime >= 0 && d.getTime() - inputEventTime < 30000)
+	return;
+    if (text.match("RT @[a-zA-Z0-9_]+: .*"))
+	text = text.substring(text.indexOf(":") + 1);
+    Luwrain.message.announcement(text);
+});
+
+Luwrain.addHook("luwrain.events.input", function(event){
+    var d = new java.util.Date();
+    inputEventTime = d.getTime();
 });
