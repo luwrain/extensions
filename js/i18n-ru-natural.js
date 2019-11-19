@@ -1372,6 +1372,19 @@ var RULES = [
      groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'азээс'}; }},
     //ГСС
     fixed([cyril('ГСС')], 'гээсэс'),
+
+        //KPI
+    fixed([latin('KPI')], 'кипиай'),
+
+            //Boeing
+    fixed([latin('Boeing')], 'Боинг'),
+
+                //Airbus
+    fixed([latin('Airbus')], 'Эйрбас'),
+
+
+
+    
                                         //МФЦ
     {conds: [
 	cyril('МФЦ')
@@ -1389,9 +1402,10 @@ var RULES = [
         //ЦБ
     fixed([cyril('ЦБ')], 'цэбэ'),
     fixed([cyril('ЦБРФ')], 'цэбээрэф'),
+//Goldman Sachs
+    fixed([latin('Goldman'), SPACE, latin('Sachs')], 'Голдман Сакс'),
 
-            //РБК
-    fixed([cyril('РБК')], 'эрбэка'),
+
     //CNEWS
     fixed([latin('CNEWS')], 'cineus'),
 
