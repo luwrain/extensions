@@ -33,7 +33,7 @@ function replaceText(lines, region, func)
     return false;
 }
 
-//alt+home: Finds the first non-spacing character on the line
+//Alt+Home: Finds the first non-spacing character on the line
 Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     if (!event.withAltOnly || event.special != "home")
 	return false;
@@ -68,7 +68,7 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     return true;
 });
 
-//alt+end: Finds the first spacing character on the line which doesn't have any non-spacing following characters
+//Alt+End: Finds the first spacing character on the line which doesn't have any non-spacing following characters
 Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     if (!event.withAltOnly || event.special != "end")
 	return false;
@@ -103,11 +103,26 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     return true;
 });
 
-
-//Cleaning the line ending: Ctrl+Alt+End
+//Ctrl+Alt+Home: Cleaning the line beginning
 Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
-    if (!event.withAlt || !event.withControl || event.withShift ||
-	event.special != "end")
+    if (!event.withAlt || !event.withControl || event.withShift || event.special != "home")
+	return false;
+    var lines = args.lines;
+    var hotPoint = args.hotPoint;
+    var line = lines[hotPoint.y];
+    if (hotPoint.x >= line.length)
+	return false;
+    var deleted = line.substring(0, hotPoint.x);
+    lines[hotPoint.y] = line.substring(hotPoint.x);
+    hotPoint.x = 0;
+    Luwrain.sounds.deleted();
+    Luwrain.speak(deleted);
+    return true;
+});
+
+//Ctrl+Alt+End: Cleaning the line ending
+Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
+    if (!event.withAlt || !event.withControl || event.withShift || event.special != "end")
 	return false;
     var lines = args.lines;
     var hotPoint = args.hotPoint;
@@ -117,18 +132,18 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     var deleted = line.substring(hotPoint.x);
     lines[hotPoint.y] = line.substring(0, hotPoint.x);
     Luwrain.sounds.deleted();
-    if (deleted != line)
-	Luwrain.speak("Удалена правая часть строки : " + deleted); else //FIXME:
-	    Luwrain.speak("Строка очищена"); //FIXME:
+    Luwrain.speak(deleted);
     return true;
 });
 
+/*
 Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     if (!event.withShiftOnly || event.special != "end")
 	return false;
     Luwrain.sounds.ok();
     return true;
 });
+*/
 
 //UpperCase: Ctrl+Alt+PageUp
 Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){

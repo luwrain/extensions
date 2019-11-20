@@ -1204,7 +1204,6 @@ function applyRule(rule, tokens)
     var conds = rule.conds;
     if (conds.length > tokens.length)
 	return [];
-    print('checking ' + conds.length + ' ' + tokens.length);
     var res = [];
     for(var i = 0;i < tokens.length - conds.length + 1;i++)
 	if (condsSatisfy(rule.conds, tokens, i))
@@ -1405,7 +1404,8 @@ var RULES = [
 //Goldman Sachs
     fixed([latin('Goldman'), SPACE, latin('Sachs')], 'Голдман Сакс'),
 
-
+    //wi-fi
+    fixed([latin('wi'), punc('-'), latin('fi')], 'вайфай'),
     //CNEWS
     fixed([latin('CNEWS')], 'cineus'),
 
