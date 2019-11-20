@@ -1386,10 +1386,6 @@ RULES = [
         //ЦБ
     fixed([cyril('ЦБ')], 'цэбэ'),
     fixed([cyril('ЦБРФ')], 'цэбээрэф'),
-//Goldman Sachs
-    fixed([latin('Goldman'), SPACE, latin('Sachs')], 'Голдман Сакс'),
-    //wi-fi
-    fixed([latin('wi'), punc('-'), latin('fi')], 'вайфай'),
 
 
     //до н. э.
@@ -1585,7 +1581,6 @@ RULES = [
      groupFunc: function(tokens, posFrom, posTo){
 	 return {textFunc: buildFixedText, text: 'в следственном комитете сообщили'};
      }},
-
 ];
 
 function latinSubst(lat, cyr)
@@ -1593,20 +1588,32 @@ function latinSubst(lat, cyr)
     RULES.push({conds: [{type: CYRIL}, SPACE, {type: LATIN, text: lat}], groupFunc: function(tokens, posFrom, posTo){return {textFunc: buildFixedText, text: tokens[posFrom].text + ' ' + cyr};}});
     RULES.push({conds: [{type: LATIN, text: lat}, SPACE, {type: CYRIL}], groupFunc: function(tokens, posFrom, posTo){return {textFunc: buildFixedText, text: cyr + ' ' + tokens[posFrom + 2].text};}});
 }
+function latinSubstMult(c, cyr)
+{
+    var cond = [{type: CYRIL}, SPACE];
+    for(var i = 0;i < c.length;i++)
+	cond.push(c[i]);
+    RULES.push({conds: cond, groupFunc: function(tokens, posFrom, posTo){return {textFunc: buildFixedText, text: tokens[posFrom].text + ' ' + cyr};}});
+    cond = c;
+    cond.push({type: CYRIL});
+    cond.push(SPACE);
+    RULES.push({conds: cond, groupFunc: function(tokens, posFrom, posTo){return {textFunc: buildFixedText, text: cyr + ' ' + tokens[posFrom + c.length + 1].text};}});
+}
 
-latinSubst('Facebook', 'Фэйсбук');
+latinSubst('Airbus', 'Эйрбас');
 latinSubst('Boeing', 'Боинг');
 latinSubst('CNEWS', 'cineus');
-latinSubst('Xiaomi', 'Сиаоми');
-latinSubst('Huawei', 'Хуавэй');
-latinSubst('Airbus', 'Эйрбас');
+latinSubst('Facebook', 'Фэйсбук');
 latinSubst('Forbes', 'Форбс');
-latinSubst('YouTube', 'Ютуб');
-latinSubst('Twitter', 'Твиттер');
+latinSubst('Huawei', 'Хуавэй');
 latinSubst('instagram', 'Инстаграм');
 latinSubst('KPI', 'кипиай');
+latinSubst('Twitter', 'Твиттер');
+latinSubst('Xiaomi', 'Сиаоми');
+latinSubst('YouTube', 'Ютуб');
 
-
+latinSubstMult([latin('Goldman'), SPACE, latin('Sachs')], 'Голдман Сакс');
+latinSubstMult([latin('wi'), punc('-'), latin('fi')], 'вайфай');
 
 //Creating regex patterns
 for(var i = 0;i < RULES.length;i++)
