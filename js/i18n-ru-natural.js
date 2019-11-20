@@ -1355,26 +1355,9 @@ RULES = [
      groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'азээс'}; }},
     //ГСС
     fixed([cyril('ГСС')], 'гээсэс'),
-
-        //KPI
-    fixed([latin('KPI')], 'кипиай'),
-
-
-                //Twitter
-    fixed([latin('Twitter')], 'Твиттер'),
-
-                    //Instagram
-    fixed([latin('instagram')], 'Инстаграм'),
-
-
                             //ВКонтакте
     fixed([cyril('ВКонтакте')], 'В контакте'),
 
-                                //Forbes
-    fixed([latin('Forbes')], 'Форбс'),
-
-                                    //YouTube
-    fixed([latin('YouTube')], 'Ютуб'),
 
     
 
@@ -1386,8 +1369,6 @@ RULES = [
 
     
 
-                //Airbus
-    fixed([latin('Airbus')], 'Эйрбас'),
 
 
 
@@ -1397,11 +1378,7 @@ RULES = [
 	cyril('МФЦ')
 	],
      groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'эмэфцэ'}; }},
-    //Huawei
-    fixed([latin('Huawei')], 'Хуавэй'),
     fixed([latin('Huawei'), SPACE, latin('Corporation')], 'Хуавэй Корпорейшэн'),
-    //Xiaomi
-    fixed([latin('Xiaomi')], 'Сиаоми'),
     //Deutsche
     fixed([latin('Deutsche')], 'Дойче'),
     fixed([latin('Deutsche'), SPACE, latin('Telekom')], 'Дойче Телеком'),
@@ -1411,11 +1388,8 @@ RULES = [
     fixed([cyril('ЦБРФ')], 'цэбээрэф'),
 //Goldman Sachs
     fixed([latin('Goldman'), SPACE, latin('Sachs')], 'Голдман Сакс'),
-
     //wi-fi
     fixed([latin('wi'), punc('-'), latin('fi')], 'вайфай'),
-    //CNEWS
-    fixed([latin('CNEWS')], 'cineus'),
 
 
     //до н. э.
@@ -1622,6 +1596,17 @@ function latinSubst(lat, cyr)
 
 latinSubst('Facebook', 'Фэйсбук');
 latinSubst('Boeing', 'Боинг');
+latinSubst('CNEWS', 'cineus');
+latinSubst('Xiaomi', 'Сиаоми');
+latinSubst('Huawei', 'Хуавэй');
+latinSubst('Airbus', 'Эйрбас');
+latinSubst('Forbes', 'Форбс');
+latinSubst('YouTube', 'Ютуб');
+latinSubst('Twitter', 'Твиттер');
+latinSubst('instagram', 'Инстаграм');
+latinSubst('KPI', 'кипиай');
+
+
 
 //Creating regex patterns
 for(var i = 0;i < RULES.length;i++)
