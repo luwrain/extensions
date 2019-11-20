@@ -14,8 +14,7 @@
    General Public License for more details.
 */
 
-//ск показал, СК возбудил
-
+var RULES = [];
 
 var CYRIL = 'cyril';
 var LATIN = 'latin';
@@ -28,27 +27,22 @@ function cyril(text)
 {
     return {type: CYRIL, text: text};
 }
-
 function latin(text)
 {
     return {type: LATIN, text: text};
 }
-
 function num(text)
 {
     return {type: NUM, text: text};
 }
-
 function pred(text)
 {
     return {class: PRED, text: text};
 }
-
 function punc(text)
 {
     return {type: PUNC, text: text};
 }
-
 
 function buildNumText(group)
 {
@@ -60,26 +54,16 @@ function buildNumText(group)
 	res += group.suffix;
     return res.trim();
 }
-
 function buildFixedText(group)
 {
     if (group.text != null && group.text != undefined)
 	return group.text;
     return "";
 }
-
-function fixed(conds, text)
-{
-    return {conds: conds,
-	    groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: text}; }};
-}
-
-
 function buildDollarsText(group)
 {
     return group.value + ' долларов';
 }
-
 function buildCentGroupText(group)
 {
     res = '';
@@ -89,7 +73,6 @@ function buildCentGroupText(group)
     res += ' веке';
     return res;
 }
-
 function buildPercentGroupText(group)
 {
     res = '';
@@ -100,8 +83,11 @@ function buildPercentGroupText(group)
     return res;
 }
 
-var RULES = [];
-
+function fixed(conds, text)
+{
+    return {conds: conds,
+	    groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: text}; }};
+}
 
 function buildGroupText(group)
 {
@@ -1286,9 +1272,7 @@ Luwrain.addHook("luwrain.i18n.ru.speakable.natural", function(tokensList){
     return buildResult(tokens);
 })
 
-// Rules
-
-var RULES = [
+RULES = [
 
     //brackets
     {conds: [ punc('(') ],
@@ -1375,8 +1359,32 @@ var RULES = [
         //KPI
     fixed([latin('KPI')], 'кипиай'),
 
-            //Boeing
-    fixed([latin('Boeing')], 'Боинг'),
+
+                //Twitter
+    fixed([latin('Twitter')], 'Твиттер'),
+
+                    //Instagram
+    fixed([latin('instagram')], 'Инстаграм'),
+
+
+                            //ВКонтакте
+    fixed([cyril('ВКонтакте')], 'В контакте'),
+
+                                //Forbes
+    fixed([latin('Forbes')], 'Форбс'),
+
+                                    //YouTube
+    fixed([latin('YouTube')], 'Ютуб'),
+
+    
+
+
+
+    
+
+    
+
+    
 
                 //Airbus
     fixed([latin('Airbus')], 'Эйрбас'),
@@ -1606,7 +1614,14 @@ var RULES = [
 
 ];
 
+function latinSubst(lat, cyr)
+{
+    RULES.push({conds: [{type: CYRIL}, SPACE, {type: LATIN, text: lat}], groupFunc: function(tokens, posFrom, posTo){return {textFunc: buildFixedText, text: tokens[posFrom].text + ' ' + cyr};}});
+    RULES.push({conds: [{type: LATIN, text: lat}, SPACE, {type: CYRIL}], groupFunc: function(tokens, posFrom, posTo){return {textFunc: buildFixedText, text: cyr + ' ' + tokens[posFrom + 2].text};}});
+}
 
+latinSubst('Facebook', 'Фэйсбук');
+latinSubst('Boeing', 'Боинг');
 
 //Creating regex patterns
 for(var i = 0;i < RULES.length;i++)
