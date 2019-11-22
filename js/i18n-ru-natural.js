@@ -1311,7 +1311,13 @@ RULES = [
         //Макдоналдс
     fixed([cyril('Макдоналдс')], 'макдональдс'),
     //УМВД
-        fixed([cyril('УМВД')], 'уэмвэдэ'),
+    fixed([cyril('УМВД')], 'уэмвэдэ'),
+    //РБК
+    fixed([cyril('РБК')], 'эрбэк+а'),
+        //США
+    fixed([cyril('США')], 'сэш+а'),
+            //СПГ
+    fixed([cyril('СПГ')], 'эспэг+э'),
         //ФСБ
     {conds: [
 	cyril('ФСБ')
@@ -1327,65 +1333,32 @@ RULES = [
 	cyril('МГУ')
 	],
      groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'эмгэу'}; }},
-                    //ТГУ
-    {conds: [
-	cyril('ТГУ')
-	],
-     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'тэгэу'}; }},
-
-                        //ТГПУ
-    {conds: [
-	cyril('ТГПУ')
-	],
-     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'тэгэпэу'}; }},
-                            //ТПУ
-    {conds: [
-	cyril('ТПУ')
-	],
-     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'тэпэу'}; }},
-                                //РЖД
-    {conds: [
-	cyril('РЖД')
-	],
-     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'эржэдэ'}; }},
-                                    //АЗС
-    {conds: [
-	cyril('АЗС')
-	],
-     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'азээс'}; }},
+    //ТГУ
+    fixed([ cyril('ТГУ') ], 'тэгэ+у'),
+    //ТГПУ
+    fixed([ cyril('ТГПУ') ], 'тэгэпэ+у'),
+    //ТПУ
+    fixed([ cyril('ТПУ') ], 'тэпэ+у'),
+    //РЖД
+    fixed([ cyril('РЖД') ], 'эржэд+э'),
+    //ВТБ
+    fixed([cyril('ВТБ')], 'вэтэб+э'),
+    //АЗС
+    fixed([ cyril('АЗС') ], 'азээс'),
     //ГСС
-    fixed([cyril('ГСС')], 'гээсэс'),
+    fixed([cyril('ГСС')], 'гээс+эс'),
                             //ВКонтакте
     fixed([cyril('ВКонтакте')], 'В контакте'),
-
-
-    
-
-
-
-    
-
-    
-
-    
-
-
-
-
-    
-                                        //МФЦ
-    {conds: [
-	cyril('МФЦ')
-	],
-     groupFunc: function(tokens, posFrom, posTo){ return {textFunc: buildFixedText, text: 'эмэфцэ'}; }},
+    //МФЦ
+    fixed([cyril('МФЦ') ], 'эмэфц+э'),
     fixed([latin('Huawei'), SPACE, latin('Corporation')], 'Хуавэй Корпорейшэн'),
     //Deutsche
     fixed([latin('Deutsche')], 'Дойче'),
     fixed([latin('Deutsche'), SPACE, latin('Telekom')], 'Дойче Телеком'),
 
         //ЦБ
-    fixed([cyril('ЦБ')], 'цэбэ'),
-    fixed([cyril('ЦБРФ')], 'цэбээрэф'),
+    fixed([cyril('ЦБ')], 'цэб+э'),
+    fixed([cyril('ЦБРФ')], 'цэб+ээрэф'),
 
 
     //до н. э.
@@ -1600,19 +1573,54 @@ function latinSubstMult(c, cyr)
     RULES.push({conds: cond, groupFunc: function(tokens, posFrom, posTo){return {textFunc: buildFixedText, text: cyr + ' ' + tokens[posFrom + c.length + 1].text};}});
 }
 
+latinSubst('Amazon', 'Амазон');
+latinSubst('AMD', 'аэмд+и');
 latinSubst('Airbus', 'Эйрбас');
+latinSubst('Android', 'Андроид');
+latinSubst('Apple', 'Эппл');
+latinSubst('BigData', 'Бигдата');
+latinSubst('Bloomberg', 'Блумберг');
 latinSubst('Boeing', 'Боинг');
-latinSubst('CNEWS', 'cineus');
+latinSubst('Chrome', 'Хром');
+latinSubst('CNEWS', 'синьюз');
 latinSubst('Facebook', 'Фэйсбук');
 latinSubst('Forbes', 'Форбс');
+latinSubst('Google', 'Гугл');
+latinSubst('Grammy', 'Грэмми');
 latinSubst('Huawei', 'Хуавэй');
+latinSubst('Intel', 'Интл');
+latinSubst('IPO', 'айпи+о');
 latinSubst('instagram', 'Инстаграм');
+latinSubst('iOS', 'аи+ос');
+latinSubst('iPhone', 'айфон');
+latinSubst('iPad', 'айпад');
 latinSubst('KPI', 'кипиай');
+latinSubst('Linux', 'Линукс');
+latinSubst('luwrain', 'лур+эйн');
+latinSubst('Microsoft', 'Майкрософт');
+latinSubst('Mozilla', 'Мозилла');
+latinSubst('Rambler', 'Рамблер');
+latinSubst('Snickers', 'Сникерс');
+latinSubst('Samsung', 'Самсунг');
+latinSubst('TAdviser', 'Тадвайзер');
+latinSubst('Tesla', 'Тесла');
+latinSubst('Time', "Тайм");
+latinSubst('Times', "Таймс");
 latinSubst('Twitter', 'Твиттер');
 latinSubst('Xiaomi', 'Сиаоми');
 latinSubst('YouTube', 'Ютуб');
+latinSubst('WLJ', 'Уолл стрит дж+орнал');
 
+latinSubstMult([latin('Coca'), punc('-'), latin('Кола')], 'Кока кола');
+latinSubstMult([latin('Apple'), SPACE, latin('Music')], 'Эппл Мьюзик');
+latinSubstMult([latin('Google'), SPACE, latin('Chrome')], 'Гугл Хром');
 latinSubstMult([latin('Goldman'), SPACE, latin('Sachs')], 'Голдман Сакс');
+
+latinSubstMult([latin('Louis'), SPACE, latin('Vuitton')], 'Луи Виттон');
+//Mail.ru group
+latinSubstMult([latin('Mail'), punc('.'), latin('ru')], 'мэйлру');
+latinSubstMult([latin('Mail'), punc('.'), latin('ru'), SPACE, latin('Group')], 'мэйлру груп');
+latinSubstMult([latin('Rambler'), SPACE, latin('Group')], 'Рамблер груп');
 latinSubstMult([latin('wi'), punc('-'), latin('fi')], 'вайфай');
 
 //Creating regex patterns
