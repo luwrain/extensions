@@ -1573,6 +1573,7 @@ function latinSubstMult(c, cyr)
     RULES.push({conds: cond, groupFunc: function(tokens, posFrom, posTo){return {textFunc: buildFixedText, text: cyr + ' ' + tokens[posFrom + c.length + 1].text};}});
 }
 
+latinSubst('Alphabet', 'Альфабэт');
 latinSubst('Amazon', 'Амазон');
 latinSubst('AMD', 'аэмд+и');
 latinSubst('Airbus', 'Эйрбас');
@@ -1583,6 +1584,7 @@ latinSubst('Bloomberg', 'Блумберг');
 latinSubst('Boeing', 'Боинг');
 latinSubst('Chrome', 'Хром');
 latinSubst('CNEWS', 'синьюз');
+latinSubst('Doom', 'дум');
 latinSubst('Facebook', 'Фэйсбук');
 latinSubst('Forbes', 'Форбс');
 latinSubst('Google', 'Гугл');
@@ -1595,6 +1597,7 @@ latinSubst('iOS', 'аи+ос');
 latinSubst('iPhone', 'айфон');
 latinSubst('iPad', 'айпад');
 latinSubst('KPI', 'кипиай');
+latinSubst('LibreOffice', 'Либреоффис');
 latinSubst('Linux', 'Линукс');
 latinSubst('luwrain', 'лур+эйн');
 latinSubst('Microsoft', 'Майкрософт');
@@ -1603,19 +1606,21 @@ latinSubst('Rambler', 'Рамблер');
 latinSubst('Snickers', 'Сникерс');
 latinSubst('Samsung', 'Самсунг');
 latinSubst('TAdviser', 'Тадвайзер');
+latinSubst('Telegram', 'Телеграм');
 latinSubst('Tesla', 'Тесла');
 latinSubst('Time', "Тайм");
 latinSubst('Times', "Таймс");
 latinSubst('Twitter', 'Твиттер');
-latinSubst('Xiaomi', 'Сиаоми');
+latinSubst('uber', 'Убер');
 latinSubst('YouTube', 'Ютуб');
-latinSubst('WLJ', 'Уолл стрит дж+орнал');
+latinSubst('WSJ', 'Уолл стрит дж+орнал');
+latinSubst('Xiaomi', 'Сиаоми');
 
 latinSubstMult([latin('Coca'), punc('-'), latin('Кола')], 'Кока кола');
 latinSubstMult([latin('Apple'), SPACE, latin('Music')], 'Эппл Мьюзик');
 latinSubstMult([latin('Google'), SPACE, latin('Chrome')], 'Гугл Хром');
+latinSubstMult([latin('Financial'), SPACE, latin('Times')], 'Файнэншл Таймс');
 latinSubstMult([latin('Goldman'), SPACE, latin('Sachs')], 'Голдман Сакс');
-
 latinSubstMult([latin('Louis'), SPACE, latin('Vuitton')], 'Луи Виттон');
 //Mail.ru group
 latinSubstMult([latin('Mail'), punc('.'), latin('ru')], 'мэйлру');
