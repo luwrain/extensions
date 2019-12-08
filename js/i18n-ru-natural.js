@@ -1314,6 +1314,10 @@ RULES = [
     fixed([cyril('УМВД')], 'уэмвэдэ'),
     //РБК
     fixed([cyril('РБК')], 'эрбэк+а'),
+    //ПК
+    fixed([cyril('ПК')], 'пэк+а'),
+    //субд
+            fixed([cyril('СУБД')], 'субэд+э'),
         //США
     fixed([cyril('США')], 'сэш+а'),
             //СПГ
@@ -1575,7 +1579,7 @@ function latinSubstMult(c, cyr)
     RULES.push({conds: cond, groupFunc: function(tokens, posFrom, posTo){return {textFunc: buildFixedText, text: cyr + ' ' + tokens[posFrom + c.length + 1].text};}});
 }
 
-latinSubst('Alphabet', 'Альфабэт');
+latinSubst('Alphabet', '+Альфабэт');
 latinSubst('Amazon', 'Амазон');
 latinSubst('AMD', 'аэмд+и');
 latinSubst('Airbus', 'Эйрбас');
@@ -1598,6 +1602,7 @@ latinSubst('IPO', 'айпи+о');
 latinSubst('instagram', 'Инстаграм');
 latinSubst('iOS', 'аи+ос');
 latinSubst('iPhone', 'айфон');
+latinSubst('IP', 'айпи');
 latinSubst('iPad', 'айпад');
 latinSubst('Jaguar', "Ягуар");
 latinSubst('Java', "Джава");
@@ -1611,12 +1616,17 @@ latinSubst('luwrain', 'люр+эйн');
 latinSubst('Michelin', 'мишлен');
 latinSubst('Microsoft', 'Майкрософт');
 latinSubst('Mozilla', 'Мозилла');
+latinSubst('NASA', 'НАСА');
 latinSubst('Netflix', 'Нетфликс');
+latinSubst('Nokia', 'Нокиа');
+latinSubst('Panasonic', 'панасоник');
 latinSubst('Python', 'Пайтон');
 latinSubst('Qiwi', 'киви');
+latinSubst('QR', 'кьюар');
 latinSubst('Rambler', 'Рамблер');
 latinSubst('Snickers', 'Сникерс');
 latinSubst('Samsung', 'Самсунг');
+latinSubst('Sony', 'Сони');
 latinSubst('TAdviser', 'Тадвайзер');
 latinSubst('Telegram', 'Телеграм');
 latinSubst('Tesla', 'Тесла');
@@ -1626,11 +1636,13 @@ latinSubst('Times', "Таймс");
 latinSubst('Twitter', 'Твиттер');
 latinSubst('uber', 'Убер');
 latinSubst('YouTube', 'Ютуб');
+latinSubst('USB', 'юэсб+и');
 latinSubst('UTair', 'Ютэйр');
 latinSubst('vr', 'ви+ар');
 latinSubst('WADA', 'ВАДА');
+latinSubst('WhatsApp', 'вотсапп');
 latinSubst('Windows', 'Винд+оус');
-latinSubst('WSJ', 'Уолл стрит ж+орнал');
+latinSubst('WSJ', 'Уоллстрит дж+орнал');
 latinSubst('Xiaomi', 'Сиаоми');
 
 latinSubstMult([num('3'), latin('D')], 'три дэ');
@@ -1649,6 +1661,7 @@ latinSubstMult([latin('Mail'), punc('.'), latin('ru'), SPACE, latin('Group')], '
 latinSubstMult([latin('Microsoft'), SPACE, latin('Office')], 'Майкрософт Офис');
 latinSubstMult([latin('Microsoft'), SPACE, latin('Windows')], 'Майкрософт Винд+оус');
 latinSubstMult([latin('Rambler'), SPACE, latin('Group')], 'Рамблер груп');
+latinSubstMult([latin('Sukhoi'), SPACE, latin('SuperJet')], 'Сухой Суперджет');
 latinSubstMult([latin('wi'), punc('-'), latin('fi')], 'вайфай');
 
 //Creating regex patterns

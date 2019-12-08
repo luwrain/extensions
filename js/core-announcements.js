@@ -20,6 +20,9 @@ Luwrain.addHook("luwrain.announcement", function(text, announcementClass, announ
     var d = new java.util.Date();
     if (inputEventTime >= 0 && d.getTime() - inputEventTime < 30000)
 	return;
+    var listening = '' + Luwrain.prop.luwrain.area.listening + '';  
+    if (listening === 'true')
+	return;
     if (text.match("RT @[a-zA-Z0-9_]+: .*"))
 	text = text.substring(text.indexOf(":") + 1);
     Luwrain.message.announcement(text);
