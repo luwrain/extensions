@@ -56,15 +56,13 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
 	if (line[i] != ' ')
     {
 	hotPoint.x = i;
-	Luwrain.sounds.ok();
 	if (i > 0)
-	    Luwrain.speak('' + i + " пробелов от начала строки"); else //FIXME:
-		Luwrain.speak(Luwrain.i18n.static.BeginOfLine);
+	    Luwrain.message('' + i + " пробелов от начала строки"); else //FIXME:
+		Luwrain.message(Luwrain.i18n.static.BeginOfLine);
 	return true;
     }
     hotPoint.x = line.length();
-    Luwrain.sounds.ok();
-    Luwrain.speak('' + line.length + " пробелов от начала строки");//FIXME:
+    Luwrain.message('' + line.length + " пробелов от начала строки");//FIXME:
     return true;
 });
 
@@ -91,15 +89,13 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
 	if (line[i] != ' ')
     {
 	hotPoint.x = i + 1;
-	Luwrain.sounds.ok();
 	if (i + 1 < line.length)
-	    Luwrain.speak('' + line.length - i - 1 + " пробелов до конца строки"); else //FIXME:
-		Luwrain.speak(Luwrain.i18n.static.EndOfLine);
+	    Luwrain.message('' + line.length - i - 1 + " пробелов до конца строки"); else //FIXME:
+		Luwrain.message(Luwrain.i18n.static.EndOfLine);
 	return true;
     }
     hotPoint.x = 0;
-    Luwrain.sounds.ok();
-    Luwrain.speak('' + line.length + " пробелов до конца строки");//FIXME:
+    Luwrain.message('' + line.length + " пробелов до конца строки");//FIXME:
     return true;
 });
 

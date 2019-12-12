@@ -70,7 +70,7 @@ Luwrain.addWorker("battery-announcement-worker", 60, 60, function(){
     var batteries = getBatteries();
     if (batteries.length == 0)
 	return;
-    if (batteries[0].level > 10)
+    if (batteries[0].level > 15)
 	return;
     Luwrain.message.attention('Заряд батареи' + batteries[0].level);//FIXME:
 });
