@@ -72,5 +72,5 @@ Luwrain.addWorker("battery-announcement-worker", 60, 60, function(){
 	return;
     if (batteries[0].level > 15)
 	return;
-    Luwrain.message.attention('Заряд батареи' + batteries[0].level);//FIXME:
+    Luwrain.message.alert('Заряд батареи' + batteries[0].level);//FIXME:
 });
