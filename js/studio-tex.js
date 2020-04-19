@@ -90,7 +90,7 @@ function createTexPresentation(destDir, author, title, frameTitles)
     return projFile.getAbsolutePath();
 }
 
-Luwrain.addHook("luwrain.studio.project.create", function(projType){
+Luwrain.addHook("luwrain.studio.project.create", function(projType, destDirName){
     if (projType != 'tex-presentation')
 	return null;
     var popupName = "Новая презентация TeX";
@@ -113,7 +113,7 @@ Luwrain.addHook("luwrain.studio.project.create", function(projType){
 	if (!newFrameTitle.isEmpty())
 	    frameTitles.push(newFrameTitle);
     } while(!newFrameTitle.isEmpty());
-    var destDir = new java.io.File("/tmp/pr");
+    var destDir = new java.io.File(destDirName);
     destDir.mkdir();
     return createTexPresentation("/tmp/pr", author, title, frameTitles);
 });

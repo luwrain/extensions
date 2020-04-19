@@ -1634,6 +1634,7 @@ latinSubst('Python', 'Пайтон');
 latinSubst('Qiwi', 'киви');
 latinSubst('QR', 'кьюар');
 latinSubst('Rambler', 'Рамблер');
+latinSubst('Reuters', 'Рейтэр');
 latinSubst('Snickers', 'Сникерс');
 latinSubst('Samsung', 'Самсунг');
 latinSubst('Sony', 'Сони');
@@ -1655,7 +1656,7 @@ latinSubst('WADA', 'ВАДА');
 latinSubst('WhatsApp', 'вотсапп');
 latinSubst('WikiLeaks', 'викиликс');
 latinSubst('Windows', 'Виндоуз');
-latinSubst('WSJ', 'Уоллстрит дж+орнал');
+latinSubst('WSJ', 'Уоллстрит джорнл');
 latinSubst('Xiaomi', 'Сиаоми');
 
 //b2b
@@ -1678,6 +1679,7 @@ latinSubstMult([latin('Microsoft'), SPACE, latin('Office')], 'Майкрософ
 latinSubstMult([latin('Microsoft'), SPACE, latin('Windows')], 'Майкрософт Винд+оус');
 latinSubstMult([latin('Rambler'), SPACE, latin('Group')], 'Рамблер груп');
 latinSubstMult([latin('Sukhoi'), SPACE, latin('SuperJet')], 'Сухой Суперджет');
+latinSubstMult([latin('Tax'), SPACE, latin('free')], 'такс фри');
 latinSubstMult([latin('Tele'), num('2')], 'Теле два');
 latinSubstMult([latin('wi'), punc('-'), latin('fi')], 'вайфай');
 
