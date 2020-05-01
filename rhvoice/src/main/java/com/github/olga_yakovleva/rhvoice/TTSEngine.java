@@ -30,10 +30,11 @@ public final class TTSEngine
 
     static public void init()
     {
-    	System.out.println("rhvoice:loading library");
+	/*
     	String libname="RHVoice."+System.getProperty("sun.arch.data.model");
     	System.loadLibrary(libname);
     	System.out.println("rhvoice:jni dynamic library loaded "+libname);
+	*/
         onClassInit();
     }
 

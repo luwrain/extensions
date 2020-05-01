@@ -45,9 +45,6 @@ final class Channel implements org.luwrain.speech.Channel
     Channel(Map<String, String> params) throws Exception
     {
 	NullCheck.notNull(params, "params");
-	try {
-	    System.loadLibrary("RHVoice_core");
-	} catch(Throwable e) {}//Fails on Windows, it's absolutely normal
 	final Path dataPath = Paths.get("rhvoice", "data");
 	final Path configPath = Paths.get("rhvoice", "config");
 	final Path enPath = Paths.get("data", "languages", "English");
