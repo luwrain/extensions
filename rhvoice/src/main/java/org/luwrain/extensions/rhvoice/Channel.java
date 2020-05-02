@@ -25,6 +25,7 @@ import javax.sound.sampled.*;
 
 import com.github.olga_yakovleva.rhvoice.RHVoiceException;
 import com.github.olga_yakovleva.rhvoice.SynthesisParameters;
+import com.github.olga_yakovleva.rhvoice.TTSClient;
 import com.github.olga_yakovleva.rhvoice.TTSEngine;
 import com.github.olga_yakovleva.rhvoice.VoiceInfo;
 
@@ -49,11 +50,11 @@ final class Channel implements org.luwrain.speech.Channel
 	final Path configPath = Paths.get("rhvoice", "config");
 	final Path enPath = Paths.get("data", "languages", "English");
 	final Path ruPath = Paths.get("data", "languages", "Russian");
-	TTSEngine.init();
+	//TTSEngine.init();
 	this.tts = new TTSEngine(dataPath.toString(), configPath.toString(), new String[]{
 		enPath.toString(),
 		ruPath.toString(),
-	    }, null);
+	    }, (tag, level, message)->{});
 	if (params.containsKey("voice") && !params.get("voice").isEmpty())
 	    this.voiceName = params.get("voice"); else
 	    this.voiceName = suggestVoice();
@@ -148,7 +149,13 @@ final class Channel implements org.luwrain.speech.Channel
 	p.setPitch(convPitch(params.getPitch()));
    	p.setSSMLMode(false);
 	try {
-	    tts.speak(text, p, (samples)->{
+	    tts.speak(text, p, new TTSClient(){
+		    @Override public boolean setSampleRate(int sampleRate)
+		    {
+			return true;
+		    }
+		    @Override public boolean playSpeech(short[] samples)
+		    {
 		    try {
 			final ByteBuffer buffer=ByteBuffer.allocate(samples.length * 2);//FIXME:real frame size
 			buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -162,7 +169,7 @@ final class Channel implements org.luwrain.speech.Channel
 			return false;
 		    }
 		    return true;
-		});
+		    }});
 	    return new Result();
 	} 
 	catch(RHVoiceException e)

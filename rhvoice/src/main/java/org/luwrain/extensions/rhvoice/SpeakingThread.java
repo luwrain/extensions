@@ -65,7 +65,13 @@ class SpeakingThread implements Runnable
 	    return;
 	try {
 	    try {
-		channel.getTtsEngine().speak(text, params, (samples)->{
+		channel.getTtsEngine().speak(text, params, new TTSClient(){
+			@Override public boolean setSampleRate(int sampleRate)
+			{
+			    return true;
+			}
+			@Override public boolean playSpeech(short[] samples)
+			{
 			try {
 			    final ByteBuffer buffer=ByteBuffer.allocate(samples.length * audioFormat.getFrameSize());
 			    buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -84,7 +90,7 @@ class SpeakingThread implements Runnable
 			    return false;
 			}
 			return true;
-		    });
+			}});
 		if (!interrupt)
 		    audioLine.drain();
 		if(listener != null) 
