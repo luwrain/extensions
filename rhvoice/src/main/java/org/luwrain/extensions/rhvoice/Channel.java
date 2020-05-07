@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2020 Michael Pozhidaev <msp@luwrain.org>
    Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
 
    This file is part of LUWRAIN.
@@ -55,6 +55,7 @@ final class Channel implements org.luwrain.speech.Channel
 		enPath.toString(),
 		ruPath.toString(),
 	    }, (tag, level, message)->{});
+	//this.tts.configure("use_pseudo_english", "false");
 	if (params.containsKey("voice") && !params.get("voice").isEmpty())
 	    this.voiceName = params.get("voice"); else
 	    this.voiceName = suggestVoice();
