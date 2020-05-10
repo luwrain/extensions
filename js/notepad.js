@@ -1,5 +1,5 @@
 /*
-   Copyright 2019 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2019-2020 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -14,8 +14,10 @@
    General Public License for more details.
 */
 
-Luwrain.addHook("luwrain.notepad.properties.basic", function(arg){
+Luwrain.addHook("luwrain.notepad.properties", function(arg){
     var res = [];
+    res.push('Строка: ' + (arg.hotPoint.y + 1));
+    res.push('Столбец: ' + (arg.hotPoint.x + 1));
     res.push("Имя файла: " + arg.fileName);
     res.push("Кодировка: " + arg.charset);
     res.push("Количество строк: " + arg.lines.length);
