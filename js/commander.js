@@ -42,7 +42,7 @@ function getSize(f)
     return res;
 }
 
-Luwrain.addHook("luwrain.commander.info.local", function(files){
+Luwrain.addHook("luwrain.commander.info.files.local", function(files){
     /*
     var res = [];
     for(var i = 0;i < files.length;i++)
@@ -73,7 +73,7 @@ Luwrain.addHook("luwrain.commander.info.local", function(files){
     }
     return res;
     */
-    return null;
+    return ["123"];
 });
 
 Luwrain.addHook("luwrain.commander.size.local", function(files){
