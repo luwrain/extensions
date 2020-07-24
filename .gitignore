@@ -1,4 +1,5 @@
-lib
 build
 build.xml
 jar
+target
+TEST-*Test.xml
