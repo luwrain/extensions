@@ -21,82 +21,82 @@ var RULES = [
     {filter: '3d', text: 'три дэ'},
     {filter: '3g', text: 'три жи'},
     {filter: 'alphabet', text: '+Альфабэт'},
-{filter: 'amazon', text: 'Амазон'},
-{filter: 'amd', text: 'аэмд+и'},
-{filter: 'airbus', text: 'Эйрбас'},
-{filter: 'android', text: 'Андроид'},
-{filter: 'apple', text: 'Эппл'},
-{filter: 'audi', text: '+аУДИ'},
-{filter: 'aurus', text: '+Аурус'},
-{filter: 'bigdata', text: 'Бигдата'},
-{filter: 'bloomberg', text: 'Блумберг'},
-{filter: 'boeing', text: 'Боинг'},
-{filter: 'chevrolet', text: 'Шевро+ле'},
-{filter: 'chrome', text: 'Хром'},
+    {filter: 'amazon', text: 'Амазон'},
+    {filter: 'amd', text: 'аэмд+и'},
+    {filter: 'airbus', text: 'Эйрбас'},
+    {filter: 'android', text: 'Андроид'},
+    {filter: 'apple', text: 'Эппл'},
+    {filter: 'audi', text: '+аУДИ'},
+    {filter: 'aurus', text: '+Аурус'},
+    {filter: 'bigdata', text: 'Бигдата'},
+    {filter: 'bloomberg', text: 'Блумберг'},
+    {filter: 'boeing', text: 'Боинг'},
+    {filter: 'chevrolet', text: 'Шевро+ле'},
+    {filter: 'chrome', text: 'Хром'},
     {filter: 'cnews', text: 'синьюз'},
     {filter: 'coca-cola', text: 'кока кола'},
-{filter: 'disney', text: 'Дисней'},
-{filter: 'doom', text: 'дум'},
-{filter: 'facebook', text: 'Фэйсбук'},
+    {filter: 'disney', text: 'Дисней'},
+    {filter: 'doom', text: 'дум'},
+    {filter: 'facebook', text: 'Фэйсбук'},
     {filter: 'femen', text: 'Фем+ен'},
     {filter: 'financial times', text:  'Файнэншл Таймс'},
-{filter: 'forbes', text: 'Форбс'},
-{filter: 'gmail', text: 'Джимэйл'},
-{filter: 'google', text: 'Гугл'},
-{filter: 'grammy', text: 'Грэмми'},
-{filter: 'huawei', text: 'Хуавэй'},
-{filter: 'intel', text: 'Интл'},
-{filter: 'ipo', text: 'айпи+о'},
-{filter: 'instagram', text: 'Инстаграм'},
-{filter: 'ios', text: 'аи+ос'},
-{filter: 'iphone', text: 'айфон'},
-{filter: 'ip', text: 'айпи'},
-{filter: 'ipad', text: 'айпад'},
+    {filter: 'forbes', text: 'Форбс'},
+    {filter: 'gmail', text: 'Джимэйл'},
+    {filter: 'google', text: 'Гугл'},
+    {filter: 'grammy', text: 'Грэмми'},
+    {filter: 'huawei', text: 'Хуавэй'},
+    {filter: 'intel', text: 'Интл'},
+    {filter: 'ipo', text: 'айпи+о'},
+    {filter: 'instagram', text: 'Инстаграм'},
+    {filter: 'ios', text: 'аи+ос'},
+    {filter: 'iphone', text: 'айфон'},
+    {filter: 'ip', text: 'айпи'},
+    {filter: 'ipad', text: 'айпад'},
     {filter: 'jaguar', text: 'Ягуар'},
     {filter: 'java', text: 'Джава'},
-{filter: 'javascript', text: 'Джава скрипт'},
-{filter: 'kpi', text: 'кипиай'},
-{filter: 'lg', text: 'элджи'},
-{filter: 'libreoffice', text: 'Либреоффис'},
-{filter: 'lilypond', text: 'Лилипонд'},
-{filter: 'linux', text: 'Линукс'},
-{filter: 'lucasfilm', text: 'Лукасфилм'},
-{filter: 'lte', text: 'элтэйе'},
-{filter: 'michelin', text: 'мишлен'},
-{filter: 'microsoft', text: 'Майкрософт'},
-{filter: 'mozilla', text: 'Мозилла'},
-{filter: 'nasa', text: 'НАСА'},
-{filter: 'netflix', text: 'Нетфликс'},
-{filter: 'nokia', text: 'Нокиа'},
-{filter: 'panasonic', text: 'панасоник'},
-{filter: 'pentium', text: 'Пентиум'},
-{filter: 'python', text: 'Пайтон'},
-{filter: 'qiwi', text: 'киви'},
-{filter: 'qr', text: 'кьюар'},
-{filter: 'rambler', text: 'Рамблер'},
-{filter: 'reuters', text: 'Рейтэр'},
-{filter: 'snickers', text: 'Сникерс'},
-{filter: 'samsung', text: 'Самсунг'},
-{filter: 'sony', text: 'Сони'},
-{filter: 'tadviser', text: 'Тадвайзер'},
-{filter: 'telegram', text: 'Телеграм'},
-{filter: 'tesla', text: 'Тесла'},
-{filter: 'tex', text: 'Тех'},
+    {filter: 'javascript', text: 'Джава скрипт'},
+    {filter: 'kpi', text: 'кипиай'},
+    {filter: 'lg', text: 'элджи'},
+    {filter: 'libreoffice', text: 'Либреоффис'},
+    {filter: 'lilypond', text: 'Лилипонд'},
+    {filter: 'linux', text: 'Линукс'},
+    {filter: 'lucasfilm', text: 'Лукасфилм'},
+    {filter: 'lte', text: 'элтэйе'},
+    {filter: 'michelin', text: 'мишлен'},
+    {filter: 'microsoft', text: 'Майкрософт'},
+    {filter: 'mozilla', text: 'Мозилла'},
+    {filter: 'nasa', text: 'НАСА'},
+    {filter: 'netflix', text: 'Нетфликс'},
+    {filter: 'nokia', text: 'Нокиа'},
+    {filter: 'panasonic', text: 'панасоник'},
+    {filter: 'pentium', text: 'Пентиум'},
+    {filter: 'python', text: 'Пайтон'},
+    {filter: 'qiwi', text: 'киви'},
+    {filter: 'qr', text: 'кьюар'},
+    {filter: 'rambler', text: 'Рамблер'},
+    {filter: 'reuters', text: 'Рейтэр'},
+    {filter: 'snickers', text: 'Сникерс'},
+    {filter: 'samsung', text: 'Самсунг'},
+    {filter: 'sony', text: 'Сони'},
+    {filter: 'tadviser', text: 'Тадвайзер'},
+    {filter: 'telegram', text: 'Телеграм'},
+    {filter: 'tesla', text: 'Тесла'},
+    {filter: 'tex', text: 'Тех'},
     {filter: 'time', text: 'Тайм'},
     {filter: 'times', text: 'Таймс'},
-{filter: 'toyota', text: 'Тойота'},
-{filter: 'twitter', text: 'Твиттер'},
-{filter: 'uber', text: 'Убер'},
-{filter: 'ubuntu', text: 'Убунту'},
-{filter: 'youtube', text: 'Ютуб'},
-{filter: 'usb', text: 'юэсб+и'},
-{filter: 'utair', text: 'Ютэйр'},
-{filter: 'vr', text: 'ви+ар'},
-{filter: 'wada', text: 'ВАДА'},
-{filter: 'whatsapp', text: 'вотсапп'},
-{filter: 'wikileaks', text: 'викиликс'},
-{filter: 'windows', text: 'Виндоуз'},
-{filter: 'wsj', text: 'Уоллстрит джорнл'},
+    {filter: 'toyota', text: 'Тойота'},
+    {filter: 'twitter', text: 'Твиттер'},
+    {filter: 'uber', text: 'Убер'},
+    {filter: 'ubuntu', text: 'Убунту'},
+    {filter: 'youtube', text: 'Ютуб'},
+    {filter: 'usb', text: 'юэсб+и'},
+    {filter: 'utair', text: 'Ютэйр'},
+    {filter: 'vr', text: 'ви+ар'},
+    {filter: 'wada', text: 'ВАДА'},
+    {filter: 'whatsapp', text: 'вотсапп'},
+    {filter: 'wikileaks', text: 'викиликс'},
+    {filter: 'windows', text: 'Виндоуз'},
+    {filter: 'wsj', text: 'Уоллстрит джорнл'},
     {filter: 'xiaomi', text: 'Сиаоми'},
 
     //acronyms
@@ -123,7 +123,6 @@ function applyRule(rule, tokens)
 	    posFrom: i,
 	    posTo: i + rule.filter.length
 	};
-	print(r);
 	res.push(r);
     }
     print('result ' + res.length);
@@ -151,8 +150,8 @@ function resolveGroupConflicts(groups)
     {
 	var g1 = res[i];
 	var g2 = groups[j];
-	    if (g1.posFrom >= g2.posTo || g2.posFrom >= g1.posTo)
-		continue;
+	if (g1.posFrom >= g2.posTo || g2.posFrom >= g1.posTo)
+	    continue;
 	var len1 = g1.posTo - g1.posFrom;
 	var len2 = g2.posTo - g2.posFrom;
 	if (len1 > len2)
@@ -189,6 +188,28 @@ function buildResult(tokens)
     return res;
 }
 
+function insertCustom(tokens)
+{
+    for(var i = 0;i < tokens.length;i++)
+    {
+	if (tokens[i].text === '(')
+	{
+	    tokens[i] = {text: ' в круглых скобках '};
+	    continue;
+	}
+		if (tokens[i].text === ')')
+	{
+	    tokens[i] = {text: ' закрылась скобка '};
+	    continue;
+	}
+			if (tokens[i].text === '\"')
+	{
+	    tokens[i] = {text: ' двойная кавычка '};
+	    continue;
+	}
+    }
+}
+
 Luwrain.addHook("luwrain.i18n.ru.speakable.natural", function(tokensList){
     var tokens = [];
     for(var i = 0;i < tokensList.length;i++)
@@ -196,5 +217,6 @@ Luwrain.addHook("luwrain.i18n.ru.speakable.natural", function(tokensList){
     var groups = applyRules(tokens);
     groups = resolveGroupConflicts(groups);
     insertGroups(tokens, groups);
+    insertCustom(tokens);
     return buildResult(tokens);
 })
