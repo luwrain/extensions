@@ -14,15 +14,93 @@
    General Public License for more details.
 */
 
+var RULES = [
+    {filter: 'luwrain', text: 'лур+эйн'},
+
+    //static latin
+    {filter: 'alphabet', text: '+Альфабэт'},
+{filter: 'amazon', text: 'Амазон'},
+{filter: 'amd', text: 'аэмд+и'},
+{filter: 'airbus', text: 'Эйрбас'},
+{filter: 'android', text: 'Андроид'},
+{filter: 'apple', text: 'Эппл'},
+{filter: 'audi', text: '+аУДИ'},
+{filter: 'aurus', text: '+Аурус'},
+{filter: 'bigdata', text: 'Бигдата'},
+{filter: 'bloomberg', text: 'Блумберг'},
+{filter: 'boeing', text: 'Боинг'},
+{filter: 'chevrolet', text: 'Шевро+ле'},
+{filter: 'chrome', text: 'Хром'},
+{filter: 'cnews', text: 'синьюз'},
+{filter: 'disney', text: 'Дисней'},
+{filter: 'doom', text: 'дум'},
+{filter: 'facebook', text: 'Фэйсбук'},
+{filter: 'femen', text: 'Фем+ен'},
+{filter: 'forbes', text: 'Форбс'},
+{filter: 'gmail', text: 'Джимэйл'},
+{filter: 'google', text: 'Гугл'},
+{filter: 'grammy', text: 'Грэмми'},
+{filter: 'huawei', text: 'Хуавэй'},
+{filter: 'intel', text: 'Интл'},
+{filter: 'ipo', text: 'айпи+о'},
+{filter: 'instagram', text: 'Инстаграм'},
+{filter: 'ios', text: 'аи+ос'},
+{filter: 'iphone', text: 'айфон'},
+{filter: 'ip', text: 'айпи'},
+{filter: 'ipad', text: 'айпад'},
+    {filter: 'jaguar', text: 'Ягуар'},
+    {filter: 'java', text: 'Джава'},
+{filter: 'javascript', text: 'Джава скрипт'},
+{filter: 'kpi', text: 'кипиай'},
+{filter: 'lg', text: 'элджи'},
+{filter: 'libreoffice', text: 'Либреоффис'},
+{filter: 'lilypond', text: 'Лилипонд'},
+{filter: 'linux', text: 'Линукс'},
+{filter: 'lucasfilm', text: 'Лукасфилм'},
+{filter: 'lte', text: 'элтэйе'},
+{filter: 'michelin', text: 'мишлен'},
+{filter: 'microsoft', text: 'Майкрософт'},
+{filter: 'mozilla', text: 'Мозилла'},
+{filter: 'nasa', text: 'НАСА'},
+{filter: 'netflix', text: 'Нетфликс'},
+{filter: 'nokia', text: 'Нокиа'},
+{filter: 'panasonic', text: 'панасоник'},
+{filter: 'pentium', text: 'Пентиум'},
+{filter: 'python', text: 'Пайтон'},
+{filter: 'qiwi', text: 'киви'},
+{filter: 'qr', text: 'кьюар'},
+{filter: 'rambler', text: 'Рамблер'},
+{filter: 'reuters', text: 'Рейтэр'},
+{filter: 'snickers', text: 'Сникерс'},
+{filter: 'samsung', text: 'Самсунг'},
+{filter: 'sony', text: 'Сони'},
+{filter: 'tadviser', text: 'Тадвайзер'},
+{filter: 'telegram', text: 'Телеграм'},
+{filter: 'tesla', text: 'Тесла'},
+{filter: 'tex', text: 'Тех'},
+    {filter: 'time', text: 'Тайм'},
+    {filter: 'times', text: 'Таймс'},
+{filter: 'toyota', text: 'Тойота'},
+{filter: 'twitter', text: 'Твиттер'},
+{filter: 'uber', text: 'Убер'},
+{filter: 'ubuntu', text: 'Убунту'},
+{filter: 'youtube', text: 'Ютуб'},
+{filter: 'usb', text: 'юэсб+и'},
+{filter: 'utair', text: 'Ютэйр'},
+{filter: 'vr', text: 'ви+ар'},
+{filter: 'wada', text: 'ВАДА'},
+{filter: 'whatsapp', text: 'вотсапп'},
+{filter: 'wikileaks', text: 'викиликс'},
+{filter: 'windows', text: 'Виндоуз'},
+{filter: 'wsj', text: 'Уоллстрит джорнл'},
+    {filter: 'xiaomi', text: 'Сиаоми'}
+
+];
+
 function getFilter(exp)
 {
     return org.luwrain.nlp.ru.TokenFilters.get(exp);
 }
-
-var RULES = [
-    {filter: 'luwrain', text: 'лур+эйн'},
-];
-
 for(var i = 0;i < RULES.length;i++)
     RULES[i].filter = getFilter(RULES[i].filter);
 
