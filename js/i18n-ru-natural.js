@@ -18,6 +18,8 @@ var RULES = [
     {filter: 'luwrain', text: 'лур+эйн'},
 
     //static latin
+    {filter: '3d', text: 'три дэ'},
+    {filter: '3g', text: 'три жи'},
     {filter: 'alphabet', text: '+Альфабэт'},
 {filter: 'amazon', text: 'Амазон'},
 {filter: 'amd', text: 'аэмд+и'},
@@ -31,11 +33,13 @@ var RULES = [
 {filter: 'boeing', text: 'Боинг'},
 {filter: 'chevrolet', text: 'Шевро+ле'},
 {filter: 'chrome', text: 'Хром'},
-{filter: 'cnews', text: 'синьюз'},
+    {filter: 'cnews', text: 'синьюз'},
+    {filter: 'coca-cola', text: 'кока кола'},
 {filter: 'disney', text: 'Дисней'},
 {filter: 'doom', text: 'дум'},
 {filter: 'facebook', text: 'Фэйсбук'},
-{filter: 'femen', text: 'Фем+ен'},
+    {filter: 'femen', text: 'Фем+ен'},
+    {filter: 'financial times', text:  'Файнэншл Таймс'},
 {filter: 'forbes', text: 'Форбс'},
 {filter: 'gmail', text: 'Джимэйл'},
 {filter: 'google', text: 'Гугл'},
@@ -93,7 +97,11 @@ var RULES = [
 {filter: 'wikileaks', text: 'викиликс'},
 {filter: 'windows', text: 'Виндоуз'},
 {filter: 'wsj', text: 'Уоллстрит джорнл'},
-    {filter: 'xiaomi', text: 'Сиаоми'}
+    {filter: 'xiaomi', text: 'Сиаоми'},
+
+    //acronyms
+    {filter: '90-е', text: 'девяностые'},
+    {filter: 'н. э.', text: 'нашей эры'},
 
 ];
 
