@@ -35,6 +35,8 @@ var RULES = [
         {filter: 'bitcoin', text: 'биткойн'},
     {filter: 'bloomberg', text: 'Блумберг'},
     {filter: 'boeing', text: 'Боинг'},
+    {filter: 'build', text: 'билд'},
+        {filter: 'building', text: 'билдинг'},
         {filter: 'capslock', text: 'капслок'},
     {filter: 'chevrolet', text: 'Шевро+ле'},
     {filter: 'chrome', text: 'Хром'},
@@ -54,13 +56,13 @@ var RULES = [
         {filter: 'fedora', text: 'федора'},
     {filter: 'femen', text: 'Фем+ен'},
     {filter: 'financial times', text:  'Файнэншл Таймс'},
+        {filter: 'firefox', text:  'файрфокс'},
     {filter: 'forbes', text: 'Форбс'},
-
     {filter: 'fortnite', text: 'фортнайт'},
-    
         {filter: 'fox news', text: 'фокс ньюс'},
     {filter: 'gmail', text: 'Джимэйл'},
     {filter: 'google', text: 'Гугл'},
+    {filter: 'gpl', text: 'джипи+эль'},
     {filter: 'grammy', text: 'Грэмми'},
     {filter: 'huawei', text: 'Хуавэй'},
         {filter: 'honda', text: 'хонда'},
@@ -106,6 +108,7 @@ var RULES = [
     {filter: 'qiwi', text: 'киви'},
     {filter: 'qr', text: 'кьюар'},
     {filter: 'rambler', text: 'Рамблер'},
+    {filter: 'room', text: 'рум'},
     {filter: 'reuters', text: 'Рейтэр'},
     {filter: 'snickers', text: 'Сникерс'},
     {filter: 'samsung', text: 'Самсунг'},
@@ -115,7 +118,7 @@ var RULES = [
     {filter: 'telegram', text: 'Телеграм'},
     {filter: 'tesla', text: 'Тесла'},
     {filter: 'tex', text: 'Тех'},
-        {filter: 'TikTok', text: 'тикток'},
+        {filter: 'tiktok', text: 'тикток'},
     {filter: 'time', text: 'Тайм'},
         {filter: 'tinder', text: 'тиндэр'},
     {filter: 'times', text: 'Таймс'},
@@ -140,6 +143,8 @@ var RULES = [
     {filter: 'xiaomi', text: 'Сиаоми'},
 
     //acronyms
+    {filter: 'т. *е.', text: 'то есть'},
+            {filter: 'т. *к.', text: 'так как'},
     {filter: '90-е', text: 'девяностые'},
     {filter: 'н. э.', text: 'нашей эры'},
 
@@ -156,16 +161,18 @@ function applyRule(rule, tokens)
 {
     var res = [];
     for(var i = 0;i < tokens.length;i++)
-	if (rule.filter.match(tokens, i))
     {
-	var r = {
-	    text: rule.text,
-	    posFrom: i,
-	    posTo: i + rule.filter.length
-	};
-	res.push(r);
+	var k = rule.filter.match(tokens, i);
+	if (k > 0)
+	{
+	    var r = {
+		text: rule.text,
+		posFrom: i,
+		posTo: i + k
+	    };
+	    res.push(r);
+	}
     }
-    print('result ' + res.length);
     return res;
 }
 
@@ -232,6 +239,8 @@ function insertCustom(tokens)
 {
     for(var i = 0;i < tokens.length;i++)
     {
+	if (tokens[i] == null)
+	    continue;
 	if (tokens[i].text === '(')
 	{
 	    tokens[i] = {text: ' в круглых скобках '};
