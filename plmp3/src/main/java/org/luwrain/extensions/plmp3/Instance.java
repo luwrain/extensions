@@ -151,6 +151,7 @@ final class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
 	if (finishing)
 	    return;
 	finishing = true;
-	task.cancel(true);
+	if (task != null)
+	    task.cancel(true);
     }
 }
