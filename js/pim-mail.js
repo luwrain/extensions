@@ -69,13 +69,12 @@ function saveToDefaultIncoming(mail, message)
     var defaultIncoming = mail.folders.findFirstByProperty("defaultIncoming", 'true')
     if (defaultIncoming == null)
 	return false;
-    defaultIncoming.saveMessage(message);
-    return true;
+    return defaultIncoming.saveMessage(message);
 }
 
 Luwrain.addHook("luwrain.pim.message.new.save", function(mail, message){
     var listId = message.list.id;
-    if (listId.isEmpty())
+//    if (listId.isEmpty())
 	return saveToDefaultIncoming(mail, message);
     var existingFolder = mail.folders.findFirstByProperty("list", listId)
     if (existingFolder != null)
