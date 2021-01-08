@@ -1,5 +1,5 @@
 /*
-   Copyright 2019-2020 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2021 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -14,8 +14,19 @@
    General Public License for more details.
 */
 
-Luwrain.addHook("luwrain.studio.project.types", function(){
-    return [
-	{id: "lilypond-piano-piece", orderIndex: 100, title: "Фортепианная пьеса Lilypond"},
-    ];
-});
+const LOG_COMPONENT = 'linux';
+const Log = Luwrain.log;
+const cpus = [];
+
+const CPU_INFO_FILE = '/proc/cpuinfo';
+
+const cpuInfoLines = Luwrain.readTextFile(CPU_INFO_FILE);
+for(let i = 0;i < cpuInfoLines.length;i++) {
+    const res = cpuInfoLines[i].match('^model name\\s*:\\s*(.*)$');
+    if (res && res.length > 0)
+    {
+	const c = {id: cpus.length, modelName: res[1].trim()};
+	Log.debug(LOG_COMPONENT, 'CPU #' + c.id + ': ' + c.modelName);
+	cpus.push(c);
+    }
+}

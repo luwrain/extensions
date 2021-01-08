@@ -160,11 +160,9 @@ for(var i = 0;i < RULES.length;i++)
 function applyRule(rule, tokens)
 {
     var res = [];
-    for(var i = 0;i < tokens.length;i++)
-    {
+    for(var i = 0;i < tokens.length;i++) {
 	var k = rule.filter.match(tokens, i);
-	if (k > 0)
-	{
+	if (k > 0) {
 	    var r = {
 		text: rule.text,
 		posFrom: i,
@@ -193,10 +191,9 @@ function resolveGroupConflicts(groups)
     var res = groups;
     for(var i = 0;i < res.length;i++)
 	for(var j = 0;j < res.length;j++)
-	    if (i != j && res[i] != null && res[j] != null)
-    {
+	    if (i != j && res[i] != null && res[j] != null) {
 	var g1 = res[i];
-	var g2 = groups[j];
+	var g2 = res[j];
 	if (g1.posFrom >= g2.posTo || g2.posFrom >= g1.posTo)
 	    continue;
 	var len1 = g1.posTo - g1.posFrom;
