@@ -1,5 +1,5 @@
 /*
-   Copyright 2020 deniz sincar <dsincar29@gmail.com>
+   Copyright 2020 Deniz Sincar <dsincar29@gmail.com>
    Copyright 2019-2020 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
