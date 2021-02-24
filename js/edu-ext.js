@@ -15,6 +15,6 @@
 */
 
 Luwrain.addCommand("quit-education", function(){
-    if (Luwrain.popups.confirmDefaultYes("Завершение работы", "Вы действительно хотите завершить работу с LUWRAIN для образования?"))
+    if (Luwrain.popups.confirmDefaultYes("Завершение работы", "Вы действительно хотите завершить работу в LUWRAIN для образования?"))
 	Luwrain.quit();
     });
