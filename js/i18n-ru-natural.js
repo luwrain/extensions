@@ -18,6 +18,7 @@ var RULES = [
     {filter: 'luwrain', text: 'лур+эйн'},
 
     //static latin
+    /*
     {filter: '3d', text: 'три дэ'},
     {filter: '3g', text: 'три жи'},
     {filter: 'alphabet', text: '+Альфабэт'},
@@ -141,6 +142,7 @@ var RULES = [
     {filter: 'windows', text: 'Виндоуз'},
     {filter: 'wsj', text: 'Уоллстрит джорнл'},
     {filter: 'xiaomi', text: 'Сиаоми'},
+*/
 
     //acronyms
     {filter: 'т. *е.', text: 'то есть'},
