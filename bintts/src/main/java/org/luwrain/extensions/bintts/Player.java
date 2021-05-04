@@ -46,15 +46,28 @@ final class Player implements Runnable
 
     @Override public void run()
     {
+	final Process p;
+	final BufferedInputStream is;
+			try {
+ p = new ProcessBuilder("/bin/bash", "-c", "echo proba | freephone -h /usr/share/freespeech/lexicon -m | /usr/local/bin/mbrola /usr/share/mbrola/en1/en1 - -").start();
+		p.getOutputStream().close();
+		p.getErrorStream().close();
+ is = new BufferedInputStream(p.getInputStream());
+			}
+			catch(IOException e)
+			{
+			    Log.error(LOG_COMPONENT, "unable to run the bintts player: " + e.getClass().getName() + ": " + e.getMessage());
+			    e.printStackTrace();
+			    return;
+			}
+		int len = 0;
+				final byte[] buf = new byte[2048];
+
 	try {
 	    try {
-		final Process p = new ProcessBuilder("/bin/bash", "-c", "echo proba | freephone -h /usr/share/freespeech/lexicon -m | /usr/local/bin/mbrola /usr/share/mbrola/en1/en1 - -").start();
-		p.getOutputStream().close();
 		this.audioLine = createAudioLine(audioFormat);
 		if (audioLine == null)
 		    return;
-		final BufferedInputStream is = new BufferedInputStream(p.getInputStream());
-		int len = 0;
 		final byte[] trimBuf = new byte[2];
 		trimBuf[0] = 0;
 		trimBuf[1] = 0;
@@ -66,7 +79,6 @@ if (len == 0)
 		}
 		    //		    if (audioLine.isRunning())
 			audioLine.write(trimBuf, 0, len);
-		final byte[] buf = new byte[2048];
 len = is.read(buf);
 		while(len > 0)
 		{
@@ -79,23 +91,24 @@ len = is.read(buf);
 			audioLine.drain();
 		if(listener != null) 
 		    listener.onFinished(-1);
-	}
+    }
+	finally {
+		    audioLine.stop();
+		    audioLine.close();
+		    len = is.read(buf);
+		    while (len > 0)
+			len = is.read(buf);
+		    is.close();
+				done = true;
+	    }
+	    	}
 	    catch(Throwable e)
 	    {
 		Log.error(LOG_COMPONENT, "unable to call bintts and speak the output: " + e.getClass().getName() + ": " + e.getMessage());
 		e.printStackTrace();
 		return;
 	    }
-    }
-	finally {
-		if (audioLine != null)
-		{
-		    audioLine.stop();
-		    audioLine.close();
-		    audioLine = null;
-		}
-				done = true;
-	    }
+
     }
 
     void interrupt()
