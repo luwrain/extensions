@@ -23,6 +23,7 @@ import javax.sound.sampled.AudioFormat.Encoding;
 import org.luwrain.core.*;
 import org.luwrain.speech.Channel.Listener;
 import org.luwrain.util.*;
+import org.luwrain.linux.*;
 
 final class Player implements Runnable
 {
@@ -46,76 +47,84 @@ final class Player implements Runnable
 
     @Override public void run()
     {
+	final StringBuilder b = new StringBuilder();
+	b.append("echo ").append(BashProcess.escape(text)).append(" | ").append("freephone -h /usr/share/freespeech/lexicon -m | /usr/local/bin/mbrola /usr/share/mbrola/en1/en1 - -");
 	final Process p;
 	final BufferedInputStream is;
-			try {
- p = new ProcessBuilder("/bin/bash", "-c", "echo proba | freephone -h /usr/share/freespeech/lexicon -m | /usr/local/bin/mbrola /usr/share/mbrola/en1/en1 - -").start();
-		p.getOutputStream().close();
-		p.getErrorStream().close();
- is = new BufferedInputStream(p.getInputStream());
-			}
-			catch(IOException e)
-			{
-			    Log.error(LOG_COMPONENT, "unable to run the bintts player: " + e.getClass().getName() + ": " + e.getMessage());
-			    e.printStackTrace();
-			    return;
-			}
-		int len = 0;
-				final byte[] buf = new byte[2048];
-
+	try {
+	    p = new ProcessBuilder("/bin/bash", "-c", new String(b)).start();
+	    p.getOutputStream().close();
+	    p.getErrorStream().close();
+	    is = new BufferedInputStream(p.getInputStream());
+	}
+	catch(IOException e)
+	{
+	    Log.error(LOG_COMPONENT, "unable to run the bintts player: " + e.getClass().getName() + ": " + e.getMessage());
+	    e.printStackTrace();
+	    return;
+	}
+	int len = 0;
+	final byte[] buf = new byte[2048];
 	try {
 	    try {
 		this.audioLine = createAudioLine(audioFormat);
 		if (audioLine == null)
 		    return;
-		final byte[] trimBuf = new byte[2];
-		trimBuf[0] = 0;
-		trimBuf[1] = 0;
-		while(trimBuf[0] == 0 && trimBuf[1] == 0)
-		{
-len = is.read(trimBuf);
-if (len == 0)
-    return;
-		}
-		    //		    if (audioLine.isRunning())
-			audioLine.write(trimBuf, 0, len);
-len = is.read(buf);
+		if (audioFormat.getSampleSizeInBits() == 16 && !trim16bit(is))
+		    return;
+		len = is.read(buf);
 		while(len > 0)
 		{
-			audioLine.write(buf, 0, len);
-					    if (!audioLine.isRunning())
-			    return;
+		    audioLine.write(buf, 0, len);
+		    if (!audioLine.isRunning())
+			return;
 		    len = is.read(buf);
 		}
 		if (audioLine.isRunning())
-			audioLine.drain();
+		    audioLine.drain();
 		if(listener != null) 
 		    listener.onFinished(-1);
-    }
-	finally {
-		    audioLine.stop();
-		    audioLine.close();
+	    }
+	    finally {
+		audioLine.stop();
+		audioLine.close();
+		len = is.read(buf);
+		while (len > 0)
 		    len = is.read(buf);
-		    while (len > 0)
-			len = is.read(buf);
-		    is.close();
-				done = true;
+		is.close();
+		done = true;
 	    }
-	    	}
-	    catch(Throwable e)
-	    {
-		Log.error(LOG_COMPONENT, "unable to call bintts and speak the output: " + e.getClass().getName() + ": " + e.getMessage());
-		e.printStackTrace();
-		return;
-	    }
-
+	}
+	catch(Throwable e)
+	{
+	    Log.error(LOG_COMPONENT, "unable to call bintts and speak the output: " + e.getClass().getName() + ": " + e.getMessage());
+	    e.printStackTrace();
+	    return;
+	}
     }
 
     void interrupt()
     {
 	if (audioLine != null)
 	    audioLine.stop();
-	    }
+    }
+
+    private boolean trim16bit(BufferedInputStream is) throws IOException
+    {
+	final byte[] trimBuf = new byte[2];
+	trimBuf[0] = 0;
+	trimBuf[1] = 0;
+	int len = 0;
+	while(trimBuf[0] == 0 && trimBuf[1] == 0)
+	{
+	    len = is.read(trimBuf);
+	    if (len <= 0)
+		return false;
+	}
+	if (audioLine.isRunning())
+	    audioLine.write(trimBuf, 0, len);
+	return true;
+    }
 
     static private SourceDataLine createAudioLine(AudioFormat audioFormat)
     {
