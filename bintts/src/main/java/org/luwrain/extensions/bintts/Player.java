@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2021 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -22,6 +22,7 @@ import javax.sound.sampled.AudioFormat.Encoding;
 
 import org.luwrain.core.*;
 import org.luwrain.speech.Channel.Listener;
+import org.luwrain.util.*;
 
 final class Player implements Runnable
 {
@@ -32,71 +33,46 @@ final class Player implements Runnable
     private final Listener listener;
     private final String text;
     private final Channel channel;
-    private final Object params;
-
-    private AudioFormat audioFormat = null;
+    private AudioFormat audioFormat;
     private SourceDataLine audioLine = null;
     private boolean interrupt = false;
 
-    Player(String text,Listener listener, Channel channel, Object params)
+    Player(String text,Listener listener, Channel channel, AudioFormat audioFormat)
     {
 	NullCheck.notNull(text, "text");
 	NullCheck.notNull(channel, "channel");
-	NullCheck.notNull(params, "params");
+	NullCheck.notNull(audioFormat, "audioFormat");
 	this.listener = listener;
 	this.text = text;
 	this.channel = channel;
-	this.params = params;
+	this.audioFormat = audioFormat;
     }
 
     @Override public void run()
     {
-	synchronized(channel){
-	    if (interrupt)
-		return;
-	    audioFormat = createAudioFormat();
-	if (audioFormat == null)
-	    return;
-	    audioLine = createAudioLine(audioFormat);
+	try {
+	final Process p = new ProcessBuilder("").start();
+	    this.audioLine = createAudioLine(audioFormat);
 	if (audioLine == null)
 	    return;
 	try {
-	    try {
-		//		channel.getTtsEngine().speak(text, params,
-
-					     final java.util.function.Consumer tmp = (samples)->{
-			try {
-			    //			    final ByteBuffer buffer=ByteBuffer.allocate(samples.length * audioFormat.getFrameSize());
-			    //			    buffer.order(ByteOrder.LITTLE_ENDIAN);
-			    //			    buffer.asShortBuffer().put(samples);
-			    //			    final byte[] bytes = buffer.array();
-			    //			    audioLine.write(bytes, 0, bytes.length);
+	    //	    StreamUtils.copyAllBytes(null, audioLine);
 			    if(interrupt)
 			    {
 				//audioLine.flush();
 				//				return false;
 			    }
-			}
+	}
 			catch(Exception e)
 			{
 			    Log.error(LOG_COMPONENT, "unable to speak");
 			    //			    return false;
 			}
-			//			return true;
-		    };
 		if (!interrupt)
 		    audioLine.drain();
 		if(listener != null) 
 		    listener.onFinished(-1);
-	    } 
-	    catch(Exception e)
-	    {
-		if(listener != null) 
-		    listener.onFinished(-1);
-		Log.error(LOG_COMPONENT, "rhvoice error:" + e.getClass().getName() + ":" + e.getMessage());
-		return;
-	    }
-	}
+    /*
 	finally {
 	    synchronized(this) {
 	    if (!interrupt)
@@ -105,7 +81,13 @@ final class Player implements Runnable
 	    }
 	}
 	}
-    }
+    */
+	}
+	catch(Throwable e)
+	{
+	    e.printStackTrace();
+	}
+}
 
     void interrupt()
     {
@@ -115,12 +97,6 @@ final class Player implements Runnable
 	    audioLine.stop();
     }
 }
-
-    static AudioFormat createAudioFormat()
-    {
-	return new AudioFormat(Encoding.PCM_SIGNED, FRAME_RATE, 
-			       Short.SIZE, 1, (1 * Short.SIZE / 8), FRAME_RATE, false);
-    }
 
     static private SourceDataLine createAudioLine(AudioFormat audioFormat)
     {

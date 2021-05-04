@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2021 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -34,10 +34,7 @@ public final class Extension extends EmptyExtension
 
 	    new org.luwrain.speech.Engine()
 	    {
-		@Override public String getExtObjName()
-		{
-		    return "bintts";
-		}
+		@Override public String getExtObjName() { return "bintts"; }
 		@Override public Set<Engine.Features> getFeatures()
 		{
 		    return EnumSet.of(Engine.Features.CAN_SYNTH_TO_SPEAKERS, Engine.Features.CAN_NOTIFY_WHEN_FINISHED);
@@ -48,9 +45,9 @@ public final class Extension extends EmptyExtension
 		    try {
 			return new Channel(params);
 		    }
-		    catch(Exception e)
+		    catch(Throwable e)
 		    {
-			Log.error(LOG_COMPONENT, "unable to create a bintts channel:" + e.getClass().getName() + ":" + e.getMessage());
+			Log.error(LOG_COMPONENT, "unable to create a bintts channel: " + e.getClass().getName() + ": " + e.getMessage());
 			return null;
 		    }
 		}

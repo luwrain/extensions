@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2021 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -47,14 +47,6 @@ final class Channel implements org.luwrain.speech.Channel
     @Override public long speak(String text,Listener listener,int relPitch,int relRate, boolean cancelPrevious)
     {
 	NullCheck.notNull(text, "text");
-	/*
-	final SynthesisParameters p = new SynthesisParameters();
-	p.setVoiceProfile(voiceName);
-	p.setRate(convRate(relRate));
-	p.setPitch(convPitch(relPitch));
-   	p.setSSMLMode(false);
-	runThread(text,listener, p);
-	*/
 	return -1;
     }
 
@@ -70,6 +62,14 @@ final class Channel implements org.luwrain.speech.Channel
 	*/
    	return -1;
     }
+
+        @Override public Result synth(String text, OutputStream stream, AudioFormat format, SyncParams params, Set<Flags> flags)
+    {
+	return null;
+    }
+
+
+    
 
     private void runThread(String text, Listener listener)
     {

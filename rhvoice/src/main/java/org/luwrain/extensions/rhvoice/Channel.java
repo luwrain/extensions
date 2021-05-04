@@ -214,12 +214,16 @@ final class Channel implements org.luwrain.speech.Channel
 
     static private double convRate(int value)
     {
+	/*
 	final double range = RATE_MAX - RATE_MIN;
     	return RATE_MIN + range - (double)(value + 50) * range / 100f;
+	*/
+	return 1.4;
     }
 
     static private double convPitch(int value)
     {
+	/*
 	if (value < -50)
 	    return 0;
 	if (value > 50)
@@ -227,5 +231,7 @@ final class Channel implements org.luwrain.speech.Channel
 	if (value < 0)
 	    return ((double)value + 50) / 100;
 	return ((double)value / 50) * 1.5 + 0.5;
+	*/
+	return 1;
     }
 }

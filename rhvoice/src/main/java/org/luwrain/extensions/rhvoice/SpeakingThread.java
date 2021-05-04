@@ -74,7 +74,7 @@ class SpeakingThread implements Runnable
 			{
 			try {
 			    final ByteBuffer buffer=ByteBuffer.allocate(samples.length * audioFormat.getFrameSize());
-			    buffer.order(ByteOrder.LITTLE_ENDIAN);
+			    			    buffer.order(ByteOrder.LITTLE_ENDIAN);
 			    buffer.asShortBuffer().put(samples);
 			    final byte[] bytes = buffer.array();
 			    audioLine.write(bytes, 0, bytes.length);
