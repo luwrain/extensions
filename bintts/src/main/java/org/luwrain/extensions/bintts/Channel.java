@@ -18,20 +18,25 @@ package org.luwrain.extensions.bintts;
 
 import java.util.*;
 import java.io.*;
-import java.nio.*;
-import java.nio.file.*;
+//import java.nio.*;
+//import java.nio.file.*;
 import javax.sound.sampled.*;
 
 import org.luwrain.core.*;
 import org.luwrain.speech.*;
+import org.luwrain.util.*;
 
 final class Channel implements org.luwrain.speech.Channel
 {
     static private final String LOG_COMPONENT = Extension.LOG_COMPONENT;
 
+    private Player player = null;
+    private final AudioFormat audioFormat;
+
     Channel(Map<String, String> params) throws Exception
     {
 	NullCheck.notNull(params, "params");
+	this.audioFormat = SoundUtils.createAudioFormat("signed,mono, 16bit,16000");
     }
 
     @Override public String getChannelName()
@@ -47,40 +52,21 @@ final class Channel implements org.luwrain.speech.Channel
     @Override public long speak(String text,Listener listener,int relPitch,int relRate, boolean cancelPrevious)
     {
 	NullCheck.notNull(text, "text");
+	if (player != null && !player.done)
+	    player.interrupt();
+	player = new Player(text, listener, audioFormat);
+	new Thread(player).start();
 	return -1;
     }
 
     @Override public long speakLetter(char letter,Listener listener,int relPitch,int relRate, boolean cancelPrevious)
     {
-	/*
-	final SynthesisParameters p = new SynthesisParameters();
-	p.setVoiceProfile(voiceName);
-	p.setRate(convRate(relRate));
-	p.setPitch(convPitch(relPitch) + (Character.isUpperCase(letter)?UPPER_CASE_PITCH_MODIFIER:0));
-   	p.setSSMLMode(false);
-	runThread("" + letter, listener, p);
-	*/
    	return -1;
     }
 
         @Override public Result synth(String text, OutputStream stream, AudioFormat format, SyncParams params, Set<Flags> flags)
     {
 	return null;
-    }
-
-
-    
-
-    private void runThread(String text, Listener listener)
-    {
-	/*
-	NullCheck.notNull(text, "text");
-	NullCheck.notNull(params, "params");
-	if (thread != null)
-	    thread.interrupt();
-	thread = new SpeakingThread(text, listener, this, params);
-	new Thread(thread).start();
-	*/
     }
 
     @Override public void silence()
@@ -94,7 +80,7 @@ final class Channel implements org.luwrain.speech.Channel
 
     @Override public AudioFormat[] getSynthSupportedFormats()
     {
-	return null;//new AudioFormat[]{SpeakingThread.createAudioFormat()};
+	return new AudioFormat[]{this.audioFormat};
     }
 
     @Override public void setVoice(String name)

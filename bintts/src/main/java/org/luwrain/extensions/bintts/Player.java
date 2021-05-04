@@ -16,7 +16,7 @@
 
 package org.luwrain.extensions.bintts;
 
-import java.nio.*;
+import java.io.*;
 import javax.sound.sampled.*;
 import javax.sound.sampled.AudioFormat.Encoding;
 
@@ -27,76 +27,82 @@ import org.luwrain.util.*;
 final class Player implements Runnable
 {
     static private final String LOG_COMPONENT = Extension.LOG_COMPONENT;
-    static private final int AUDIO_LINE_BUFFER_SIZE=3200; // minimal req value is 3200 (1600 samples max give rhvoice and each one 2 byte size
-	static private final float FRAME_RATE = 24000f;
+        static private final int AUDIO_LINE_BUFFER_SIZE=3200; // minimal req value is 3200 (1600 samples max give rhvoice and each one 2 byte size
 
     private final Listener listener;
     private final String text;
-    private final Channel channel;
     private AudioFormat audioFormat;
     private SourceDataLine audioLine = null;
-    private boolean interrupt = false;
+    boolean done = false;
 
-    Player(String text,Listener listener, Channel channel, AudioFormat audioFormat)
+    Player(String text,Listener listener, AudioFormat audioFormat)
     {
 	NullCheck.notNull(text, "text");
-	NullCheck.notNull(channel, "channel");
-	NullCheck.notNull(audioFormat, "audioFormat");
+	 	NullCheck.notNull(audioFormat, "audioFormat");
 	this.listener = listener;
 	this.text = text;
-	this.channel = channel;
 	this.audioFormat = audioFormat;
     }
 
     @Override public void run()
     {
 	try {
-	final Process p = new ProcessBuilder("").start();
-	    this.audioLine = createAudioLine(audioFormat);
-	if (audioLine == null)
-	    return;
-	try {
-	    //	    StreamUtils.copyAllBytes(null, audioLine);
-			    if(interrupt)
-			    {
-				//audioLine.flush();
-				//				return false;
-			    }
-	}
-			catch(Exception e)
-			{
-			    Log.error(LOG_COMPONENT, "unable to speak");
-			    //			    return false;
-			}
-		if (!interrupt)
-		    audioLine.drain();
+	    try {
+		final Process p = new ProcessBuilder("/bin/bash", "-c", "echo proba | freephone -h /usr/share/freespeech/lexicon -m | /usr/local/bin/mbrola /usr/share/mbrola/en1/en1 - -").start();
+		p.getOutputStream().close();
+		this.audioLine = createAudioLine(audioFormat);
+		if (audioLine == null)
+		    return;
+		final BufferedInputStream is = new BufferedInputStream(p.getInputStream());
+		int len = 0;
+		final byte[] trimBuf = new byte[2];
+		trimBuf[0] = 0;
+		trimBuf[1] = 0;
+		while(trimBuf[0] == 0 && trimBuf[1] == 0)
+		{
+len = is.read(trimBuf);
+if (len == 0)
+    return;
+		}
+		    //		    if (audioLine.isRunning())
+			audioLine.write(trimBuf, 0, len);
+		final byte[] buf = new byte[2048];
+len = is.read(buf);
+		while(len > 0)
+		{
+			audioLine.write(buf, 0, len);
+					    if (!audioLine.isRunning())
+			    return;
+		    len = is.read(buf);
+		}
+		if (audioLine.isRunning())
+			audioLine.drain();
 		if(listener != null) 
 		    listener.onFinished(-1);
-    /*
-	finally {
-	    synchronized(this) {
-	    if (!interrupt)
-	    audioLine.stop();
-	    audioLine.close();
+	}
+	    catch(Throwable e)
+	    {
+		Log.error(LOG_COMPONENT, "unable to call bintts and speak the output: " + e.getClass().getName() + ": " + e.getMessage());
+		e.printStackTrace();
+		return;
 	    }
-	}
-	}
-    */
-	}
-	catch(Throwable e)
-	{
-	    e.printStackTrace();
-	}
-}
+    }
+	finally {
+		if (audioLine != null)
+		{
+		    audioLine.stop();
+		    audioLine.close();
+		    audioLine = null;
+		}
+				done = true;
+	    }
+    }
 
     void interrupt()
     {
-	synchronized(this) {
-	    interrupt = true;
 	if (audioLine != null)
 	    audioLine.stop();
-    }
-}
+	    }
 
     static private SourceDataLine createAudioLine(AudioFormat audioFormat)
     {
