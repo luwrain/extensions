@@ -14,175 +14,39 @@
    General Public License for more details.
 */
 
-
-
-Luwrain.addHook("luwrain.i18n.ru.speakable.programming.pre", function(text){
+Luwrain.addHook("luwrain.i18n.ru.speakable.programming.pre", (text)=>{
     var res = "";
     //Checking the first letter to understand what language must be the default
     var rusLang = true;
-    for(var i = 0;i < text.length;i++)
-    {
-	var ch = text[i];
+    for(let i = 0;i < text.length;i++) {
+	const ch = text[i];
 	if ((ch >= 'а' && ch <= 'я') ||
-	    (ch >= 'А' && ch <= 'Я'))
+	    (ch >= 'А' && ch <= 'Я') || ch == 'ё' || ch == 'Ё')
 	    break;
 	if ((ch >= 'a' && ch <= 'z') ||
-	    (ch >= 'A' && ch <= 'Z'))
-	{
+	    (ch >= 'A' && ch <= 'Z')) {
 	    rusLang = false;
 	    break;
 	}
     }
-    for(var i = 0;i < text.length;i++)
-    {
-	var ch = text[i];
-	switch(ch)
-	{
-	    /*
-	    	    	    case '~':
-	    	    if (rusLang)
-			res += ' тильда '; else
-			    res += ' tilde  ';
-	    break;
-*/
-	    	    	    	    case '!':
-	    	    if (rusLang)
-			res += ' восклицательный знак '; else
-			    res += ' exclamation  ';
-	    break;
-	    	    case '#':
-	    	    if (rusLang)
-			res += ' диез '; else
-			    res += ' sharp ';
-	    break;
-
-	    /*
-	    	    	    	    case '&':
-	    	    if (rusLang)
-			res += ' амперсанд '; else
-			    res += ' ampersand ';
-	    break;
-*/
-
-
-	    	    	    case '*':
-	    	    if (rusLang)
-			res += ' звезда '; else
-			    res += ' star ';
-	    break;
-
-
-	    /*
-	    case '/':
-	    	    if (rusLang)
-			res += ' слэш '; else
-			    res += ' slash ';
-	    break;
-*/
-	    case '(':
-	    	    if (rusLang)
-			res += " левая круглая "; else
-			    res += ' left parent ';
-	    break;
-	    case ')':
-	    	    if (rusLang)
-			res += " правая круглая "; else
-			    res += ' right parent ';
-	    break;
-	    case '[':
-	    	    	    if (rusLang)
-				res += ' левая квадратная '; else
-				    res += ' left bracket ';
-	    break;
-	    case ']':
-	    	    if (rusLang)
-			res += ' правая квадратная '; else
-			    res += ' right bracket ';
-	    break;
-	    	    case '{':
-	    	    	    if (rusLang)
-				res += ' левая фигурная '; else
-				    res += ' left brace ';
-	    break;
-	    case '}':
-	    	    if (rusLang)
-			res += ' правая фигурная '; else
-			    res += ' right brace ';
-	    break;
-	    case '%':
-	    if (rusLang)
-		res += " процент "; else
-		    res += ' percent ';
-	    break;
-	    	    case '<':
-	    if (rusLang)
-		res += ' меньше '; else
-		    res += ' less than ';
-	    break;
-	    	    	    case '>':
-	    if (rusLang)
-		res += ' больше '; else
-		    res += ' greater than ';
-	    break;
-	    /*
-	    case '.':
-	    if (rusLang)
-		res += ' точка '; else
-		    res += ' dot ';
-	    break;
-	    case ':':
-	    if (rusLang)
-		res += " двоеточие "; else
-		    res += ' colon ';
-	    break;
-	    	    case ';':
-	    if (rusLang)
-		res += " точка с запятой "; else
-		    res += ' semicolon ';
-	    break;
-	    */
-	    case '\t':
-	    res += ' ';
-	    break;
-	    case '-':
-	    if (rusLang)
-		res += ' минус '; else
-		    res += ' dash ';
-	    break;
-	    /*
-	    	    case '+':
-	    if (rusLang)
-		res += ' плюс '; else
-		    res += ' plus ';
-	    break;
-	    	    	    case '=':
-	    if (rusLang)
-		res += ' равно '; else
-		    res += ' equals ';
-	    break;
-*/
-	    default:
-	    if (Luwrain.isLetter(ch))
-	    {
+    for(let i = 0;i < text.length;i++) {
+	const ch = text[i];
+	if (Luwrain.isLetter(ch)) {
 	    if ((ch >= 'а' && ch <= 'я') ||
-		(ch >= 'А' && ch <= 'Я'))
+		(ch >= 'А' && ch <= 'Я') || ch == 'ё' || ch == 'Ё')
 		rusLang = true; else
-		rusLang = false;
-		res += ch;
-		continue;
-	    }
-	    if (Luwrain.isDigit(ch) || Luwrain.isSpace(ch))
-	    {
-		res += ch;
-		continue;
-	    }
-	    {
-				var value = rusLang?Luwrain.i18n.langs.ru.getSpecialNameOfChar(ch):Luwrain.i18n.langs.en.getSpecialNameOfChar(ch);
-		if (value != null && value.trim().length != 0)
-		    res += (' ' + value + ' '); else
-			res += ch;
-	    }
+		    rusLang = false;
+	    res += ch;
+	    continue;
 	}
+	if (Luwrain.isDigit(ch) || Luwrain.isSpace(ch)) {
+	    res += ch;
+	    continue;
+	}
+	const value = rusLang?Luwrain.i18n.langs.ru.getSpecialNameOfChar(ch):Luwrain.i18n.langs.en.getSpecialNameOfChar(ch);
+	if (!!value && value.trim().length > 0)
+	    res += (' ' + value + ' '); else
+		res += ch;
     }
     return res;
-    });
+});
