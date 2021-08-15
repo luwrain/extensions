@@ -28,10 +28,9 @@ import javazoom.jl.player.advanced.*;
 import javazoom.jl.decoder.*;
 import javazoom.jl.player.*;
 
-import org.luwrain.base.*;
 import org.luwrain.core.*;
 
-final class Instance implements org.luwrain.base.MediaResourcePlayer.Instance
+final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 {
     static final String LOG_COMPONENT = "jlayer";
 

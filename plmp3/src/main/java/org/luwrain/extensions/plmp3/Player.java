@@ -17,7 +17,6 @@
 
 package org.luwrain.extensions.plmp3;
 
-import org.luwrain.base.*;
 import org.luwrain.core.*;
 
 final class Player implements MediaResourcePlayer

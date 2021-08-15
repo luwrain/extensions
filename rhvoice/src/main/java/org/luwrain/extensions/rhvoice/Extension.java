@@ -19,9 +19,7 @@ package org.luwrain.extensions.rhvoice;
 
 import java.util.*;
 
-import org.luwrain.base.*;
 import org.luwrain.core.*;
-import org.luwrain.core.extensions.*;
 import org.luwrain.speech.*;
 
 public final class Extension extends EmptyExtension

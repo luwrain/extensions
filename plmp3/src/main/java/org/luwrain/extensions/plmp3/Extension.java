@@ -17,9 +17,7 @@
 
 package org.luwrain.extensions.plmp3;
 
-import org.luwrain.base.*;
 import org.luwrain.core.*;
-import org.luwrain.core.extensions.*;
 
 public final class Extension extends EmptyExtension
 {

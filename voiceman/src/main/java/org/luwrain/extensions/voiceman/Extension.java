@@ -18,9 +18,7 @@ package org.luwrain.extensions.voiceman;
 
 import java.util.*;
 
-import org.luwrain.base.*;
 import org.luwrain.core.*;
-import org.luwrain.core.extensions.*;
 import org.luwrain.speech.*;
 import org.luwrain.cpanel.*;
 
