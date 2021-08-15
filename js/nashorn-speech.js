@@ -65,4 +65,3 @@ Luwrain.addHook("luwrain.speech.text.regular", function(text){
     }
     return res;
     	});
-		
