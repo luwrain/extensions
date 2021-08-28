@@ -1,3 +1,18 @@
+/*
+   Copyright 2019-2021 Michael Pozhidaev <msp@luwrain.org>
+
+   This file is part of LUWRAIN.
+
+   LUWRAIN is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public
+   License as published by the Free Software Foundation; either
+   version 3 of the License, or (at your option) any later version.
+
+   LUWRAIN is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+*/
 
 Luwrain.addWorker("luwrain-clock-hourly", 5, 1, ()=>{
     const now = Luwrain.now;
@@ -28,7 +43,7 @@ Luwrain.addWorker("luwrain-clock-hourly", 5, 1, ()=>{
     case 20: text = 'Восемь часов вечера'; break;
     case 21: text = 'Девять часов вечера'; break;
     case 22: text = 'Десять часов вечера'; break;
-	    case 23: text = 'Одиннадцать часов вечера'; break;
+    case 23: text = 'Одиннадцать часов вечера'; break;
     default:
 	return;
     }
@@ -62,7 +77,7 @@ Luwrain.addCommand("hot-info", ()=>{
     case 20: text = 'Восемь часов вечера'; break;
     case 21: text = 'Девять часов вечера'; break;
     case 22: text = 'Десять часов вечера'; break;
-	    case 23: text = 'Одиннадцать часов вечера'; break;
+    case 23: text = 'Одиннадцать часов вечера'; break;
     default:
 	return;
     }
@@ -73,5 +88,5 @@ Luwrain.addCommand("hot-info", ()=>{
 	    if (m == 1)
 		text += 'минута'; else
 		    text += 'минуты';
-        Luwrain.speak(text);
+    Luwrain.speak(text);
 });
