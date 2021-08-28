@@ -14,14 +14,6 @@
    General Public License for more details.
 */
 
-Luwrain.addWorker("luwrain-clock-hourly", 5, 1, function(){
-    var d = new java.util.Date();
-    if (d.getSeconds() != 0 || d.getMinutes() != 0)
-	return;
-    Luwrain.sounds.generalTime();
-    Luwrain.speak("" + d.getHours() + " часов");
-});
-
 //Startup announcement, runs once a year
 Luwrain.addWorker("startup-announcement-worker", 5, 60 * 60 * 24 * 365, function(){
     var format = new java.text.SimpleDateFormat("EEEEE, dd MMMM, HH:mm");
