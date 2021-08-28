@@ -14,9 +14,71 @@
    General Public License for more details.
 */
 
+const DAY_OF_MONTH = [
+    "",
+    "первое",
+    "второе",
+    "третье",
+    "четвёртое",
+    "пятое",
+    "шестое",
+    "седьмое",
+    "восьмое",
+    "девятое",
+    "десятое",
+    "одиннадцатое",
+    "двенадцатое",
+    "тринадцатое",
+    "четырнадцатое",
+    "пятнадцатое",
+    "шестнадцатое",
+    "семнадцатое",
+    "восемнадцатое",
+    "девятнадцатое",
+    "двадцатое",
+    "двадцать первое",
+    "двадцать второе",
+    "двадцать третье",
+    "двадцать четвёртое",
+    "двадцать пятое",
+    "двадцать шестое",
+    "двадцать седьмое",
+    "двадцать восьмое",
+    "двадцать девятое",
+    "тридцатое",
+    "тридцать первое",
+];
+
+const DAY_OF_WEEK = [
+    "",
+    "понедельник",
+    "вторник",
+    "среда",
+    "четверг",
+    "пятница",
+    "суббота",
+    "воскресенье",
+];
+
+const MONTH = [
+    "",
+    "января",
+    "февраля",
+    "марта",
+    "апреля",
+    "мая",
+    "июня",
+    "июля",
+    "августа",
+    "сентября",
+    "октября",
+    "ноября",
+    "декабря",
+];
+
 Luwrain.addWorker("luwrain-clock-hourly", 5, 1, ()=>{
     const now = Luwrain.now;
-    if (now.sec > 0)
+    if (now.min > 0 || now.sec > 0)
 	return;
     var text ;
     switch(now.hour) {
@@ -47,7 +109,7 @@ Luwrain.addWorker("luwrain-clock-hourly", 5, 1, ()=>{
     default:
 	return;
     }
-    Luwrain.speak(text);
+    Luwrain.speak(text, Luwrain.const.SOUND_GENERAL_TIME);
 });
 
 Luwrain.addCommand("hot-info", ()=>{
@@ -82,11 +144,13 @@ Luwrain.addCommand("hot-info", ()=>{
 	return;
     }
     text += ' ' + now.min + ' ';
-    const m = now.hour % 10;
+    const m = now.min % 10;
     if (m == 0 || m >= 5 || (now.min >= 10 && now.min <= 20))
 	text += 'мминут'; else
 	    if (m == 1)
 		text += 'минута'; else
 		    text += 'минуты';
-    Luwrain.speak(text);
+    text += ', ' + DAY_OF_MONTH[now.dayOfMonth] + ' ' + MONTH[now.month];
+    text += ', ' + DAY_OF_WEEK[now.dayOfWeek];
+    Luwrain.speak(text, Luwrain.const.SOUND_GENERAL_TIME);
 });

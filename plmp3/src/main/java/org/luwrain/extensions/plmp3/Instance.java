@@ -58,7 +58,7 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 	if (params.volume < 0 || params.volume > 100)
 	    throw new IllegalArgumentException("params.volume (" + params.volume + ") must be between 0 and 100 inclusively");
 	finishing = false;
-	task = new FutureTask(()->{
+	task = new FutureTask<>(()->{
 		try {
 		    AudioInputStream stream = null;
 		    try {

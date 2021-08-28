@@ -223,7 +223,7 @@ final class Channel implements org.luwrain.speech.Channel
 
     private FutureTask createTask()
     {
-	return new FutureTask(()->{
+	return new FutureTask<>(()->{
 		while (!Thread.currentThread().interrupted())
 		{
 		    try { Thread.sleep(BACKGROUND_THREAD_DELAY); }
