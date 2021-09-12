@@ -189,7 +189,7 @@ final class Channel implements org.luwrain.speech.Channel
 
     @Override public AudioFormat[] getSynthSupportedFormats()
     {
-	return new AudioFormat[]{SpeakingThread.createAudioFormat()};
+	return new AudioFormat[]{SpeakingThread.createAudioFormat(24000, 1)};
     }
 
     @Override public void setVoice(String name)

@@ -348,7 +348,7 @@ function makeLine(index)
 function MendeleevApp(args)
 {
     this.name = "Периодическая таблица химических элементов";
-    this.type = "simple-centered";
+    this.type = "SIMPLE";
     
     this.lines = [];
     for(var i = 0;i < 10;i++)
@@ -571,5 +571,5 @@ function MendeleevApp(args)
     }
 }
 
-Luwrain.addApp("edu-chemistry-elements",  MendeleevApp);
-Luwrain.addCommand("edu-chemistry-elements", function(){Luwrain.launchApp("edu-chemistry-elements", []);});
+Luwrain.addShortcut("edu-chemistry-elements",  MendeleevApp);
+Luwrain.addCommand("edu-chemistry-elements", function(){Luwrain.launchApp("edu-chemistry-elements");});

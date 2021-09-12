@@ -30,7 +30,6 @@ class SpeakingThread implements Runnable
 {
     static private final String LOG_COMPONENT = Extension.LOG_COMPONENT;
     static private final int AUDIO_LINE_BUFFER_SIZE=3200; // minimal req value is 3200 (1600 samples max give rhvoice and each one 2 byte size
-	static private final float FRAME_RATE = 24000f;
 
     private final Listener listener;
     private final String text;
@@ -57,7 +56,7 @@ class SpeakingThread implements Runnable
 	synchronized(channel){
 	    if (interrupt)
 		return;
-	    audioFormat = createAudioFormat();
+	    audioFormat = createAudioFormat(16000, 1);
 	if (audioFormat == null)
 	    return;
 	    audioLine = createAudioLine(audioFormat);
@@ -68,6 +67,7 @@ class SpeakingThread implements Runnable
 		channel.getTtsEngine().speak(text, params, new TTSClient(){
 			@Override public boolean setSampleRate(int sampleRate)
 			{
+			    Log.debug("rhvoice", "sample rate = " + sampleRate);
 			    return true;
 			}
 			@Override public boolean playSpeech(short[] samples)
@@ -123,10 +123,16 @@ class SpeakingThread implements Runnable
     }
 }
 
-    static AudioFormat createAudioFormat()
+    static AudioFormat createAudioFormat(int sampleRate, int channels)
     {
-	return new AudioFormat(Encoding.PCM_SIGNED, FRAME_RATE, 
-			       Short.SIZE, 1, (1 * Short.SIZE / 8), FRAME_RATE, false);
+	return new AudioFormat(Encoding.PCM_SIGNED,
+			       (float)sampleRate, //sampleRate
+			       16, //sampleSizeInBits
+			       channels, //channels
+			       2 * channels, //frameSize
+			       (float)sampleRate, //frameRate
+			       false //bigEndian
+			       );
     }
 
     static private SourceDataLine createAudioLine(AudioFormat audioFormat)
