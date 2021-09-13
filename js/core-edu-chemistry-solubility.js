@@ -15,13 +15,13 @@
    General Public License for more details.
 */
 
-const UPPER_PLUS = String.prototype.charCodeAt(8314);
-const UPPER_MINUS = String.prototype.charCodeAt(8315);
-const UPPER_2 = String.prototype.charCodeAt(178);
-const UPPER_3 = String.prototype.charCodeAt('%c', 179);
-const LOWER_2 = String.prototype.charCodeAt('%c', 8322);
-const LOWER_3 = String.prototype.charCodeAt('%c', 8323);
-const LOWER_4 = String.prototype.charCodeAt('%c', 8324);
+const UPPER_PLUS = String.fromCharCode(8314);
+const UPPER_MINUS = String.fromCharCode(8315);
+const UPPER_2 = String.fromCharCode(178);
+const UPPER_3 = String.fromCharCode('%c', 179);
+const LOWER_2 = String.fromCharCode('%c', 8322);
+const LOWER_3 = String.fromCharCode('%c', 8323);
+const LOWER_4 = String.fromCharCode('%c', 8324);
 
 var TOP_LINE = [
     'OH' + UPPER_MINUS,
