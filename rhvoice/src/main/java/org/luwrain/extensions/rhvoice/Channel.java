@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2021 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2020 Michael Pozhidaev <msp@luwrain.org>
    Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
 
    This file is part of LUWRAIN.
@@ -189,7 +189,7 @@ final class Channel implements org.luwrain.speech.Channel
 
     @Override public AudioFormat[] getSynthSupportedFormats()
     {
-	return new AudioFormat[]{SpeakingThread.createAudioFormat(24000, 1)};
+	return new AudioFormat[]{SpeakingThread.createAudioFormat()};
     }
 
     @Override public void setVoice(String name)

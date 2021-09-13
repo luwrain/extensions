@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2021 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2020 Michael Pozhidaev <msp@luwrain.org>
    Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
 
    This file is part of LUWRAIN.
@@ -30,6 +30,7 @@ class SpeakingThread implements Runnable
 {
     static private final String LOG_COMPONENT = Extension.LOG_COMPONENT;
     static private final int AUDIO_LINE_BUFFER_SIZE=3200; // minimal req value is 3200 (1600 samples max give rhvoice and each one 2 byte size
+	static private final float FRAME_RATE = 24000f;
 
     private final Listener listener;
     private final String text;
@@ -56,7 +57,7 @@ class SpeakingThread implements Runnable
 	synchronized(channel){
 	    if (interrupt)
 		return;
-	    audioFormat = createAudioFormat(16000, 1);
+	    audioFormat = createAudioFormat();
 	if (audioFormat == null)
 	    return;
 	    audioLine = createAudioLine(audioFormat);
@@ -67,7 +68,6 @@ class SpeakingThread implements Runnable
 		channel.getTtsEngine().speak(text, params, new TTSClient(){
 			@Override public boolean setSampleRate(int sampleRate)
 			{
-			    Log.debug("rhvoice", "sample rate = " + sampleRate);
 			    return true;
 			}
 			@Override public boolean playSpeech(short[] samples)
@@ -123,16 +123,10 @@ class SpeakingThread implements Runnable
     }
 }
 
-    static AudioFormat createAudioFormat(int sampleRate, int channels)
+    static AudioFormat createAudioFormat()
     {
-	return new AudioFormat(Encoding.PCM_SIGNED,
-			       (float)sampleRate, //sampleRate
-			       16, //sampleSizeInBits
-			       channels, //channels
-			       2 * channels, //frameSize
-			       (float)sampleRate, //frameRate
-			       false //bigEndian
-			       );
+	return new AudioFormat(Encoding.PCM_SIGNED, FRAME_RATE, 
+			       Short.SIZE, 1, (1 * Short.SIZE / 8), FRAME_RATE, false);
     }
 
     static private SourceDataLine createAudioLine(AudioFormat audioFormat)
