@@ -14,21 +14,21 @@
    General Public License for more details.
 */
 
-var MSG_EMPTY_CELL = "Элемент отсутствует";
-var MSG_MASS = "Атомная масса: ";
-var MSG_LATIN = "латинское название: ";
-var MSG_NUMBER = "Элемент ";
-var MSG_GROUP = "Группа ";
-var MSG_ADDITIONAL_GROUP = "побочная";
-var MSG_PERIOD = "Период ";
-var MSG_ROW = "Ряд ";
-var MSG_LANTANOIDS = "Лантаноиды";
-var MSG_ACTINOIDS = "Актиноиды";
-var MSG_OR = " или ";
+const MSG_EMPTY_CELL = "Элемент отсутствует";
+const MSG_MASS = "Атомная масса: ";
+const MSG_LATIN = "латинское название: ";
+const MSG_NUMBER = "Элемент ";
+const MSG_GROUP = "Группа ";
+const MSG_ADDITIONAL_GROUP = "побочная";
+const MSG_PERIOD = "Период ";
+const MSG_ROW = "Ряд ";
+const MSG_LANTANOIDS = "Лантаноиды";
+const MSG_ACTINOIDS = "Актиноиды";
+const MSG_OR = " или ";
 
-var MAIN_TABLE_OFFSET = 9
+const MAIN_TABLE_OFFSET = 9
 
-var TABLE = [[
+const TABLE = [[
     {num: 1, name: "Водород", id: "H", latin: "Hydrogenium", period: 1, row: 1, group: 1, mass: 1.00794},
     null,
     null,
@@ -307,8 +307,7 @@ var RU_KBD_MAP = [
 {en: '.', ru: 'ю'},
 ];
 
-function findEnKey(ruKey)
-{
+function findEnKey(ruKey) {
     var key = ruKey.toLowerCase();
     for(var i in RU_KBD_MAP)
 	if (RU_KBD_MAP[i].ru === key)
@@ -383,8 +382,7 @@ function MendeleevApp(args)
 	}
     };
 
-    this.onInputEvent = function(event)
-    {
+    this.onInputEvent = (event)=>{
 	if (event.special == null)
 	switch(event.ch)
 	{
@@ -398,7 +396,7 @@ function MendeleevApp(args)
 		    spoken = id[0]; else
 			spoken = id[0] + " " + id[1];
 		Luwrain.message(spoken +", " +
-				MSG_LATIN + TABLE[this.y][this.x].latin.replaceAll(",", MSG_OR));
+				MSG_LATIN + TABLE[this.y][this.x].latin.replace(",", MSG_OR));
 	    }
 	    return true;
 	    case "1":
@@ -433,13 +431,12 @@ function MendeleevApp(args)
 	    Luwrain.message(MSG_MASS + TABLE[this.y][this.x].mass);
 	    return true;
 	    default:
+	    if (!!event.ch) {
 	    if (this.searchOffset > 1)
 		return false;
-		if (this.searchOffset == 0)
-	    {
-		for(var i = 0;i < TABLE.length;i++)
-		    for(var j = 0;j < TABLE[i].length;j++)
-		{
+	    if (this.searchOffset == 0) {
+		for(let i = 0;i < TABLE.length;i++)
+		    for(let j = 0;j < TABLE[i].length;j++) {
 		    var item = TABLE[i][j];
 		    if (item == null)
 			continue;
@@ -472,14 +469,15 @@ function MendeleevApp(args)
 		    Luwrain.sounds.ok();
 		    Luwrain.speak(item.id + ' ' + item.name);
 		    return true;
-		}
+	    }
 		return false;
+	    }
 	    }
 	    return false;
 	}
 	switch(event.special)
 	{
-	    case "enter":
+	    case Luwrain.const.KEY_ENTER:
 	    if (TABLE[this.y][this.x] == null)
 		return false;
 	    {
@@ -489,22 +487,22 @@ function MendeleevApp(args)
 		Luwrain.launchApp("reader", [WIKIPEDIA[id]]);
 	    }
 	    return true;
-	    case "arrow_left":
+	    case Luwrain.const.KEY_MOVE_LEFT:
 	    if (this.x == 0)
 		return false;
 	    this.x--;
 	    break;
-	    case "arrow_right":
+	    case Luwrain.const.KEY_MOVE_RIGHT:
 	    if (this.x + 1 >= TABLE[this.y].length)
 		return false;
 	    this.x++;
 	    break;
-	    case "arrow_up":
+	    case Luwrain.const.KEY_MOVE_UP:
 	    if (this.y == 0)
 		return false;
 	    this.y--;
 	    break;
-	    case "arrow_down":
+	    case Luwrain.const.KEY_MOVE_DOWN:
 	    if (this.y + 1 >= TABLE.length)
 		return false;
 	    this.y++;
@@ -517,10 +515,9 @@ function MendeleevApp(args)
 	    this.x = TABLE[this.y].length - 1;
 		this.searchOffset = 0;
 	this.updateHotPoint();
-	Luwrain.sounds.ok();
 	    if (TABLE[this.y][this.x] != null)
-		Luwrain.speak(TABLE[this.y][this.x].name); else
-		    Luwrain.speak(MSG_EMPTY_CELL);
+		Luwrain.speak(TABLE[this.y][this.x].name, Luwrain.const.SOUND_REGION_POINT); else
+		    Luwrain.speak(MSG_EMPTY_CELL, Luwrain.const.SOUND_REGION_POINT);
 	    return true;
     };
 
@@ -548,7 +545,7 @@ function MendeleevApp(args)
 	    return;
 	}
 	var item = TABLE[this.y][this.x];
-	this.lines[this.lines.length - 2] = item.id + ", " + item.latin.replaceAll(",", MSG_OR);
+	this.lines[this.lines.length - 2] = item.id + ", " + item.latin.replace(",", MSG_OR);
 	var lastLine = "" + item.num + ", ";
 	if (item.group < 0)
 	    lastLine += MSG_GROUP + (-1 * item.group) + " " + MSG_ADDITIONAL_GROUP + ","; else
@@ -572,4 +569,4 @@ function MendeleevApp(args)
 }
 
 Luwrain.addShortcut("edu-chemistry-elements",  MendeleevApp);
-Luwrain.addCommand("edu-chemistry-elements", function(){Luwrain.launchApp("edu-chemistry-elements");});
+Luwrain.addCommand("edu-chemistry-elements", ()=>{Luwrain.launchApp("edu-chemistry-elements");});

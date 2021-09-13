@@ -1,6 +1,6 @@
 /*
-   Copyright 2020 Deniz Sincar <dsincar29@gmail.com>
    Copyright 2019-2021 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2020 Deniz Sincar <dsincar29@gmail.com>
 
    This file is part of LUWRAIN.
 
@@ -15,13 +15,13 @@
    General Public License for more details.
 */
 
-var UPPER_PLUS = java.lang.String.format('%c', 8314);
-var UPPER_MINUS = java.lang.String.format('%c', 8315);
-var UPPER_2 = java.lang.String.format('%c', 178);
-var UPPER_3 = java.lang.String.format('%c', 179);
-var LOWER_2 = java.lang.String.format('%c', 8322);
-var LOWER_3 = java.lang.String.format('%c', 8323);
-var LOWER_4 = java.lang.String.format('%c', 8324);
+const UPPER_PLUS = String.prototype.charCodeAt(8314);
+const UPPER_MINUS = String.prototype.charCodeAt(8315);
+const UPPER_2 = String.prototype.charCodeAt(178);
+const UPPER_3 = String.prototype.charCodeAt('%c', 179);
+const LOWER_2 = String.prototype.charCodeAt('%c', 8322);
+const LOWER_3 = String.prototype.charCodeAt('%c', 8323);
+const LOWER_4 = String.prototype.charCodeAt('%c', 8324);
 
 var TOP_LINE = [
     'OH' + UPPER_MINUS,
@@ -204,7 +204,7 @@ function makeLine(firstItem, items, cellWidth)
 function SolubilityApp(args)
 {
     this.name = "Таблица растворимости";
-    this.type = "simple-centered";
+    this.type = "SIMPLE";
     this.cellWidth = calcCellWidth();
     this.lines = [makeLine("", TOP_LINE, this.cellWidth)];
     for(var i = 0;i < TABLE.length;i++)
@@ -214,10 +214,8 @@ function SolubilityApp(args)
     this.x = 0;
     this.y = 0;
 
-    this.onSystemEvent = function(event)
-    {
-	switch(event.code)
-	{
+    this.onSystemEvent = (event)=>{
+	switch(event.code) {
 		    case 'help':
 	    Luwrain.launchApp("reader", ['http://wiki.luwrain.org/wiki/index.php/%D0%A0%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE_%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F_%D0%BF%D0%BE_%D1%85%D0%B8%D0%BC%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B9_%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B5_%D1%80%D0%B0%D1%81%D1%82%D0%B2%D0%BE%D1%80%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B8']);
 	    return true;
@@ -226,33 +224,30 @@ function SolubilityApp(args)
 	}
     };
 
-    
-    this.onInputEvent = function(event)
-    {
-	if (event.special == null)
+    this.onInputEvent = (event)=>{
+	if (!event.special)
 	    return false;
-	switch(event.special)
-	{
-	    case "arrow_left":
-	        case "alternative_arrow_left":
+	switch(event.special) {
+	    case Luwrain.const.KEY_MOVE_LEFT:
+	        case Luwrain.const.KEY_ALTERNATIVE_MOVE_left:
 	    if (this.x == 0)
 		return false;
 	    this.x--;
 	    break;
-	    case "arrow_right":
-	    	    case "alternative_arrow_right":
+	    case Luwrain.const.KEY_MOVE_RIGHT:
+	    	    case Luwrain.const.KEY_ALTERNATIVE_MOVE_RIGHT:
 	    if (this.x + 1 >= TABLE[this.y].length)
 		return false;
 	    this.x++;
 	    break;
-	    case "arrow_up":
-	    	    case "alternative_arrow_up":
+	    case Luwrain.const.KEY_MOVE_UP:
+	    	    case Luwrain.const.KEY_ALTERNATIVE_MOVE_UP:
 	    if (this.y == 0)
 		return false;
 	    this.y--;
 	    break;
-	    case "arrow_down":
-	    	    case "alternative_arrow_down":
+	    case Luwrain.const.KEY_MOVE_DOWN:
+	    	    case Luwrain.const.KEY_ALTERNATIVE_MOVE_DOWN:
 	    if (this.y + 1 >= TABLE.length)
 		return false;
 	    this.y++;
@@ -261,24 +256,20 @@ function SolubilityApp(args)
 	    return false;
 	}
 	this.updateHotPoint();
-	if (event.special.startsWith("alternative_"))
-	    switch(event.special)
-	    {
-		case "alternative_arrow_left":
-		case "alternative_arrow_right":
-		Luwrain.sounds.ok();
-		Luwrain.speak('анион ' + TOP_NAMES[this.x]);
+	if (!!event.special.match("_alternative_"))
+	    switch(event.special) {
+		case Luwrain.const.KEY_ALTERNATIVE_MOVE_left:
+		case Luwrain.const.KEY_ALTERNATIVE_MOVE_right:
+		Luwrain.speak('анион ' + TOP_NAMES[this.x], Luwrain.const.SOUND_REGION_POINT);
 		return true;
-				case "alternative_arrow_up":
-		case "alternative_arrow_down":
-		Luwrain.sounds.ok();
-		Luwrain.speak('катион ' + LEFT_NAMES[this.y]);
+				case Luwrain.const.KEY_ALTERNATIVE_MOVE_up:
+		case Luwrain.const.KEY_ALTERNATIVE_MOVE_down:
+		Luwrain.speak('катион ' + LEFT_NAMES[this.y], Luwrain.const.SOUND_REGION_POINT);
 		return true;
 		default:
 		return false;
 	    }
-	Luwrain.sounds.ok();
-			Luwrain.speak(constructMessage(this.x, this.y));
+			Luwrain.speak(constructMessage(this.x, this.y), Luwrain.const.SOUND_REGION_POINT);
 	    return true;
     };
 
@@ -290,5 +281,5 @@ function SolubilityApp(args)
     this.updateHotPoint();
 }
 
-Luwrain.addApp("edu-chemistry-solubility",  SolubilityApp);
-Luwrain.addCommand("edu-chemistry-solubility", function(){Luwrain.launchApp("edu-chemistry-solubility", []);});
+Luwrain.addShortcut("edu-chemistry-solubility",  SolubilityApp);
+Luwrain.addCommand("edu-chemistry-solubility", ()=>{Luwrain.launchApp("edu-chemistry-solubility");});
