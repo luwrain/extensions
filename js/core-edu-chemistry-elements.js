@@ -437,7 +437,7 @@ function MendeleevApp(args)
 	    if (this.searchOffset == 0) {
 		for(let i = 0;i < TABLE.length;i++)
 		    for(let j = 0;j < TABLE[i].length;j++) {
-		    var item = TABLE[i][j];
+		    const item = TABLE[i][j];
 		    if (item == null)
 			continue;
 		    if (item.id.toLowerCase()[0] != findEnKey(event.ch))
@@ -446,8 +446,7 @@ function MendeleevApp(args)
 		    this.x = j;
 		    this.y = i;
 		    this.updateHotPoint();
-		    Luwrain.sounds.ok();
-		    Luwrain.speak(item.id + ' ' + item.name);
+			Luwrain.speak(item.id + ' ' + item.name, Luwrain.const.SOUND_REGION_POINT);
 		    return true;
 		}
 		return false;
@@ -466,8 +465,7 @@ function MendeleevApp(args)
 		    this.x = j;
 		    this.y = i;
 		    this.updateHotPoint();
-		    Luwrain.sounds.ok();
-		    Luwrain.speak(item.id + ' ' + item.name);
+		    Luwrain.speak(item.id + ' ' + item.name, Luwrain.const.SOUND_REGION_POINT);
 		    return true;
 	    }
 		return false;
@@ -527,8 +525,7 @@ function MendeleevApp(args)
 	this.hotPointX += this.searchOffset;
 	if (this.y < 10)
 	    this.hotPointX += MAIN_TABLE_OFFSET;
-	switch(this.y)
-	{
+	switch(this.y) {
 	    case 10:
 	    this.hotPointY = 12;
 	    break;
@@ -544,15 +541,14 @@ function MendeleevApp(args)
 	    this.lines[this.lines.length - 1] = "";
 	    return;
 	}
-	var item = TABLE[this.y][this.x];
+	const item = TABLE[this.y][this.x];
 	this.lines[this.lines.length - 2] = item.id + ", " + item.latin.replace(",", MSG_OR);
 	var lastLine = "" + item.num + ", ";
 	if (item.group < 0)
 	    lastLine += MSG_GROUP + (-1 * item.group) + " " + MSG_ADDITIONAL_GROUP + ","; else
 		lastLine += MSG_GROUP + item.group + ", ";
 	lastLine += MSG_PERIOD + item.period + ", ";
-	switch(this.y)
-	{
+	switch(this.y) {
 	    case 10:
 	    lastLine += MSG_LANTANOIDS;
 	    break;
