@@ -343,13 +343,12 @@ function makeLine(index) {
     return res;
 }
 
-function MendeleevApp(args)
-{
+function MendeleevApp(args) {
     this.name = "Периодическая таблица химических элементов";
     this.type = "SIMPLE";
-    
+
     this.lines = [];
-    for(var i = 0;i < 10;i++)
+    for(let i = 0;i < 10;i++)
 	this.lines.push(makeLine(i));
     this.lines.push("");
     this.lines.push(MSG_LANTANOIDS);
@@ -360,30 +359,28 @@ function MendeleevApp(args)
     this.lines.push("");
     this.lines.push("");
     this.lines.push("");
-    
+
     this.hotPointX = MAIN_TABLE_OFFSET;
     this.hotPointY = 0;
     this.searchOffset = 0;
     this.x = 0;
     this.y = 0;
 
-    this.onSystemEvent = function(event)
-    {
-	if (event.type != 'regular')
+    this.onSystemEvent = (event)=>{
+	if (event.type != 'REGULAR')
 	    return false;
-	switch(event.code)
-	{
-	    case "help":
+	switch(event.code) {
+	case "HELP":
 	    Luwrain.launchApp("reader", ["http://wiki.luwrain.org/wiki/index.php/%D0%A0%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE_%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F_%D0%BF%D0%BE_%D0%BF%D0%B5%D1%80%D0%B8%D0%BE%D0%B4%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B9_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B5_%D1%85%D0%B8%D0%BC%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D1%85_%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D0%BE%D0%B2"]);
 	    return true;
-	    default:
+	default:
 	    return false;
 	}
     };
 
     this.onInputEvent = (event)=>{
 	if (event.special == null)
-	switch(event.ch)
+	    switch(event.ch)
 	{
 	    case " ":
 	    if (TABLE[this.y][this.x] == null)
@@ -399,76 +396,76 @@ function MendeleevApp(args)
 	    }
 	    return true;
 	    case "1":
-	    	    if (TABLE[this.y][this.x] == null)
-			return false;
+	    if (TABLE[this.y][this.x] == null)
+		return false;
 	    Luwrain.message(MSG_NUMBER + TABLE[this.y][this.x].num);
 	    return true;
-	    	    case "2":
-	    	    if (TABLE[this.y][this.x] == null)
-			return false;
+	    case "2":
+	    if (TABLE[this.y][this.x] == null)
+		return false;
 	    if (TABLE[this.y][this.x].group < 0)
 		Luwrain.message(MSG_GROUP + (-1 *TABLE[this.y][this.x].group) + " " + MSG_ADDITIONAL_GROUP); else
-	    Luwrain.message(MSG_GROUP + TABLE[this.y][this.x].group);
+		    Luwrain.message(MSG_GROUP + TABLE[this.y][this.x].group);
 	    return true;
-	    	    	    case "3":
-	    	    if (TABLE[this.y][this.x] == null)
-			return false;
+	    case "3":
+	    if (TABLE[this.y][this.x] == null)
+		return false;
 	    Luwrain.message(MSG_PERIOD + TABLE[this.y][this.x].period);
 	    return true;
-	    	    	    	    case "4":
-	    	    if (TABLE[this.y][this.x] == null)
-			return false;
+	    case "4":
+	    if (TABLE[this.y][this.x] == null)
+		return false;
 	    if (this.y == 10)
 		Luwrain.message(MSG_LANTANOIDS); else
 		    if (this.y == 11)
 			Luwrain.message(MSG_ACTINOIDS); else
-	    Luwrain.message(MSG_ROW + TABLE[this.y][this.x].row);
+			    Luwrain.message(MSG_ROW + TABLE[this.y][this.x].row);
 	    return true;
-	    	    	    	    	    case "5":
-	    	    if (TABLE[this.y][this.x] == null)
-			return false;
+	    case "5":
+	    if (TABLE[this.y][this.x] == null)
+		return false;
 	    Luwrain.message(MSG_MASS + TABLE[this.y][this.x].mass);
 	    return true;
 	    default:
 	    if (!!event.ch) {
-	    if (this.searchOffset > 1)
-		return false;
-	    if (this.searchOffset == 0) {
-		for(let i = 0;i < TABLE.length;i++)
-		    for(let j = 0;j < TABLE[i].length;j++) {
-		    const item = TABLE[i][j];
-		    if (item == null)
-			continue;
-		    if (item.id.toLowerCase()[0] != findEnKey(event.ch))
-			continue;
-		    this.searchOffset = 1;
-		    this.x = j;
-		    this.y = i;
-		    this.updateHotPoint();
-			Luwrain.speak(item.id + ' ' + item.name, Luwrain.const.SOUND_REGION_POINT);
-		    return true;
-		}
-		return false;
-	    } else
-	    {
-		var value = TABLE[this.y][this.x].id[0] + findEnKey(event.ch);
-				for(var i = 0;i < TABLE.length;i++)
-		    for(var j = 0;j < TABLE[i].length;j++)
+		if (this.searchOffset > 1)
+		    return false;
+		if (this.searchOffset == 0) {
+		    for(let i = 0;i < TABLE.length;i++)
+			for(let j = 0;j < TABLE[i].length;j++) {
+			    const item = TABLE[i][j];
+			    if (item == null)
+				continue;
+			    if (item.id.toLowerCase()[0] != findEnKey(event.ch))
+				continue;
+			    this.searchOffset = 1;
+			    this.x = j;
+			    this.y = i;
+			    this.updateHotPoint();
+			    Luwrain.speak(item.id + ' ' + item.name, Luwrain.const.SOUND_REGION_POINT);
+			    return true;
+			}
+		    return false;
+		} else
 		{
-		    var item = TABLE[i][j];
-		    if (item == null)
-			continue;
-		    if (item.id.toLowerCase() != value.toLowerCase())
-			continue;
-		    this.searchOffset = 2;
-		    this.x = j;
-		    this.y = i;
-		    this.updateHotPoint();
-		    Luwrain.speak(item.id + ' ' + item.name, Luwrain.const.SOUND_REGION_POINT);
-		    return true;
-	    }
-		return false;
-	    }
+		    var value = TABLE[this.y][this.x].id[0] + findEnKey(event.ch);
+		    for(var i = 0;i < TABLE.length;i++)
+			for(var j = 0;j < TABLE[i].length;j++)
+		    {
+			var item = TABLE[i][j];
+			if (item == null)
+			    continue;
+			if (item.id.toLowerCase() != value.toLowerCase())
+			    continue;
+			this.searchOffset = 2;
+			this.x = j;
+			this.y = i;
+			this.updateHotPoint();
+			Luwrain.speak(item.id + ' ' + item.name, Luwrain.const.SOUND_REGION_POINT);
+			return true;
+		    }
+		    return false;
+		}
 	    }
 	    return false;
 	}
@@ -510,12 +507,12 @@ function MendeleevApp(args)
 
 	if (this.x >= TABLE[this.y].length)
 	    this.x = TABLE[this.y].length - 1;
-		this.searchOffset = 0;
+	this.searchOffset = 0;
 	this.updateHotPoint();
-	    if (TABLE[this.y][this.x] != null)
-		Luwrain.speak(TABLE[this.y][this.x].name, Luwrain.const.SOUND_REGION_POINT); else
-		    Luwrain.speak(MSG_EMPTY_CELL, Luwrain.const.SOUND_REGION_POINT);
-	    return true;
+	if (TABLE[this.y][this.x] != null)
+	    Luwrain.speak(TABLE[this.y][this.x].name, Luwrain.const.SOUND_REGION_POINT); else
+		Luwrain.speak(MSG_EMPTY_CELL, Luwrain.const.SOUND_REGION_POINT);
+	return true;
     };
 
     this.updateHotPoint = function()
@@ -525,13 +522,13 @@ function MendeleevApp(args)
 	if (this.y < 10)
 	    this.hotPointX += MAIN_TABLE_OFFSET;
 	switch(this.y) {
-	    case 10:
+	case 10:
 	    this.hotPointY = 12;
 	    break;
-	    case 11:
+	case 11:
 	    this.hotPointY = 15;
 	    break;
-	    default:
+	default:
 	    this.hotPointY = this.y;
 	}
 	if (TABLE[this.y][this.x] == null)
@@ -548,13 +545,13 @@ function MendeleevApp(args)
 		lastLine += MSG_GROUP + item.group + ", ";
 	lastLine += MSG_PERIOD + item.period + ", ";
 	switch(this.y) {
-	    case 10:
+	case 10:
 	    lastLine += MSG_LANTANOIDS;
 	    break;
-	    case 11:
+	case 11:
 	    lastLine += MSG_ACTINOIDS;
 	    break;
-	    default:
+	default:
 	    lastLine += MSG_ROW + item.row;
 	}
 	lastLine += ", ";

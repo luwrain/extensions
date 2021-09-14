@@ -23,7 +23,7 @@ const LOWER_2 = String.fromCharCode('%c', 8322);
 const LOWER_3 = String.fromCharCode('%c', 8323);
 const LOWER_4 = String.fromCharCode('%c', 8324);
 
-var TOP_LINE = [
+const TOP_LINE = [
     'OH' + UPPER_MINUS,
     'F' + UPPER_MINUS,
     'Cl' + UPPER_MINUS,
@@ -39,7 +39,7 @@ var TOP_LINE = [
     'CH' + LOWER_3 + 'COO' + UPPER_MINUS
 ];
 
-var TOP_NAMES = [
+const TOP_NAMES = [
 // везде где есть буква о, ставим после о твёрдый знак, так как он будет проговаривать эту о безударной как предлог: о ком, о чём
     'оъ аш минус',
     'фтор минус',
@@ -56,7 +56,7 @@ var TOP_NAMES = [
     'цэ аш три цэ оъ, оъ минус'
 ];
 
-var LEFT_LINE = [
+const LEFT_LINE = [
     'H' + UPPER_PLUS,
     'Na' + UPPER_PLUS,
     'K' + UPPER_PLUS,
@@ -82,7 +82,7 @@ var LEFT_LINE = [
     'Ag' + UPPER_PLUS,
 ];
 
-var LEFT_NAMES = [
+const LEFT_NAMES = [
     'аш плюс',
 'натрий плюс',
 'калий плюс',
@@ -108,7 +108,7 @@ var LEFT_NAMES = [
 'аргентум плюс'
 ];
 
-var TABLE = [
+const TABLE = [
     ['Рль', 'Р', 'Р', 'Р', 'Р', 'М', 'Р', '-', 'Н', 'Р', 'Р', 'Р', 'Р'],
     ['Р', 'Р', 'Р', 'Р', 'Р', 'Р', 'Р', 'Р', 'Р', 'Р', 'Р', 'Р', 'Р'],
     ['Р', 'Р', 'Р', 'Р', 'Р', 'Р', 'Р', 'Р', 'Р', 'Р', 'Р', 'Р', 'Р'],
@@ -134,8 +134,7 @@ var TABLE = [
     ['Н', 'Р', 'НК', 'НК', 'НК', 'НК', 'Р', 'Н', 'Н', 'М', 'Н', 'М', 'Р'],
 ];
 
-function constructMessage(x, y)
-{
+function constructMessage(x, y) {
 // отказываемся от предлога и, ставим запятую. так лучше говорилка прочитает
 // пусть катионы будут первыми, потом анионы.
 //не удобно читать так: эн о три минус, и натрий плюс. лучше натрий плюс, эн о 3 минус
@@ -215,8 +214,10 @@ function SolubilityApp(args)
     this.y = 0;
 
     this.onSystemEvent = (event)=>{
+	if (event.type != 'REGULAR')
+	    return false;
 	switch(event.code) {
-		    case 'help':
+		    case 'HELP':
 	    Luwrain.launchApp("reader", ['http://wiki.luwrain.org/wiki/index.php/%D0%A0%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE_%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F_%D0%BF%D0%BE_%D1%85%D0%B8%D0%BC%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B9_%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B5_%D1%80%D0%B0%D1%81%D1%82%D0%B2%D0%BE%D1%80%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B8']);
 	    return true;
 	    default:
