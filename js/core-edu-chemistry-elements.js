@@ -160,7 +160,7 @@ const TABLE = [[
     {num: 103, name: "Лоуренсий", id: "Lr", latin: "Lawrencium,Laurentium", period: 7, row: 0, group: 3, mass: 266},
 ]];
 
-var WIKIPEDIA = {};
+const WIKIPEDIA = {};
 WIKIPEDIA['H'] = "https://ru.wikipedia.org/wiki/Водород";
 WIKIPEDIA['He'] = "https://ru.wikipedia.org/wiki/Гелий";
 WIKIPEDIA['Li'] = "https://ru.wikipedia.org/wiki/Литий";
@@ -272,69 +272,68 @@ WIKIPEDIA['Hs'] = "https://ru.wikipedia.org/wiki/Хассий";
 WIKIPEDIA['Mt'] = "https://ru.wikipedia.org/wiki/Мейтнерий";
 WIKIPEDIA['Ds'] = "https://ru.wikipedia.org/wiki/Дармштадтий";
 
-var RU_KBD_MAP = [
+const RU_KBD_MAP = [
     {en: 'q', ru: 'й'},
-{en: 'w', ru: 'ц'},
-{en: 'e', ru: 'у'},
-{en: 'r', ru: 'к'},
-{en: 't', ru: 'е'},
-{en: 'y', ru: 'н'},
-{en: 'u', ru: 'г'},
-{en: 'i', ru: 'ш'},
-{en: 'o', ru: 'щ'},
-{en: 'p', ru: 'з'},
-{en: '[', ru: 'х'},
-{en: ']', ru: 'ъ'},
-{en: 'a', ru: 'ф'},
-{en: 's', ru: 'ы'},
-{en: 'd', ru: 'в'},
-{en: 'f', ru: 'а'},
-{en: 'g', ru: 'п'},
-{en: 'h', ru: 'р'},
-{en: 'j', ru: 'о'},
-{en: 'k', ru: 'л'},
-{en: 'l', ru: 'д'},
-{en: ';', ru: 'ж'},
-{en: '\'', ru: 'э'},
-{en: 'z', ru: 'я'},
-{en: 'x', ru: 'ч'},
-{en: 'c', ru: 'с'},
-{en: 'v', ru: 'м'},
-{en: 'b', ru: 'и'},
-{en: 'n', ru: 'т'},
-{en: 'm', ru: 'ь'},
-{en: ',', ru: 'б'},
-{en: '.', ru: 'ю'},
+    {en: 'w', ru: 'ц'},
+    {en: 'e', ru: 'у'},
+    {en: 'r', ru: 'к'},
+    {en: 't', ru: 'е'},
+    {en: 'y', ru: 'н'},
+    {en: 'u', ru: 'г'},
+    {en: 'i', ru: 'ш'},
+    {en: 'o', ru: 'щ'},
+    {en: 'p', ru: 'з'},
+    {en: '[', ru: 'х'},
+    {en: ']', ru: 'ъ'},
+    {en: 'a', ru: 'ф'},
+    {en: 's', ru: 'ы'},
+    {en: 'd', ru: 'в'},
+    {en: 'f', ru: 'а'},
+    {en: 'g', ru: 'п'},
+    {en: 'h', ru: 'р'},
+    {en: 'j', ru: 'о'},
+    {en: 'k', ru: 'л'},
+    {en: 'l', ru: 'д'},
+    {en: ';', ru: 'ж'},
+    {en: '\'', ru: 'э'},
+    {en: 'z', ru: 'я'},
+    {en: 'x', ru: 'ч'},
+    {en: 'c', ru: 'с'},
+    {en: 'v', ru: 'м'},
+    {en: 'b', ru: 'и'},
+    {en: 'n', ru: 'т'},
+    {en: 'm', ru: 'ь'},
+    {en: ',', ru: 'б'},
+    {en: '.', ru: 'ю'},
 ];
 
 function findEnKey(ruKey) {
-    var key = ruKey.toLowerCase();
+    const key = ruKey.toLowerCase();
     for(var i in RU_KBD_MAP)
 	if (RU_KBD_MAP[i].ru === key)
 	    return RU_KBD_MAP[i].en;
     return key;
 }
 
-function makeLine(index)
-{
+function makeLine(index) {
     var res = "";
     if (index < 10)
 	while (res.length < MAIN_TABLE_OFFSET)
 	    res += " ";
     if (TABLE[index][0] != null)
     {
-	var id = TABLE[index][0].id;
+	const id = TABLE[index][0].id;
 	res += id;
 	if (id.length < 2)
 	    res += " ";
     } else
 	res += "  ";
-    for(var i = 1;i < TABLE[index].length;i++)
+    for(let i = 1;i < TABLE[index].length;i++)
     {
 	res += " ";
 	if (TABLE[index][i] != null)
 	{
-	    var id = TABLE[index][i].id;
+	    const id = TABLE[index][i].id;
 	    res += id;
 	    if (id.length < 2)
 		res += " ";
