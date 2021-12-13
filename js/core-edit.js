@@ -33,7 +33,19 @@ function replaceText(lines, region, func)
     return false;
 }
 
+//Ctrl+Alt+End: delete the text from the hot point to the end of line
+Luwrain.addHook("luwrain.edit.input", (area, event)=>{
+    if (event.special != "END" || !event.withControl || !event.withAlt || event.withShift)
+	return false;
+    const line = area.lines[area.hotPoint.y];
+    const deleted = line.substring(area.hotPoint.x);
+    area.lines[area.hotPoint.y] = line.substring(0, area.hotPoint.x);
+    Luwrain.speak(deleted, Luwrain.const.SOUND_DELETED);
+    return true;
+});
+
 //Alt+Home: Finds the first non-spacing character on the line
+/*
 Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     if (!event.withAltOnly || event.special != "home")
 	return false;
@@ -65,8 +77,10 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     Luwrain.message('' + line.length + " пробелов от начала строки");//FIXME:
     return true;
 });
+*/
 
 //Alt+End: Finds the first spacing character on the line which doesn't have any non-spacing following characters
+/*
 Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     if (!event.withAltOnly || event.special != "end")
 	return false;
@@ -98,8 +112,10 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     Luwrain.message('' + line.length + " пробелов до конца строки");//FIXME:
     return true;
 });
+*/
 
 //Ctrl+Alt+Home: Cleaning the line beginning
+/*
 Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     if (!event.withAlt || !event.withControl || event.withShift || event.special != "home")
 	return false;
@@ -115,22 +131,7 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     Luwrain.speak(deleted);
     return true;
 });
-
-//Ctrl+Alt+End: Cleaning the line ending
-Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
-    if (!event.withAlt || !event.withControl || event.withShift || event.special != "end")
-	return false;
-    var lines = args.lines;
-    var hotPoint = args.hotPoint;
-    var line = lines[hotPoint.y];
-    if (hotPoint.x >= line.length)
-	return false;
-    var deleted = line.substring(hotPoint.x);
-    lines[hotPoint.y] = line.substring(0, hotPoint.x);
-    Luwrain.sounds.deleted();
-    Luwrain.speak(deleted);
-    return true;
-});
+*/
 
 /*
 Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
@@ -142,6 +143,7 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
 */
 
 //UpperCase: Ctrl+Alt+PageUp
+/*
 Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     if (!event.withAlt || !event.withControl || event.withShift ||
 	event.special != "page_up")
@@ -152,8 +154,10 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
 	Luwrain.sounds.error();
     return true;
 });
+*/
 
 //UpperCase: Ctrl+Alt+PageDown
+/*
 Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     if (!event.withAlt || !event.withControl || event.withShift ||
 	event.special != "page_down")
@@ -164,3 +168,4 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
 	Luwrain.sounds.error();
     return true;
 });
+*/
