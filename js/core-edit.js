@@ -38,6 +38,8 @@ Luwrain.addHook("luwrain.edit.input", (area, event)=>{
     if (event.special != "END" || !event.withControl || !event.withAlt || event.withShift)
 	return false;
     const line = area.lines[area.hotPoint.y];
+    if (!line || area.hotPoint.x >= line.length)
+	return false;
     const deleted = line.substring(area.hotPoint.x);
     area.lines[area.hotPoint.y] = line.substring(0, area.hotPoint.x);
     Luwrain.speak(deleted, Luwrain.const.SOUND_DELETED);
