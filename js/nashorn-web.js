@@ -18,12 +18,14 @@ Luwrain.addHook("luwrain.url.open.default", function(url){
     Luwrain.launchApp("reader", [url]);
 });
 
+/*
 Luwrain.addCommand("url", function(){
     var url = Luwrain.popups.simple("Открыть URL", "URL:", "");
     if (url == null)
 	return;
     Luwrain.openUrl(url);
 });
+*/
 
 Luwrain.addHook("luwrain.web.open", function(query){
     if (query.trim().toLowerCase().startsWith("http://") ||
