@@ -14,7 +14,6 @@
    General Public License for more details.
 */
 
-Luwrain.log.debug("proba", "loading");
 Luwrain.addHook("luwrain.studio.tex.insert.chars.post", (area)=>{
     if (area.chars != " " || area.hotPoint.y >= area.lines.length)
 	return;
@@ -24,7 +23,27 @@ Luwrain.addHook("luwrain.studio.tex.insert.chars.post", (area)=>{
     const lineBefore = line.substring(0, x);
     const lineAfter = line.substring(x);
     const lineUpper = lineBefore.toUpperCase();
-    if (!lineUpper.endsWith(" В "))
+    if (lineUpper.endsWith(" ЖЕ ") ||
+	lineUpper.endsWith(" БЫ ") ||
+	lineUpper.endsWith(" ЛИ ")) {
+	area.lines[lineIndex] = lineBefore.substring(0, lineBefore.length - 4) + "~" + lineBefore.substring(lineBefore.length - 3);
+	return;
+    }
+    if (!lineUpper.endsWith(" БЕЗ ") &&
+	!lineUpper.endsWith(" В ") &&
+	!lineUpper.endsWith(" ДЛЯ ") &&
+	!lineUpper.endsWith(" ИЗ ") &&
+	!lineUpper.endsWith(" К ") &&
+	!lineUpper.endsWith(" НА ") &&
+	!lineUpper.endsWith(" НЕ ") &&
+	!lineUpper.endsWith(" НИ ") &&
+	!lineUpper.endsWith(" ПО ") &&
+	!lineUpper.endsWith(" О ") &&
+	!lineUpper.endsWith(" ПРИ ") &&
+	!lineUpper.endsWith(" ПРО ") &&
+	!lineUpper.endsWith(" С ") &&
+	!lineUpper.endsWith(" ТАК ") &&
+	!lineUpper.endsWith(" У "))
 	return;
     area.lines[lineIndex] = lineBefore.substring(0, lineBefore.length - 1) + "~" + lineAfter;
 });
