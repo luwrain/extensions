@@ -23,13 +23,21 @@ Luwrain.addHook("luwrain.studio.tex.insert.chars.post", (area)=>{
     const lineBefore = line.substring(0, x);
     const lineAfter = line.substring(x);
     const lineUpper = lineBefore.toUpperCase();
+
+    if (!!lineUpper.match(/Т\. [ЕК]\. $/)) {
+	area.lines[lineIndex] = lineBefore.substring(0, lineBefore.length - 4) + "~" + lineBefore.substring(lineBefore.length - 3) + lineAfter;
+	return;
+    }
+
     if (lineUpper.endsWith(" ЖЕ ") ||
 	lineUpper.endsWith(" БЫ ") ||
 	lineUpper.endsWith(" ЛИ ")) {
-	area.lines[lineIndex] = lineBefore.substring(0, lineBefore.length - 4) + "~" + lineBefore.substring(lineBefore.length - 3);
+	area.lines[lineIndex] = lineBefore.substring(0, lineBefore.length - 4) + "~" + lineBefore.substring(lineBefore.length - 3) + lineAfter;
 	return;
     }
-    if (!lineUpper.endsWith(" БЕЗ ") &&
+    
+    if (!lineUpper.match(/[ ~](A|AT|FOR|IN|OF|ON|THE|TO) $/) &&
+	!lineUpper.endsWith(" БЕЗ ") &&
 	!lineUpper.endsWith(" В ") &&
 	!lineUpper.endsWith(" ДЛЯ ") &&
 	!lineUpper.endsWith(" ИЗ ") &&
@@ -40,6 +48,7 @@ Luwrain.addHook("luwrain.studio.tex.insert.chars.post", (area)=>{
 	!lineUpper.endsWith(" ПО ") &&
 	!lineUpper.endsWith(" О ") &&
 	!lineUpper.endsWith(" ПРИ ") &&
+		!lineUpper.endsWith(" ПО ") &&
 	!lineUpper.endsWith(" ПРО ") &&
 	!lineUpper.endsWith(" С ") &&
 	!lineUpper.endsWith(" ТАК ") &&
