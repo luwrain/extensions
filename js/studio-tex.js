@@ -29,30 +29,22 @@ Luwrain.addHook("luwrain.studio.tex.insert.chars.post", (area)=>{
 	return;
     }
 
+        if (!!lineUpper.match(/ --- $/)) {
+	    area.lines[lineIndex] = lineBefore.substring(0, lineBefore.length - 5) + "~" + lineBefore.substring(lineBefore.length - 4) + lineAfter;
+	return;
+    }
+
+
     if (lineUpper.endsWith(" ЖЕ ") ||
 	lineUpper.endsWith(" БЫ ") ||
 	lineUpper.endsWith(" ЛИ ")) {
 	area.lines[lineIndex] = lineBefore.substring(0, lineBefore.length - 4) + "~" + lineBefore.substring(lineBefore.length - 3) + lineAfter;
 	return;
     }
-    
-    if (!lineUpper.match(/[ ~](A|AT|FOR|IN|OF|ON|THE|TO) $/) &&
-	!lineUpper.endsWith(" БЕЗ ") &&
-	!lineUpper.endsWith(" В ") &&
-	!lineUpper.endsWith(" ДЛЯ ") &&
-	!lineUpper.endsWith(" ИЗ ") &&
-	!lineUpper.endsWith(" К ") &&
-	!lineUpper.endsWith(" НА ") &&
-	!lineUpper.endsWith(" НЕ ") &&
-	!lineUpper.endsWith(" НИ ") &&
-	!lineUpper.endsWith(" ПО ") &&
-	!lineUpper.endsWith(" О ") &&
-	!lineUpper.endsWith(" ПРИ ") &&
-		!lineUpper.endsWith(" ПО ") &&
-	!lineUpper.endsWith(" ПРО ") &&
-	!lineUpper.endsWith(" С ") &&
-	!lineUpper.endsWith(" ТАК ") &&
-	!lineUpper.endsWith(" У "))
+
+    if (lineUpper.match(/[ ~](A|AN|AT|FROM|FOR|IN|OF|ON|OUR|THAT|THE|THIS|TO|WITH) $/) ||
+	lineUpper.match(/[ ~](БЕЗ|В|ВЕСЬ|ВО|ВСЕМ|ВСЕХ|ВСЯ|ДЛЯ|ЕГО|ЕЕ|ЕЁ|ЗА|ИЗ|ИХ|К|НА|НЕ|НИ|О|ОБ|ОТ|ПО|ПРИ|ПО|ПРО|С|СО|ТАК|У|ЭТИХ|ЭТОТ) $/)) {
+	area.lines[lineIndex] = lineBefore.substring(0, lineBefore.length - 1) + "~" + lineAfter;
 	return;
-    area.lines[lineIndex] = lineBefore.substring(0, lineBefore.length - 1) + "~" + lineAfter;
+    }
 });
