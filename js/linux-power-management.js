@@ -15,23 +15,25 @@
 */
 
 Luwrain.addCommand("poweroff", ()=>{
+    if (Luwrain.popups.confirmDefaultYes("Выключение компьютера", "Вы действительно хотите выключить компьютер?"))
     Linux.runAsync("if [ -e /cdrom/casper/filesystem.squashfs ]; then sudo poweroff --force; else sudo systemctl poweroff; fi");
 });
 
 Luwrain.addCommand("reboot", ()=>{
-    Linux.runAsync("sudo systemctl reboot");
+    if (Luwrain.popups.confirmDefaultYes("Перезагрузка", "Вы действительно хотите перезагрузить компьютер?"))
+	Linux.runAsync("sudo systemctl reboot");
 });
 
 Luwrain.addCommand("suspend", ()=>{
-    Linux.runAsync("sudo systemctl suspend");
+    if (Luwrain.popups.confirmDefaultYes("Спящий режим", "Вы действительно хотите активировать спящий режим?"))
+	Linux.runAsync("sudo systemctl suspend");
 });
 
 Luwrain.addCommand("battery", ()=>{
-    Linux.runAsync("echo proba", (l)=>{
-	const line = 'Battery 0: Discharging, 19%, 00:43:09 remaining';
+    Linux.runAsync("acpi", (line)=>{
 	const m = line.trim().match(/^Battery .* ([0-9]+)%.*$/);
 	if (!m) 
 	    return;
-	Luwrain.message(m[1] + "% заряд батареи");
+	Luwrain.message("Заряд батареи " + m[1] + "%");
     });
 });
