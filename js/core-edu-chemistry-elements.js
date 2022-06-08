@@ -442,7 +442,7 @@ function MendeleevApp(args) {
 			    this.x = j;
 			    this.y = i;
 			    this.updateHotPoint();
-			    Luwrain.speak(item.id + ' ' + item.name, Luwrain.const.SOUND_REGION_POINT);
+			    Luwrain.speak(item.id + ' ' + item.name, Luwrain.constants.SOUND_REGION_POINT);
 			    return true;
 			}
 		    return false;
@@ -461,7 +461,7 @@ function MendeleevApp(args) {
 			this.x = j;
 			this.y = i;
 			this.updateHotPoint();
-			Luwrain.speak(item.id + ' ' + item.name, Luwrain.const.SOUND_REGION_POINT);
+			Luwrain.speak(item.id + ' ' + item.name, Luwrain.constants.SOUND_REGION_POINT);
 			return true;
 		    }
 		    return false;
@@ -471,7 +471,7 @@ function MendeleevApp(args) {
 	}
 	switch(event.special)
 	{
-	    case Luwrain.const.KEY_ENTER:
+	    case Luwrain.constants.KEY_ENTER:
 	    if (TABLE[this.y][this.x] == null)
 		return false;
 	    {
@@ -481,22 +481,22 @@ function MendeleevApp(args) {
 		Luwrain.launchApp("reader", [WIKIPEDIA[id]]);
 	    }
 	    return true;
-	    case Luwrain.const.KEY_MOVE_LEFT:
+	    case Luwrain.constants.KEY_MOVE_LEFT:
 	    if (this.x == 0)
 		return false;
 	    this.x--;
 	    break;
-	    case Luwrain.const.KEY_MOVE_RIGHT:
+	    case Luwrain.constants.KEY_MOVE_RIGHT:
 	    if (this.x + 1 >= TABLE[this.y].length)
 		return false;
 	    this.x++;
 	    break;
-	    case Luwrain.const.KEY_MOVE_UP:
+	    case Luwrain.constants.KEY_MOVE_UP:
 	    if (this.y == 0)
 		return false;
 	    this.y--;
 	    break;
-	    case Luwrain.const.KEY_MOVE_DOWN:
+	    case Luwrain.constants.KEY_MOVE_DOWN:
 	    if (this.y + 1 >= TABLE.length)
 		return false;
 	    this.y++;
@@ -510,8 +510,8 @@ function MendeleevApp(args) {
 	this.searchOffset = 0;
 	this.updateHotPoint();
 	if (TABLE[this.y][this.x] != null)
-	    Luwrain.speak(TABLE[this.y][this.x].name, Luwrain.const.SOUND_REGION_POINT); else
-		Luwrain.speak(MSG_EMPTY_CELL, Luwrain.const.SOUND_REGION_POINT);
+	    Luwrain.speak(TABLE[this.y][this.x].name, Luwrain.constants.SOUND_REGION_POINT); else
+		Luwrain.speak(MSG_EMPTY_CELL, Luwrain.constants.SOUND_REGION_POINT);
 	return true;
     };
 

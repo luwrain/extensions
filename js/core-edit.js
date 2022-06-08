@@ -42,7 +42,7 @@ Luwrain.addHook("luwrain.edit.input", (area, event)=>{
 	return false;
     const deleted = line.substring(area.hotPoint.x);
     area.lines[area.hotPoint.y] = line.substring(0, area.hotPoint.x);
-    Luwrain.speak(deleted, Luwrain.const.SOUND_DELETED);
+    Luwrain.speak(deleted, Luwrain.constants.SOUND_DELETED);
     return true;
 });
 
@@ -55,7 +55,7 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     if (lines.length == 0)
     {
 	Luwrain.sounds.emptyLine();
-	Luwrain.speak(Luwrain.i18n.static.EmptyLine);
+	Luwrain.speak(Luwrain.i18n().static.EmptyLine);
 	return true;
     }
     var hotPoint = args.hotPoint;
@@ -63,7 +63,7 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     if (line.length == 0)
     {
 	Luwrain.sounds.emptyLine();
-	Luwrain.speak(Luwrain.i18n.static.EmptyLine);
+	Luwrain.speak(Luwrain.i18n().static.EmptyLine);
 	return true;
     }
     for(var i = 0;i < line.length;i++)
@@ -72,7 +72,7 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
 	hotPoint.x = i;
 	if (i > 0)
 	    Luwrain.message('' + i + " пробелов от начала строки"); else //FIXME:
-		Luwrain.message(Luwrain.i18n.static.BeginOfLine);
+		Luwrain.message(Luwrain.i18n().static.BeginOfLine);
 	return true;
     }
     hotPoint.x = line.length();
@@ -90,7 +90,7 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     if (lines.length == 0)
     {
 	Luwrain.sounds.emptyLine();
-	Luwrain.speak(Luwrain.i18n.static.EmptyLine);
+	Luwrain.speak(Luwrain.i18n().static.EmptyLine);
 	return true;
     }
     var hotPoint = args.hotPoint;
@@ -98,7 +98,7 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
     if (line.length == 0)
     {
 	Luwrain.sounds.emptyLine();
-	Luwrain.speak(Luwrain.i18n.static.EmptyLine);
+	Luwrain.speak(Luwrain.i18n().static.EmptyLine);
 	return true;
     }
     for(var i = line.length - 1;i >= 0;i--)
@@ -107,7 +107,7 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
 	hotPoint.x = i + 1;
 	if (i + 1 < line.length)
 	    Luwrain.message('' + line.length - i - 1 + " пробелов до конца строки"); else //FIXME:
-		Luwrain.message(Luwrain.i18n.static.EndOfLine);
+		Luwrain.message(Luwrain.i18n().static.EndOfLine);
 	return true;
     }
     hotPoint.x = 0;

@@ -229,26 +229,26 @@ function SolubilityApp(args)
 	if (!event.special)
 	    return false;
 	switch(event.special) {
-	    case Luwrain.const.KEY_MOVE_LEFT:
-	        case Luwrain.const.KEY_ALTERNATIVE_MOVE_left:
+	    case Luwrain.constants.KEY_MOVE_LEFT:
+	        case Luwrain.constants.KEY_ALTERNATIVE_MOVE_left:
 	    if (this.x == 0)
 		return false;
 	    this.x--;
 	    break;
-	    case Luwrain.const.KEY_MOVE_RIGHT:
-	    	    case Luwrain.const.KEY_ALTERNATIVE_MOVE_RIGHT:
+	    case Luwrain.constants.KEY_MOVE_RIGHT:
+	    	    case Luwrain.constants.KEY_ALTERNATIVE_MOVE_RIGHT:
 	    if (this.x + 1 >= TABLE[this.y].length)
 		return false;
 	    this.x++;
 	    break;
-	    case Luwrain.const.KEY_MOVE_UP:
-	    	    case Luwrain.const.KEY_ALTERNATIVE_MOVE_UP:
+	    case Luwrain.constants.KEY_MOVE_UP:
+	    	    case Luwrain.constants.KEY_ALTERNATIVE_MOVE_UP:
 	    if (this.y == 0)
 		return false;
 	    this.y--;
 	    break;
-	    case Luwrain.const.KEY_MOVE_DOWN:
-	    	    case Luwrain.const.KEY_ALTERNATIVE_MOVE_DOWN:
+	    case Luwrain.constants.KEY_MOVE_DOWN:
+	    	    case Luwrain.constants.KEY_ALTERNATIVE_MOVE_DOWN:
 	    if (this.y + 1 >= TABLE.length)
 		return false;
 	    this.y++;
@@ -259,18 +259,18 @@ function SolubilityApp(args)
 	this.updateHotPoint();
 	if (!!event.special.match("_alternative_"))
 	    switch(event.special) {
-		case Luwrain.const.KEY_ALTERNATIVE_MOVE_left:
-		case Luwrain.const.KEY_ALTERNATIVE_MOVE_right:
-		Luwrain.speak('анион ' + TOP_NAMES[this.x], Luwrain.const.SOUND_REGION_POINT);
+		case Luwrain.constants.KEY_ALTERNATIVE_MOVE_left:
+		case Luwrain.constants.KEY_ALTERNATIVE_MOVE_right:
+		Luwrain.speak('анион ' + TOP_NAMES[this.x], Luwrain.constants.SOUND_REGION_POINT);
 		return true;
-				case Luwrain.const.KEY_ALTERNATIVE_MOVE_up:
-		case Luwrain.const.KEY_ALTERNATIVE_MOVE_down:
-		Luwrain.speak('катион ' + LEFT_NAMES[this.y], Luwrain.const.SOUND_REGION_POINT);
+				case Luwrain.constants.KEY_ALTERNATIVE_MOVE_up:
+		case Luwrain.constants.KEY_ALTERNATIVE_MOVE_down:
+		Luwrain.speak('катион ' + LEFT_NAMES[this.y], Luwrain.constants.SOUND_REGION_POINT);
 		return true;
 		default:
 		return false;
 	    }
-			Luwrain.speak(constructMessage(this.x, this.y), Luwrain.const.SOUND_REGION_POINT);
+			Luwrain.speak(constructMessage(this.x, this.y), Luwrain.constants.SOUND_REGION_POINT);
 	    return true;
     };
 

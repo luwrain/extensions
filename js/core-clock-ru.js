@@ -109,7 +109,7 @@ Luwrain.addWorker("luwrain-clock-hourly", 5, 1, ()=>{
     default:
 	return;
     }
-    Luwrain.speak(text, Luwrain.const.SOUND_GENERAL_TIME);
+    Luwrain.speak(text, Luwrain.constants.SOUND_GENERAL_TIME);
 });
 
 Luwrain.addCommand("hot-info", ()=>{
@@ -152,5 +152,5 @@ Luwrain.addCommand("hot-info", ()=>{
 		    text += 'минуты';
     text += ', ' + DAY_OF_MONTH[now.dayOfMonth] + ' ' + MONTH[now.month];
     text += ', ' + DAY_OF_WEEK[now.dayOfWeek];
-    Luwrain.speak(text, Luwrain.const.SOUND_GENERAL_TIME);
+    Luwrain.speak(text, Luwrain.constants.SOUND_GENERAL_TIME);
 });
