@@ -14,25 +14,9 @@
    General Public License for more details.
 */
 
-Luwrain.addHook("luwrain.url.open.default", function(url){
-    Luwrain.launchApp("reader", [url]);
+Luwrain.addHook("luwrain.web.search", (query)=>{
+    const q = query.trim();
+    return {title: q + " (Поиск в DuckDuckGo)", items: [{title: "kaka"}]};
 });
 
-/*
-Luwrain.addCommand("url", function(){
-    var url = Luwrain.popups.simple("Открыть URL", "URL:", "");
-    if (url == null)
-	return;
-    Luwrain.openUrl(url);
-});
-*/
 
-Luwrain.addHook("luwrain.web.open", function(query){
-    if (query.trim().toLowerCase().startsWith("http://") ||
-	query.trim().toLowerCase().startsWith("https://"))
-    {
-	Luwrain.openUrl(query.trim());
-	return true;
-    }
-    return null;
-});

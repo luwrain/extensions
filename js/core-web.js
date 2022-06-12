@@ -14,21 +14,17 @@
    General Public License for more details.
 */
 
-var inputEventTime = -1
-
-Luwrain.addHook("luwrain.announcement", function(text, announcementClass, announcementSubclass){
-    var d = new java.util.Date();
-    if (inputEventTime >= 0 && d.getTime() - inputEventTime < 30000)
-	return;
-    var listening = '' + Luwrain.prop.luwrain.area.listening + '';  
-    if (listening === 'true')
-	return;
-    if (text.match("RT @[a-zA-Z0-9_]+: .*"))
-	text = text.substring(text.indexOf(":") + 1);
-    Luwrain.message.announcement(text);
+Luwrain.addHook("luwrain.url.open", (url)=>{
+    Luwrain.launchApp("reader", [url]);
 });
 
-Luwrain.addHook("luwrain.events.input", function(event){
-    var d = new java.util.Date();
-    inputEventTime = d.getTime();
+Luwrain.addHook("luwrain.web.open", (query)=>{
+    const q = query.trim();
+    if (q.toLowerCase().startsWith("http://") ||
+	q.toLowerCase().startsWith("https://")) {
+		Luwrain.log.debug("web", q + " true");
+	    Luwrain.openUrl(q);
+	return true;
+    }
+    return false;
 });
