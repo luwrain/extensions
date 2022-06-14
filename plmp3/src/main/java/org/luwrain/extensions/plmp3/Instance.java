@@ -22,11 +22,8 @@ import java.io.InputStream;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
-import javax.sound.sampled.*;
 
-import javazoom.jl.player.advanced.*;
 import javazoom.jl.decoder.*;
-import javazoom.jl.player.*;
 
 import org.luwrain.core.*;
 
@@ -58,16 +55,12 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 	finishing = false;
 	task = new FutureTask<>(()->{
 		try {
-		    //		    AudioInputStream stream = null;
-		    InputStream stream = null;
+		    //		    InputStream is = null;
 		    try {
 			long currentFrame = 0;
 			float currentPosition = 0;
 			long lastNotifiedMsec = 0;
-			final BufferedInputStream bufferedIn = new BufferedInputStream(url.openStream());
-stream = bufferedIn;
-			//			stream = AudioSystem.getAudioInputStream(bufferedIn);
-			//			final AudioFormat bitFormat = stream.getFormat();
+			try (final InputStream is = new BufferedInputStream(url.openStream())){
 			device = new CustomDevice(params.volume);
 			if(device==null)
 			{
@@ -77,7 +70,7 @@ stream = bufferedIn;
 			}
 			final Decoder decoder=new Decoder();
 			device.open(decoder);
-			final Bitstream bitstream = new Bitstream(stream);
+			final Bitstream bitstream = new Bitstream(is);
 			while(currentPosition < params.playFromMsec)
 			{
 			    final Header frame = bitstream.readFrame();
@@ -115,13 +108,12 @@ stream = bufferedIn;
 			    }
 			    bitstream.closeFrame();
 			} //playing
+			}
 		    }
 		    finally
 		    {
 			if(device != null)
 			    device.close();
-			if(stream != null)
-			    stream.close();
 			finishing = true;
 			listener.onPlayerFinish(Instance.this);
 		    }
