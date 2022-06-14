@@ -60,21 +60,22 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 		long lastNotifiedMsec = 0;
 		try {
 		    try (final InputStream is = new BufferedInputStream(url.openStream())){
-			this.device = new CustomDevice(params.volume);
-			final Decoder decoder=new Decoder();
-			this.device.open(decoder);
-			final Bitstream bitstream = new Bitstream(is);
-			while(currentPosition < params.playFromMsec)
-			{
-			    final Header frame = bitstream.readFrame();
-			    if (frame == null)
+			final Bitstream  bitstream;
+			final Decoder  decoder;
+			synchronized(Instance.this){
+			    this.device = new CustomDevice(params.volume);
+decoder=new Decoder();
+			    this.device.open(decoder);
+bitstream = new Bitstream(is);
+			    while(currentPosition < params.playFromMsec)
 			    {
-				Log.warning(LOG_COMPONENT, "unable to read new frame before starting position is reached");
-				return;
+				final Header frame = bitstream.readFrame();
+				if (frame == null)
+				    return;
+				++currentFrame;
+				currentPosition = currentFrame * frame.ms_per_frame();
+				bitstream.closeFrame();
 			    }
-			    ++currentFrame;
-			    currentPosition = currentFrame * frame.ms_per_frame();
-			    bitstream.closeFrame();
 			}
 			//Starting real playing
 			listener.onPlayerTime(Instance.this, new Float(currentPosition).longValue());
@@ -84,12 +85,9 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 				return;
 			    final Header frame = bitstream.readFrame();
 			    if(frame == null)
-			    {
-				Log.debug(LOG_COMPONENT, "unable to read new frame, exiting");
 				return;
-			    }
 			    final SampleBuffer output = (SampleBuffer) decoder.decodeFrame(frame, bitstream);
-			    synchronized (this) {
+			    synchronized (Instance.this) {
 				device.write(output.getBuffer(), 0, output.getBufferLength());
 			    }
 			    ++currentFrame;
@@ -105,10 +103,10 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 		}
 		finally {
 		    if(this.device != null)
-		    {
-			this.device.flush();
-			this.device.close();
-		    }
+			synchronized(Instance.this){
+			    this.device.flush();
+			    this.device.close();
+			}
 		    finishing = true;
 		    listener.onPlayerFinish(Instance.this);
 		}
@@ -139,10 +137,10 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
     {
 	if (finishing)
 	    return;
+	if (device != null)
+	    synchronized(this) {
+		this.device.close();
+	    }
 	finishing = true;
-	/*
-	if (task != null)
-	    task.cancel(true);
-	*/
     }
 }
