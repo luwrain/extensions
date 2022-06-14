@@ -17,12 +17,11 @@
 
 package org.luwrain.extensions.plmp3;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
+import java.io.*;//BufferedInputStream;
+//import java.io.InputStream;
 import java.net.*;
-import java.util.*;
-import java.util.concurrent.*;
-
+//import java.util.*;
+//import java.util.concurrent.*;
 import javazoom.jl.decoder.*;
 
 import org.luwrain.core.*;
@@ -34,7 +33,8 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 
     private final Luwrain luwrain;
     private final MediaResourcePlayer.Listener listener;
-    private FutureTask task = null; 
+    //    private FutureTask task = null;
+    private Runnable task = null;
     private boolean finishing = false;
     private CustomDevice device = null;
 
@@ -52,24 +52,17 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 	    throw new IllegalArgumentException("params.playFromMsec (" + params.playFromMsec + ") may not be negative");
 	if (params.volume < 0 || params.volume > 100)
 	    throw new IllegalArgumentException("params.volume (" + params.volume + ") must be between 0 and 100 inclusively");
-	finishing = false;
-	task = new FutureTask<>(()->{
+	this.finishing = false;
+	this.task = ()->{
+	    try {
+		long currentFrame = 0;
+		float currentPosition = 0;
+		long lastNotifiedMsec = 0;
 		try {
-		    //		    InputStream is = null;
-		    try {
-			long currentFrame = 0;
-			float currentPosition = 0;
-			long lastNotifiedMsec = 0;
-			try (final InputStream is = new BufferedInputStream(url.openStream())){
-			device = new CustomDevice(params.volume);
-			if(device==null)
-			{
-			    Log.error(LOG_COMPONENT, "unable to create an audio device for playing");
-			    listener.onPlayerError(new Exception("Unable to create an audio device for playing"));
-			    return;
-			}
+		    try (final InputStream is = new BufferedInputStream(url.openStream())){
+			this.device = new CustomDevice(params.volume);
 			final Decoder decoder=new Decoder();
-			device.open(decoder);
+			this.device.open(decoder);
 			final Bitstream bitstream = new Bitstream(is);
 			while(currentPosition < params.playFromMsec)
 			{
@@ -83,7 +76,7 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 			    currentPosition = currentFrame * frame.ms_per_frame();
 			    bitstream.closeFrame();
 			}
-			//starting real playing
+			//Starting real playing
 			listener.onPlayerTime(Instance.this, new Float(currentPosition).longValue());
 			while(true)
 			{
@@ -108,24 +101,28 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 			    }
 			    bitstream.closeFrame();
 			} //playing
-			}
 		    }
-		    finally
+		}
+		finally {
+		    if(this.device != null)
 		    {
-			if(device != null)
-			    device.close();
-			finishing = true;
-			listener.onPlayerFinish(Instance.this);
+			this.device.flush();
+			this.device.close();
 		    }
-		}
-		catch (Exception e)
-		{
-		    Log.error(LOG_COMPONENT, e.getClass().getName() + ":" + e.getMessage());
-		    e.printStackTrace();
 		    finishing = true;
-		    listener.onPlayerError(e);
+		    listener.onPlayerFinish(Instance.this);
 		}
-	    }, null);
+	    }
+	    catch (Throwable e)
+	    {
+		Log.error(LOG_COMPONENT, e.getClass().getName() + ":" + e.getMessage());
+		e.printStackTrace();
+		finishing = true;
+		if (e instanceof Exception)
+		    listener.onPlayerError((Exception)e); else
+		    listener.onPlayerError(new Exception(e));
+	    }
+	};
 	luwrain.executeBkg(task);
 	return new MediaResourcePlayer.Result();
     }
@@ -143,7 +140,9 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 	if (finishing)
 	    return;
 	finishing = true;
+	/*
 	if (task != null)
 	    task.cancel(true);
+	*/
     }
 }

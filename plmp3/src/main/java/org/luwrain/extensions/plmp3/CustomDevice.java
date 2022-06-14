@@ -16,7 +16,7 @@ import org.luwrain.core.*;
    creation was caused by the inaccessible instance of {@code
    SourceDataLine} in the original class.
 */
-class CustomDevice extends AudioDeviceBase
+class CustomDevice extends AudioDeviceBase implements AutoCloseable
 {
 static private final String LOG_COMPONENT = Instance.LOG_COMPONENT;
 
