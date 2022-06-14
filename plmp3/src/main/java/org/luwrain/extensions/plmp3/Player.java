@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2022 Michael Pozhidaev <msp@luwrain.org>
    Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
 
    This file is part of LUWRAIN.
@@ -31,7 +31,6 @@ final class Player implements MediaResourcePlayer
 
     @Override public Instance newMediaResourcePlayer(Listener listener)
     {
-	NullCheck.notNull(listener, "listener");
 	return new org.luwrain.extensions.plmp3.Instance(luwrain, listener);
     }
 

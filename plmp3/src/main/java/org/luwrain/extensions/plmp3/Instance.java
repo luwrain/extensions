@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2022 Michael Pozhidaev <msp@luwrain.org>
    Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
 
    This file is part of LUWRAIN.
@@ -32,7 +32,8 @@ import org.luwrain.core.*;
 
 final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 {
-    static final String LOG_COMPONENT = "jlayer";
+    static final String
+	LOG_COMPONENT = "plmp3";
 
     private final Luwrain luwrain;
     private final MediaResourcePlayer.Listener listener;
@@ -50,9 +51,6 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 
     @Override public MediaResourcePlayer.Result play(URL url, MediaResourcePlayer.Params params)
     {
-	NullCheck.notNull(url, "url");
-	NullCheck.notNull(params, "params");
-	NullCheck.notNull(params.flags, "params.flags");
 	if (params.playFromMsec < 0)
 	    throw new IllegalArgumentException("params.playFromMsec (" + params.playFromMsec + ") may not be negative");
 	if (params.volume < 0 || params.volume > 100)
@@ -60,14 +58,16 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 	finishing = false;
 	task = new FutureTask<>(()->{
 		try {
-		    AudioInputStream stream = null;
+		    //		    AudioInputStream stream = null;
+		    InputStream stream = null;
 		    try {
 			long currentFrame = 0;
 			float currentPosition = 0;
 			long lastNotifiedMsec = 0;
 			final BufferedInputStream bufferedIn = new BufferedInputStream(url.openStream());
-			stream = AudioSystem.getAudioInputStream(bufferedIn);
-			final AudioFormat bitFormat = stream.getFormat();
+stream = bufferedIn;
+			//			stream = AudioSystem.getAudioInputStream(bufferedIn);
+			//			final AudioFormat bitFormat = stream.getFormat();
 			device = new CustomDevice(params.volume);
 			if(device==null)
 			{
@@ -129,6 +129,7 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 		catch (Exception e)
 		{
 		    Log.error(LOG_COMPONENT, e.getClass().getName() + ":" + e.getMessage());
+		    e.printStackTrace();
 		    finishing = true;
 		    listener.onPlayerError(e);
 		}
