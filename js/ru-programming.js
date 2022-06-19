@@ -14,7 +14,7 @@
    General Public License for more details.
 */
 
-Luwrain.addHook("luwrain.i18n.ru.speakable.programming.pre", (text)=>{
+Luwrain.addHook("luwrain.i18n.ru.speakable.programming", (text)=>{
     var res = "";
     //Checking the first letter to understand what language must be the default
     var rusLang = true;
@@ -43,7 +43,7 @@ Luwrain.addHook("luwrain.i18n.ru.speakable.programming.pre", (text)=>{
 	    res += ch;
 	    continue;
 	}
-	const value = rusLang?Luwrain.i18n.langs.ru.getSpecialNameOfChar(ch):Luwrain.i18n.langs.en.getSpecialNameOfChar(ch);
+	const value = rusLang?Luwrain.i18n().langs.ru.getSpecialNameOfChar(ch):Luwrain.i18n().langs.en.getSpecialNameOfChar(ch);
 	if (!!value && value.trim().length > 0)
 	    res += (' ' + value + ' '); else
 		res += ch;
