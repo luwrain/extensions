@@ -15,5 +15,5 @@
 */
 
 Luwrain.addHook("luwrain.startup", ()=>{
-    Luwrain.speak("Привет, поправь меня", Luwrain.constants.SOUND_STARTUP);
+    Luwrain.playSound(Luwrain.constants.SOUND_STARTUP);
 });
