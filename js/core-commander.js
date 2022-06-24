@@ -15,12 +15,26 @@
 */
 
 Luwrain.addHook("luwrain.commander.panel.actions", ()=>{
-    return {name: "gpg-decrypt", title: "Расшифровать", action: (selected, marked)=>{
+    return {name: "gpg-encrypt", title: "Зашифровать", action: (selected, marked)=>{
+	if (!selected)
+	    return false;
 	const passwd = Luwrain.popups.text("Расшифровка файла", "Введите пароль:", "");
 	if (!passwd)
 	    return true;
-		Luwrain.newJob("sys", ["eject"], null, (ok, exitCode)=>{
-		    Luwrain.message("privet " + exitCode);
+	const passwdFile = selected + ".passwd";
+	Luwrain.writeTextFile(passwdFile, [passwd, Luwrain.escapeString("cmd", "123 \' 321")]);
+	Luwrain.newJob("sys", [
+	    "gpg",
+	    "-c",
+	    "--cipher-algo", "aes",
+	    "--passphrase-fd", "0",
+	    "--no-tty",
+	    Luwrain.escapeString("cmd", selected),
+	    "<", Luwrain.escapeString("cmd", passwdFile)],
+		       null, (ok, exitCode)=>{
+			   if (ok)
+			       Luwrain.message("Зашифровано", Luwrain.constants.MESSAGE_TYPE_DONE); else
+			       Luwrain.message("Произошла ошибка при шифровании файла", Luwrain.constants.MESSAGE_TYPE_ERROR);
 		});
 		return true;
 	    }
