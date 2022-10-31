@@ -14,6 +14,8 @@
    General Public License for more details.
 */
 
+//FIXME: предлог "с" над
+
 Luwrain.addHook("luwrain.studio.tex.insert.chars.post", (area)=>{
     if (area.chars != " " || area.hotPoint.y >= area.lines.length)
 	return;
