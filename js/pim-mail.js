@@ -14,56 +14,6 @@
    General Public License for more details.
 */
 
-var SERVERS = [
-    {suffixes: ['@yandex.ru', '@yandex.com'],
-     smtp: {
-	 host: 'smtp.yandex.ru',
-	 port: 587,
-	 ssl: false,
-	 tls: true}
-    },
-
-    {suffixes: ['@gmail.com'],
-     smtp: {
-	 host: 'smtp.gmail.com',
-	 port: 587,
-	 ssl: false,
-	 tls: true}
-    },
-
-    {suffixes: ['@mail.ru'],
-     smtp: {
-	 host: 'smtp.mail.ru',
-	 port: 587,
-	 ssl: false,
-	 tls: true}
-    },
-
-    {suffixes: ['@rambler.ru'],
-     smtp: {
-	 host: 'smtp.rambler.ru',
-	 port: 465,
-	 ssl: true,
-	 tls: false}
-    }]
-
-function findServer(addr)
-{
-    for(var i = 0;i < SERVERS.length;i++)
-    {
-	var s = SERVERS[i];
-	var j = 0;
-	for(var j = 0;j < s.suffixes.length;j++)
-	    if (addr.trim().toLowerCase().endsWith(s.suffixes[j].trim().toLowerCase()))
-		break;
-	if (j >= s.suffixes.length)
-	    continue;
-	return s;
-    }
-    return null;
-}
-
-
 function saveToDefaultIncoming(mail, message)
 {
     var defaultIncoming = mail.folders.findFirstByProperty("defaultIncoming", 'true')
