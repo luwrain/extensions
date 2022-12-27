@@ -16,11 +16,8 @@
 
 const SERVERS = [
     {suffixes: ['@yandex.ru', '@yandex.com'],
-     smtp: {
-	 host: 'smtp.yandex.ru',
-	 port: 587,
-	 ssl: false,
-	 tls: true}
+     smtp: { host: 'smtp.yandex.ru', port: 587, ssl: false, tls: true},
+     pop3: { host: 'pop3.yandex.ru', port: 995, ssl: true, tls: false}
     },
 
     {suffixes: ['@gmail.com'],

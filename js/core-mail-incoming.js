@@ -22,7 +22,8 @@ function saveToDefaultIncoming(mail, message)
     return defaultIncoming.saveMessage(message);
 }
 
-Luwrain.addHook("luwrain.pim.message.new.save", function(mail, message){
+Luwrain.addHook("luwrain.pim.mail.save.new", function(mail, message){
+    return true;
     var listId = message.list.id;
 //    if (listId.isEmpty())
 	return saveToDefaultIncoming(mail, message);
@@ -47,26 +48,10 @@ Luwrain.addHook("luwrain.pim.message.new.save", function(mail, message){
     return true;
 });
 
+/*
 Luwrain.addCommand("worker-mail-incoming", function(){
     if (!Luwrain.runWorker("luwrain.pim.fetch.pop3"))
 	Luwrain.message("already");
 });
+*/
 
-
-Luwrain.addHook("luwrain.wizards.mail.account", function(mail){
-    var title = "Подключение почтового ящика";
-    var fullName = Luwrain.popups.simple(title, "Ваше полное имя:", "");
-    if (fullName == null)
-	return;
-    var addr = Luwrain.popups.simple(title, "Ваш адрес электронной почты:", "")
-    if (addr == null)
-	return;
-    var server = findServer(addr);
-    if (server == null)
-    {
-	Luwrain.message.error("К сожалению, не удалос подобрать известный сервер для вашего адреса");
-	return;
-    }
-    Luwrain.message(server.smtp.host);
-
-    });
