@@ -60,6 +60,7 @@ function divideOnGroups(items)
 }
 
 Luwrain.addHook("luwrain.mail.summary.organize", function(messages){
+    return messages;
     var res = [];
     for(var i = 0;i < messages.length;i++)
 	res.push({

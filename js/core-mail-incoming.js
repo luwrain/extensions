@@ -14,16 +14,15 @@
    General Public License for more details.
 */
 
-function saveToDefaultIncoming(mail, message)
-{
-    var defaultIncoming = mail.folders.findFirstByProperty("defaultIncoming", 'true')
-    if (defaultIncoming == null)
-	return false;
-    return defaultIncoming.saveMessage(message);
-}
-
 Luwrain.addHook("luwrain.pim.mail.save.new", function(mail, message){
-    return true;
+    const defaultIncoming = mail.getFolders().findByProp("defaultIncoming", "true")
+    if (!defaultIncoming) {
+	Luwrain.log.error("mail", "no default incoming folder");
+	return false;
+    }
+    if (defaultIncoming.saveMessage(message))
+	Luwrain.log.debug("mail", "message saved");
+    return false;
     var listId = message.list.id;
 //    if (listId.isEmpty())
 	return saveToDefaultIncoming(mail, message);
