@@ -14,6 +14,23 @@
    General Public License for more details.
 */
 
+Luwrain.addHook("luwrain.mail.reply", (message)=>{
+    const to = message.getTo().full;
+    const t = message.getTextAsArray();
+    const text = ["", ""];
+    for(let i of t) {
+	if (i.trim() == "--")
+	    break;
+	text.push(">" + i);
+    }
+    var subject = message.getSubject();
+    subject = "Re: " + subject;
+    const arg = {to, subject, text};
+    Luwrain.launchApp("message", [JSON.stringify(arg)]);
+    return true;
+});
+
+
 function stripRe(text)
 {
     return text.replaceAll('^[Rr][Ee](\\[[0-9]+\\])*: ', '').trim();
@@ -87,10 +104,3 @@ Luwrain.addHook("luwrain.mail.summary.organize", function(messages){
     return res;
 });
 
-Luwrain.addHook("luwrain.mail.reply", function(message){
-    var to = message.from.full;
-    var subject = message.subject;
-    var text = message.text;
-    Luwrain.launchApp("message", [to, "", subject, text]);
-    return true;
-});
