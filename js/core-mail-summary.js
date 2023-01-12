@@ -30,7 +30,6 @@ Luwrain.addHook("luwrain.mail.reply", (message)=>{
     return true;
 });
 
-
 function stripRe(text)
 {
     return text.replaceAll('^[Rr][Ee](\\[[0-9]+\\])*: ', '').trim();

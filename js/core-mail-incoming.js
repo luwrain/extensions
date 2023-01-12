@@ -22,7 +22,7 @@ Luwrain.addHook("luwrain.pim.mail.save.new", function(mail, message){
     }
     if (defaultIncoming.saveMessage(message))
 	Luwrain.log.debug("mail", "message saved");
-    return false;
+    return true;
     var listId = message.list.id;
 //    if (listId.isEmpty())
 	return saveToDefaultIncoming(mail, message);
