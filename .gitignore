@@ -1,5 +1,3 @@
-build
 build.xml
+build
 jar
-target
-TEST-*Test.xml

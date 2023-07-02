@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2020 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2023 Michael Pozhidaev <msp@luwrain.org>
    Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
 
    This file is part of LUWRAIN.
@@ -34,10 +34,13 @@ import org.luwrain.speech.*;
 
 final class Channel implements org.luwrain.speech.Channel
 {
-    static private final String LOG_COMPONENT = Extension.LOG_COMPONENT;
-    static private final double UPPER_CASE_PITCH_MODIFIER = 3.0;
-    static private final double RATE_MIN  = 0.5;
-    static private final double RATE_MAX  = 2.0;
+    static private final String
+	LOG_COMPONENT = Extension.LOG_COMPONENT;
+
+    static private final double
+	UPPER_CASE_PITCH_MODIFIER = 3.0,
+	RATE_MIN  = 0.5,
+	RATE_MAX  = 2.0;
 
     private final TTSEngine tts;
     private final String voiceName;
@@ -45,11 +48,12 @@ final class Channel implements org.luwrain.speech.Channel
 
     Channel(Map<String, String> params) throws Exception
     {
-	NullCheck.notNull(params, "params");
-	final Path dataPath = Paths.get("rhvoice", "data");
-	final Path configPath = Paths.get("rhvoice", "config");
-	final Path enPath = Paths.get("data", "languages", "English");
-	final Path ruPath = Paths.get("data", "languages", "Russian");
+	final Path
+	dataPath = Paths.get("rhvoice", "data"),
+	configPath = Paths.get("rhvoice", "config"),
+	enPath = Paths.get("data", "languages", "English"),
+ruPath = Paths.get("data", "languages", "Russian");
+		Log.info(LOG_COMPONENT, "Data directory: " + dataPath.toString());
 	//TTSEngine.init();
 	this.tts = new TTSEngine(dataPath.toString(), configPath.toString(), new String[]{
 		enPath.toString(),
@@ -59,6 +63,7 @@ final class Channel implements org.luwrain.speech.Channel
 	if (params.containsKey("voice") && !params.get("voice").isEmpty())
 	    this.voiceName = params.get("voice"); else
 	    this.voiceName = suggestVoice();
+	Log.info(LOG_COMPONENT, "Voice name: " + voiceName);
 	if (voiceName == null || voiceName.trim().isEmpty())
 	    throw new Exception("Unable to get suitable voice name");
     }
