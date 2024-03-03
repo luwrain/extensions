@@ -1,5 +1,5 @@
 /*
-   Copyright 2019-2022 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2019-2024 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 

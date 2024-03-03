@@ -1,5 +1,5 @@
 /*
-   Copyright 2019-2022 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2019-2024 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -14,13 +14,8 @@
    General Public License for more details.
 */
 
-Luwrain.addHook("luwrain.announcement", (text, announcementClass, announcementSubclass)=>{
-    /*
-    var listening = '' + Luwrain.prop.luwrain.area.listening + '';  
-    if (listening === 'true')
-	return;
-    if (text.match("RT @[a-zA-Z0-9_]+: .*"))
-	text = text.substring(text.indexOf(":") + 1);
-*/
-    Luwrain.message(text);
+Luwrain.addHook("luwrain.announcement", (args)=>{
+    if (args.component == "vk")
+	return true;
+    Luwrain.message(args.text);
 });

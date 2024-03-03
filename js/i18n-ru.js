@@ -1,5 +1,5 @@
 /*
-   Copyright 2019-2022 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2019-2024 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -14,7 +14,7 @@
    General Public License for more details.
 */
 
-Luwrain.addHook("luwrain.i18n.ru.speech.natural.pre", function(text){
+Luwrain.addHook("luwrain.i18n.ru.speech.natural.pre", (text)=>{
     var res = "";
     for(var i = 0;i < text.length;i++)
     {
