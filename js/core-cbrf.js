@@ -14,13 +14,46 @@
    General Public License for more details.
 */
 
-Luwrain.addCommand("cbrf-usd", ()=>{
-    Luwrain.executeBkg(()=>{
-	const now = Luwrain.now;
-	const day = now.dayOfMonth < 10?"0" + now.dayOfMonth:"" + now.dayOfMonth;
-	const month = now.month < 10?"0" + now.month:"" + now.month;
-	const year = "" + now.year;
-	const url = "http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + day + "/" + month + "/" + year;
-	const res = Luwrain.urlGet(url);
-    });
+class Frames {
+constructor(control){
+this.control = control;
+this.wizard = Luwrain.createWizardArea({
+input: (event)=>this.onInput(event, control)
 });
+this.greeting().show();
+this.control.setLayout(this.wizard);
+this.control.setName("ЦБРФ");
+}
+
+greeting(){
+return this.wizard.createFrame()
+.addClickable("Продолжить", async()=>{
+const doc = Luwrain.parseXml(await Luwrain.fetchUrl("http://www.cbr.ru/scripts/XML_daily.asp?date_req=03/03/2024"));
+const ValCurs = doc.find(n=>{ return n.getType() == "Element" && n.getTagName() == "ValCurs"; });
+for(let v of ValCurs.getChildNodes()) {
+if (v.getType() != "Element")
+continue;
+const CharCode = v.find(n=>{ return n.getType() == "Element" && n.getTagName() == "CharCode";});
+if (!CharCode || CharCode.getChildNodes().length == 0)
+continue;
+const name = CharCode.getChildNodes()[0].getText();
+if (name.trim() != "USD")
+continue;
+const VunitRate = v.find(n=>{ return n.getType() == "Element" && n.getTagName() == "VunitRate";});
+if (!VunitRate  || VunitRate.getChildNodes().length == 0 || VunitRate.getChildNodes()[0].getType() != "TextNode")
+continue;
+Luwrain.log.debug("proba", VunitRate.getChildNodes()[0].getText());
+}
+});
+}
+
+onInput(event, control){
+if (event.code == "ESCAPE"){
+control.close();
+return true;
+}
+return false;
+}
+}
+
+//Luwrain.launchApp(Frames);
