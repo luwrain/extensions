@@ -22,14 +22,20 @@ input: (event)=>this.onInput(event, control)
 });
 this.greeting().show();
 this.control.setLayout(this.wizard);
-this.control.setName("ЦБРФ");
+this.control.setName("Создание приложения");
 }
 
 greeting(){
 return this.wizard.createFrame()
-.addClickable("Продолжить", async()=>{
+.addText("Перечислите идентификаторы валют, для которых вы желаете получить информацию о курсе, в поле ниже.")
+.addInput("Валюты:", "USD EUR")
+.addClickable("Показать", async()=>{ await this.fetch(); });
+}
+
+async fetch(){
 const doc = Luwrain.parseXml(await Luwrain.fetchUrl("http://www.cbr.ru/scripts/XML_daily.asp?date_req=03/03/2024"));
 const ValCurs = doc.find(n=>{ return n.getType() == "Element" && n.getTagName() == "ValCurs"; });
+const res = [];
 for(let v of ValCurs.getChildNodes()) {
 if (v.getType() != "Element")
 continue;
@@ -37,14 +43,30 @@ const CharCode = v.find(n=>{ return n.getType() == "Element" && n.getTagName() =
 if (!CharCode || CharCode.getChildNodes().length == 0)
 continue;
 const name = CharCode.getChildNodes()[0].getText();
-if (name.trim() != "USD")
+if (["USD", "EUR", "GBP", "CNY", "AED"].findIndex(i=>{ return i == name.trim(); }) < 0)
 continue;
 const VunitRate = v.find(n=>{ return n.getType() == "Element" && n.getTagName() == "VunitRate";});
 if (!VunitRate  || VunitRate.getChildNodes().length == 0 || VunitRate.getChildNodes()[0].getType() != "TextNode")
 continue;
-Luwrain.log.debug("proba", VunitRate.getChildNodes()[0].getText());
+const value = VunitRate.getChildNodes()[0].getText();
+res.push({name, value});
+Luwrain.log.debug("proba", "adding res " + value);
 }
-});
+this.showResult(res);
+//});
+}
+
+showResult(values){
+Luwrain.log.debug("proba", "showing result " + values.length);
+const f = this.wizard.createFrame();
+for(let v of values)
+f.addText(v.name + ": " + v.value);
+var l = "";
+for(let i of values)
+l += (i.name + " ");
+f.addInput("Валюты:", l.trim())
+f.addClickable("Показать", async()=>{ await this.fetch(); });
+f.show();
 }
 
 onInput(event, control){
@@ -56,4 +78,4 @@ return false;
 }
 }
 
-//Luwrain.launchApp(Frames);
+Luwrain.launchApp(Frames);
