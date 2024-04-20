@@ -78,4 +78,4 @@ return false;
 }
 }
 
-Luwrain.launchApp(Frames);
+//Luwrain.launchApp(Frames);
