@@ -14,6 +14,39 @@
    General Public License for more details.
 */
 
+
+Luwrain.addHook("luwrain.mail.summary", (mail, messages)=>{
+    const topics = [];
+    for(let m of messages){
+	var theme = m.getSubject();
+	if (!theme)
+	    theme = "Без темы";
+	var re = theme.match(/Re:\s+(.*)$/);
+	if (re)
+	    theme = re[1];
+	var topic = topics.find((t) => { return t.theme == theme;});
+	if (!topic) {
+	    topic = {theme, messages: []};
+	    topics.push(topic);
+	}
+	topic.messages.push(m);
+    }
+    topics.sort((a, b) => {
+	if (a.messages.length > b.messages.length)
+	    return -1;
+		if (a.messages.length < b.messages.length)
+		    return 1;
+	return 0;
+    });
+    const res = [];
+    for(let t of topics) {
+	res.push(t.theme);
+	for(let m of t.messages)
+	    res.push(m);
+    }
+    return res;
+    });
+
 Luwrain.addHook("luwrain.mail.reply", (message)=>{
     const to = message.getTo().full;
     const t = message.getTextAsArray();
@@ -29,77 +62,3 @@ Luwrain.addHook("luwrain.mail.reply", (message)=>{
     Luwrain.launchApp("message", [JSON.stringify(arg)]);
     return true;
 });
-
-function stripRe(text)
-{
-    return text.replaceAll('^[Rr][Ee](\\[[0-9]+\\])*: ', '').trim();
-}
-
-function stripCommonBeginning(items)
-{
-    if (items.length == 0)
-	return;
-    var commonTo = 0;
-    while(true)
-    {
-	if (commonTo >= items[0].subject.length)
-	    break;
-	var ch = items[0].subject[commonTo];
-	//Looking for the item not matching the ch
-	var i;
-	for(i = 1;i < items.length;i++)
-	    if (commonTo >= items[i].subject.length || items[i].subject[commonTo] != ch)
-		break;
-	if (i < items.length)
-	    break;
-	commonTo++;
-    }
-    if (commonTo > 0)
-	for(var i = 0;i < items.length;i++)
-	    items[i].subject = items[i].subject.substring(commonTo);
-}
-
-function divideOnGroups(items)
-{
-    var groups = [];
-    for(var i = 0;i < items.length;i++)
-    {
-	var k = 0;
-	for(k = 0;k < groups.length;k++)
-	    if (groups[k].subject == items[i].subject)
-		break;
-	if (k < groups.length)
-	    groups[k].messages.push(items[i]); else
-		groups.push({subject: items[i].subject, messages: [items[i]]});
-    }
-    return groups;
-}
-
-Luwrain.addHook("luwrain.mail.summary.organize", function(messages){
-    return messages;
-    var res = [];
-    for(var i = 0;i < messages.length;i++)
-	res.push({
-	    subject: stripRe(messages[i].subject),
-	    source: messages[i]
-	});
-    stripCommonBeginning(res);
-    //Stripping RE: once more time
-    for(var i = 0;i < res.length;i++)
-	res[i].subject = stripRe(res[i].subject);
-    var groups = divideOnGroups(res);
-    res = [];
-    for(var i = 0;i < groups.length;i++)
-	if (groups[i].messages.length == 1)
-	    res.push({message: groups[i].messages[0].source, title: groups[i].messages[0].source.from.personal + ' ' + groups[i].messages[0].source.subject});
-    for(var i = 0;i < groups.length;i++)
-    {
-	if (groups[i].messages.length < 2)
-	    continue;
-	res.push("Тема " + groups[i].subject);
-	for(var j = 0;j < groups[i].messages.length;j++)
-	    res.push({message: groups[i].messages[j].source, title: groups[i].messages[j].source.from.personal});
-    }
-    return res;
-});
-

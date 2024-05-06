@@ -1,5 +1,5 @@
 /*
-   Copyright 2019-2022 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2019-2024 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -13,6 +13,36 @@
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    General Public License for more details.
 */
+
+const PROPERTY_MAILING_LIST = "mailing-list";
+
+Luwrain.addHook("luwrain.mail.incoming", (mail, msg) => {
+    var folder = null;
+    const headers = msg.getHeader("List-Id");
+    if (headers.length > 0) {
+	var listId = headers[0]
+	var personal = mail.getAddressPersonalName(listId);
+	if (!personal) {
+	    const from= msg.getHeader("From");
+	    if (from.length > 0)
+		personal = mail.getAddressPersonalName(from[0]);
+	}
+	listId = mail.getAddressWithoutPersonalName(listId);
+	if (!personal)
+	    personal = listId;
+folder = mail.getFolders().findFirstByProperty(PROPERTY_MAILING_LIST, listId);
+	if (!folder) {
+folder = mail.getFolders().getDefaultMailingLists().newSubfolder();
+	    folder.setName(personal);
+	    folder.getProperties().setProperty(PROPERTY_MAILING_LIST, listId);
+	    folder.update();
+	}
+    } else
+folder = mail.getFolders().getDefaultIncoming();
+    if (!folder)
+	throw "No folder to save the mail";
+    folder.saveMessage(msg);
+});
 
 Luwrain.addHook("luwrain.pim.mail.save.new", function(mail, message){
     const defaultIncoming = mail.getFolders().findByProp("defaultIncoming", "true")
