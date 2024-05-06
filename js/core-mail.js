@@ -44,43 +44,52 @@ folder = mail.getFolders().getDefaultIncoming();
     folder.saveMessage(msg);
 });
 
-Luwrain.addHook("luwrain.pim.mail.save.new", function(mail, message){
-    const defaultIncoming = mail.getFolders().findByProp("defaultIncoming", "true")
-    if (!defaultIncoming) {
-	Luwrain.log.error("mail", "no default incoming folder");
-	return false;
+Luwrain.addHook("luwrain.mail.summary", (mail, messages)=>{
+    const topics = [];
+    for(let m of messages){
+	var theme = m.getSubject();
+	if (!theme)
+	    theme = "Без темы";
+	var re = theme.match(/Re:\s+(.*)$/);
+	if (re)
+	    theme = re[1];
+	var topic = topics.find((t) => { return t.theme == theme;});
+	if (!topic) {
+	    topic = {theme, messages: []};
+	    topics.push(topic);
+	}
+	topic.messages.push(m);
     }
-    if (defaultIncoming.saveMessage(message))
-	Luwrain.log.debug("mail", "message saved");
-    return true;
-    var listId = message.list.id;
-//    if (listId.isEmpty())
-	return saveToDefaultIncoming(mail, message);
-    var existingFolder = mail.folders.findFirstByProperty("list", listId)
-    if (existingFolder != null)
-    {
-	existingFolder.saveMessage(message);
-	return true;
+    topics.sort((a, b) => {
+	if (a.messages.length > b.messages.length)
+	    return -1;
+		if (a.messages.length < b.messages.length)
+		    return 1;
+	return 0;
+    });
+    const res = [];
+    for(let t of topics) {
+	res.push(t.theme);
+	for(let m of t.messages)
+	    res.push(m);
     }
-    if (existingFolder == null)
-    {
-	var listsFolder = mail.folders.findFirstByProperty("lists", 'true');
-	if (listsFolder == null)
-	    return saveToDefaultIncoming(mail, message);
-	var newFolder = listsFolder.newSubfolder();
-	if (!message.list.name.isEmpty())
-	    newFolder.title = message.list.name; else
-		newFolder.title = listId;
-	newFolder.properties.list = listId;
-	newFolder.saveProperties();
+    return res;
+    });
+
+Luwrain.addHook("luwrain.mail.reply", (message)=>{
+    const to = message.getTo().full;
+    const t = message.getTextAsArray();
+    const text = ["", ""];
+    for(let i of t) {
+	if (i.trim() == "--")
+	    break;
+	text.push(">" + i);
     }
+    var subject = message.getSubject();
+    subject = "Re: " + subject;
+    const arg = {to, subject, text};
+    Luwrain.launchApp("message", [JSON.stringify(arg)]);
     return true;
 });
 
-/*
-Luwrain.addCommand("worker-mail-incoming", function(){
-    if (!Luwrain.runWorker("luwrain.pim.fetch.pop3"))
-	Luwrain.message("already");
-});
-*/
 
