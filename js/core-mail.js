@@ -68,7 +68,19 @@ Luwrain.addHook("luwrain.mail.summary", (mail, messages)=>{
 	return 0;
     });
     const res = [];
-    for(let t of topics) {
+    for(let t of topics)
+	if (t.messages.length == 1) {
+	    const m = t.messages[0];
+	    if (!!m.getSubject()) {
+		var from = m.getFrom().personal;
+		if (!from)
+		    from = m.getFrom().addr;
+		m.setTitle(m.getSubject() + " пишет " + from);
+	    }
+	    res.push(m);
+	}
+    for(let t of topics)
+	if (t.messages.length > 1) {
 	res.push(t.theme);
 	for(let m of t.messages)
 	    res.push(m);
@@ -91,5 +103,3 @@ Luwrain.addHook("luwrain.mail.reply", (message)=>{
     Luwrain.launchApp("message", [JSON.stringify(arg)]);
     return true;
 });
-
-
