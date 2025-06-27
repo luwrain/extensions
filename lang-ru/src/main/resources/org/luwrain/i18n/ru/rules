@@ -1,0 +1,5 @@
+# Michael Pozhidaev <msp@luwrain.org>
+
+RULE WHERE т '.' .? е '.' DO _0 = "то есть";
+RULE WHERE т '.' .? к '.' DO _0 = "так как";
+RULE WHERE до . н '.' .? э '.' DO _0 = "до нашей эры";
