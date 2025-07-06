@@ -16,9 +16,12 @@
 
 package org.luwrain.i18n.ru;
 
+import com.google.auto.service.*;
+
 import org.luwrain.core.*;
 import org.luwrain.i18n.*;
 
+@AutoService(org.luwrain.core.Extension.class)
 public final class Extension extends I18nExtensionBase
 {
     static private final String LANG_NAME = "ru";

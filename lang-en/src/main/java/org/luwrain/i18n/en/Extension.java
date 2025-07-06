@@ -16,9 +16,12 @@
 
 package org.luwrain.i18n.en;
 
+import com.google.auto.service.*;
+
 import org.luwrain.core.*;
 import org.luwrain.i18n.*;
 
+@AutoService(org.luwrain.core.Extension.class)
 public class Extension extends I18nExtensionBase
 {
     static private final String LANG_NAME = "en";

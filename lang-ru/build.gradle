@@ -7,14 +7,15 @@ dependencies {
   implementation libraries.base
     implementation libraries.apacheBase
         implementation libraries.graalvm
+	  annotationProcessor libraries.autoService
   implementation (project(':luwrain-base'))
     implementation (project(':luwrain'))
         implementation (project(':luwrain-io'))
 	        implementation (project(':luwrain-pim'))
 implementation "org.luwrain:luwrain-inlandes:0.5.2"
-  annotationProcessor("com.google.auto.service:auto-service:1.1.1")
-//  annotationProcessor (project(':luwrain-base'))
-  annotationProcessor files('..base/build/libs/luwrain-base2.jar')
+
+  annotationProcessor (project(':luwrain-base'))
+//  annotationProcessor files('..base/build/libs/luwrain-base2.jar')
 
 
   testImplementation libraries.junit
