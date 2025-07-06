@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2021 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2025 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -25,26 +25,30 @@ import java.io.*;
 import org.luwrain.core.*;
 import org.luwrain.speech.*;
 
-final class VoiceMan implements org.luwrain.speech.Channel
+import static java.util.Objects.*;
+
+final class Channel implements org.luwrain.speech.Channel
 {
-    static private final String DEFAULT_HOST = "localhost";
-    static private final int DEFAULT_PORT = 5511;
-    static private final String DEFAULT_NAME = "voiceman";
-    static private final int DEFAULT_PITCH = 50;
-    static private final int DEFAULT_RATE = 50;
+    static private final String
+	DEFAULT_HOST = "localhost",
+	DEFAULT_NAME = "voiceman";
+    static private final int
+	DEFAULT_PORT = 5511,
+	DEFAULT_PITCH = 50,
+	DEFAULT_RATE = 50;
 
     private final Socket sock;
     private final PrintStream output;
 
-    VoiceMan(Map<String, String> params) throws Exception
+    Channel(Map<String, String> params) throws Exception
     {
-	NullCheck.notNull(params, "params");
+	requireNonNull(params, "params can't be null");
 	final String host;
 	if (params.containsKey("host"))
 	    host = params.get("host"); else
 	    host = DEFAULT_HOST;
 	if (host.isEmpty())
-	    throw new Exception("Empty host name given");
+	    throw new IllegalArgumentException("Empty host name given");
 	final int port;
 	if (params.containsKey("port"))
 	{
@@ -53,7 +57,7 @@ final class VoiceMan implements org.luwrain.speech.Channel
 	    }
 	    catch(NumberFormatException e)
 	    {
-		throw new Exception("Illegal port number: " + params.get("port"));
+		throw new IllegalArgumentException("Illegal port number: " + params.get("port"));
 	    }
 	} else
 	    port = DEFAULT_PORT;
@@ -65,7 +69,7 @@ final class VoiceMan implements org.luwrain.speech.Channel
 	}
 	catch(IOException e)
 	{
-	    throw new Exception("Unable to connect to the VoiceMan server at " + host + ":" + port + ":" + e.getMessage());
+	    throw new IllegalArgumentException("Unable to connect to the VoiceMan server at " + host + ":" + port + ":" + e.getMessage());
 	}
     }
 
