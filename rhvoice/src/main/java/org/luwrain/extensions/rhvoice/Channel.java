@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2023 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2025 Michael Pozhidaev <msp@luwrain.org>
    Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
 
    This file is part of LUWRAIN.
@@ -21,6 +21,7 @@ import java.util.*;
 import java.io.*;
 import java.nio.*;
 import java.nio.file.*;
+import org.apache.logging.log4j.*;
 import javax.sound.sampled.*;
 
 import com.github.olga_yakovleva.rhvoice.RHVoiceException;
@@ -34,10 +35,9 @@ import org.luwrain.speech.*;
 
 final class Channel implements org.luwrain.speech.Channel
 {
-    static private final String
-	LOG_COMPONENT = Extension.LOG_COMPONENT;
+    static private final Logger log = LogManager.getLogger();
 
-    static private final double
+        static private final double
 	UPPER_CASE_PITCH_MODIFIER = 3.0,
 	RATE_MIN  = 0.5,
 	RATE_MAX  = 2.0;
@@ -53,7 +53,7 @@ final class Channel implements org.luwrain.speech.Channel
 	configPath = Paths.get("rhvoice", "config"),
 	enPath = Paths.get("data", "languages", "English"),
 ruPath = Paths.get("data", "languages", "Russian");
-		Log.info(LOG_COMPONENT, "Data directory: " + dataPath.toString());
+		log.trace("Data directory: " + dataPath.toString());
 	//TTSEngine.init();
 	this.tts = new TTSEngine(dataPath.toString(), configPath.toString(), new String[]{
 		enPath.toString(),
@@ -63,7 +63,7 @@ ruPath = Paths.get("data", "languages", "Russian");
 	if (params.containsKey("voice") && !params.get("voice").isEmpty())
 	    this.voiceName = params.get("voice"); else
 	    this.voiceName = suggestVoice();
-	Log.info(LOG_COMPONENT, "Voice name: " + voiceName);
+	log.trace("Voice name: " + voiceName);
 	if (voiceName == null || voiceName.trim().isEmpty())
 	    throw new Exception("Unable to get suitable voice name");
     }
@@ -87,7 +87,7 @@ ruPath = Paths.get("data", "languages", "Russian");
 	}
 	if(voiceRu == null && voiceEn == null)
 	{
-    	    Log.warning(LOG_COMPONENT, "no voices neither Russian nor English");
+    	    log.warn("no voices neither Russian nor English");
 	    return "";
 	}
 	if(voiceRu == null)
@@ -171,7 +171,7 @@ ruPath = Paths.get("data", "languages", "Russian");
 		    }
 		    catch(IOException e)
 		    {
-			Log.error(LOG_COMPONENT, "unable to speak");
+			log.error("Unable to speak");
 			return false;
 		    }
 		    return true;
@@ -180,7 +180,7 @@ ruPath = Paths.get("data", "languages", "Russian");
 	} 
 	catch(RHVoiceException e)
 	{
-	    Log.error(LOG_COMPONENT, "rhvoice error:" + e.getClass().getName() + ":" + e.getMessage());
+	    log.error("RHVoice error:", e);
 	    return new Result(Result.Type.FAILED, e);
 	}
     }

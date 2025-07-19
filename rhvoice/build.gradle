@@ -1,0 +1,19 @@
+
+plugins {
+  id 'java-library'
+}
+
+  repositories {
+  maven { url 'https://download.luwrain.org/maven2' }
+}
+
+dependencies {
+  implementation libraries.base
+  implementation libraries.apacheBase
+  implementation 'rhvoice:rhvoice:1.2.3'
+  annotationProcessor libraries.autoService
+  implementation (project(':luwrain-base'))
+  implementation (project(':luwrain'))
+  annotationProcessor (project(':luwrain-base'))
+  testImplementation libraries.junit
+}

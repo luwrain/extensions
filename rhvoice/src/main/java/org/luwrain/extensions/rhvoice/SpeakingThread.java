@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2020 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2025 Michael Pozhidaev <msp@luwrain.org>
    Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
 
    This file is part of LUWRAIN.
@@ -18,6 +18,7 @@
 package org.luwrain.extensions.rhvoice;
 
 import java.nio.*;
+import org.apache.logging.log4j.*;
 import javax.sound.sampled.*;
 import javax.sound.sampled.AudioFormat.Encoding;
 
@@ -28,7 +29,7 @@ import org.luwrain.speech.Channel.Listener;
 
 class SpeakingThread implements Runnable
 {
-    static private final String LOG_COMPONENT = Extension.LOG_COMPONENT;
+    static private final org.apache.logging.log4j.Logger log = LogManager.getLogger();
     static private final int AUDIO_LINE_BUFFER_SIZE=3200; // minimal req value is 3200 (1600 samples max give rhvoice and each one 2 byte size
 	static private final float FRAME_RATE = 24000f;
 
@@ -86,7 +87,7 @@ class SpeakingThread implements Runnable
 			}
 			catch(Exception e)
 			{
-			    Log.error(LOG_COMPONENT, "unable to speak");
+			    log.error("Unable to speak");
 			    return false;
 			}
 			return true;
@@ -100,7 +101,7 @@ class SpeakingThread implements Runnable
 	    {
 		if(listener != null) 
 		    listener.onFinished(-1);
-		Log.error(LOG_COMPONENT, "rhvoice error:" + e.getClass().getName() + ":" + e.getMessage());
+		log.error("RHVoice error:", e);
 		return;
 	    }
 	}
@@ -141,7 +142,7 @@ class SpeakingThread implements Runnable
 	} 
 	catch(Exception e)
 	{
-	    Log.error(LOG_COMPONENT, "unable to init audio line:" + e.getClass().getName() + ":" + e.getMessage());
+	    log.error("Unable to init audio line:", e);
 	    return null;
 	}
     }
