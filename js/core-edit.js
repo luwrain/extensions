@@ -36,22 +36,26 @@ function replaceText(lines, region, func)
 /*
  * Shift+Alt+Backspace: deleting previous word
  */
-Luwrain.addHook("luwrain.edit.input", (area, event)=>{
+Luwrain.addHook("luwrain.text.input.single", (text, event)=>{
     if (event.special != "BACKSPACE" || event.withControl || !event.withAlt || !event.withShift)
 	return false;
-    const line = area.lines[area.hotPoint.y];
-    var x = area.hotPoint.x - 1;
-    if (x == 0)
+    const line = text.line;
+    var pos = text.hotPoint;
+    if (pos == 0)
 	return false;
-    for(;x >= 0;x--) {
-	if (!Luwrain.isLetter(line[x]) && Luwrain.isLetter(line[x + 1]))
+    if (pos > 0 && Luwrain.isLetter(line[pos]) && !Luwrain.isLetter(line[pos - 1]))
+	return false; 
+    pos = pos - 1;
+    for(;pos >= 0;pos--) 
+	if (!Luwrain.isLetter(line[pos]) && Luwrain.isLetter(line[pos + 1]))
 	    break;
-	if (x < 0)
-	    return false;
-	Luwrain.speak(line.substring(x, area.hotPoint.x));
+    if (pos < 0)
+	pos = 0;
+        	Luwrain.speak(line.substring(pos, text.hotPoint));
+    text.line = line.substring(0, pos) + line.substring(text.hotPoint, line.length)
+    text.hotPoint = pos;
 	return true;
 });
-
 
 //Ctrl+Alt+End: delete the text from the hot point to the end of line
 Luwrain.addHook("luwrain.edit.input", (area, event)=>{
