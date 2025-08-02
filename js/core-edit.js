@@ -51,21 +51,21 @@ Luwrain.addHook("luwrain.text.input.single", (text, event)=>{
 	    break;
     if (pos < 0)
 	pos = 0;
-        	Luwrain.speak(line.substring(pos, text.hotPoint));
+        	Luwrain.speak(line.substring(pos, text.hotPoint), Luwrain.constants.SOUND_DELETED);
     text.line = line.substring(0, pos) + line.substring(text.hotPoint, line.length)
     text.hotPoint = pos;
 	return true;
 });
 
-//Ctrl+Alt+End: delete the text from the hot point to the end of line
-Luwrain.addHook("luwrain.edit.input", (area, event)=>{
-    if (event.special != "END" || !event.withControl || !event.withAlt || event.withShift)
+/*
+ * Ctrl+Alt+End: Deleting end of line
+ */
+Luwrain.addHook("luwrain.text.input.single", (text, event)=>{
+     if (event.special != "END" || !event.withControl || !event.withAlt || event.withShift)
 	return false;
-    const line = area.lines[area.hotPoint.y];
-    if (!line || area.hotPoint.x >= line.length)
-	return false;
-    const deleted = line.substring(area.hotPoint.x);
-    area.lines[area.hotPoint.y] = line.substring(0, area.hotPoint.x);
+    const line = text.line;
+    const deleted = line.substring(text.hotPoint);
+text.line = line.substring(0, text.hotPoint);
     Luwrain.speak(deleted, Luwrain.constants.SOUND_DELETED);
     return true;
 });
@@ -159,14 +159,6 @@ Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
 });
 */
 
-/*
-Luwrain.addHook("luwrain.edit.multiline.input", function(event, args){
-    if (!event.withShiftOnly || event.special != "end")
-	return false;
-    Luwrain.sounds.ok();
-    return true;
-});
-*/
 
 //UpperCase: Ctrl+Alt+PageUp
 /*
