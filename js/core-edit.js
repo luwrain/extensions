@@ -1,5 +1,5 @@
 /*
-   Copyright 2019-2022 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2019-2025 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -32,6 +32,26 @@ function replaceText(lines, region, func)
     }
     return false;
 }
+
+/*
+ * Shift+Alt+Backspace: deleting previous word
+ */
+Luwrain.addHook("luwrain.edit.input", (area, event)=>{
+    if (event.special != "BACKSPACE" || event.withControl || !event.withAlt || !event.withShift)
+	return false;
+    const line = area.lines[area.hotPoint.y];
+    var x = area.hotPoint.x - 1;
+    if (x == 0)
+	return false;
+    for(;x >= 0;x--) {
+	if (!Luwrain.isLetter(line[x]) && Luwrain.isLetter(line[x + 1]))
+	    break;
+	if (x < 0)
+	    return false;
+	Luwrain.speak(line.substring(x, area.hotPoint.x));
+	return true;
+});
+
 
 //Ctrl+Alt+End: delete the text from the hot point to the end of line
 Luwrain.addHook("luwrain.edit.input", (area, event)=>{
