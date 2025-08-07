@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2025 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -21,22 +21,19 @@ import java.util.concurrent.*;
 import java.io.*;
 import javax.sound.sampled.AudioFormat;
 import speechd.ssip.*;
+import org.apache.logging.log4j.*;
 
-import org.luwrain.linux.ProcessGroup;
 import org.luwrain.speech.*;
-import org.luwrain.core.*;
 
-final class Channel implements org.luwrain.speech.Channel, SSIPEventHandler
+public final class Channel implements org.luwrain.speech.Channel, SSIPEventHandler
 {
-    static final String LOG_COMPONENT = Extension.LOG_COMPONENT;
+    static private final Logger log = LogManager.getLogger();
 
     final SSIPClient client;
-
     private Listener listener = null;
 
     Channel(Map<String, String> params) throws Exception
     {
-	NullCheck.notNull(params, "params");
 	client = new SSIPClient("LUWRAIN", null, null);
 	if (client == null)
 	    throw new Exception("Unable to create a speech dispatcher client");
@@ -97,7 +94,7 @@ final class Channel implements org.luwrain.speech.Channel, SSIPEventHandler
 	}
 	catch(Exception e)
 	{
-	    Log.error(LOG_COMPONENT, "unable to speak a text:" + e.getClass().getName() + ":" + e.getMessage());
+	    log.error("Unable to speak a text", e);
 	}
 	return -1;
     }
@@ -113,12 +110,12 @@ final class Channel implements org.luwrain.speech.Channel, SSIPEventHandler
 	}
 	catch(Exception e)
 	{
-	    Log.error(LOG_COMPONENT, "unable to speak a text:" + e.getClass().getName() + ":" + e.getMessage());
+	    log.error("Unable to speak a text", e);
 	}
 	return -1;
     }
 
-            @Override public Result synth(String text, OutputStream stream, AudioFormat format, SyncParams params, Set<Flags> flags)
+    @Override public Result synth(String text, OutputStream stream, AudioFormat format, SyncParams params, Set<Flags> flags)
     {
 	return new Result(Result.Type.NOT_IMPLEMENTED);
     }
@@ -136,7 +133,7 @@ final class Channel implements org.luwrain.speech.Channel, SSIPEventHandler
 	}
 	catch(Exception e)
 	{
-	    Log.error(LOG_COMPONENT, "unable to stop the speech:" + e.getClass().getName() + ":" + e.getMessage());
+	    log.error("Unable to stop speaking", e);
 	}
     }
 
@@ -148,7 +145,7 @@ final class Channel implements org.luwrain.speech.Channel, SSIPEventHandler
 	}
 	catch(Exception e)
 	{
-	    Log.error(LOG_COMPONENT, "unable to close the connection:" + e.getClass().getName() + ":" + e.getMessage());
+	    log.error("NABLE to close the connection", e);
 	}
     }
 }
