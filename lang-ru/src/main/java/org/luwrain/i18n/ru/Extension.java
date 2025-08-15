@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2024 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2025 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -16,6 +16,7 @@
 
 package org.luwrain.i18n.ru;
 
+import org.apache.logging.log4j.*;
 import com.google.auto.service.*;
 
 import org.luwrain.core.*;
@@ -24,28 +25,28 @@ import org.luwrain.i18n.*;
 @AutoService(org.luwrain.core.Extension.class)
 public final class Extension extends I18nExtensionBase
 {
+    static private final Logger log = LogManager.getLogger();
+
     static private final String LANG_NAME = "ru";
     static final String LOG_COMPONENT = LANG_NAME;
     static private final String RESOURCE_PATH = "org/luwrain/i18n/ru/constants.properties";
 
     public Extension()
     {
-	super(LANG_NAME);
+	super("ru");
     }
 
     @Override public void i18nExtension(Luwrain luwrain, I18nExtension ext)
     {
-	NullCheck.notNull(luwrain, "luwrain");
-	NullCheck.notNull(ext, "ext");
-	init(getClass().getClassLoader(), luwrain);
 	try {
+	    	init(getClass().getClassLoader(), luwrain);
 	    loadProperties(RESOURCE_PATH, ext);
+	    loadCommands(ext);
+	    ext.addLang(LANG_NAME, new Lang(luwrain, readStaticStrings(), readChars()));
 	}
 	catch(java.io.IOException e)
 	{
-	    Log.error(LANG_NAME, "unable to load properties from " + RESOURCE_PATH + ":" + e.getClass().getName() + ":" + e.getMessage());
-	    return;
+	    log.error("Unable to init the language", e);
 	}
-	ext.addLang(LANG_NAME, new Lang(luwrain, staticStrings, chars));
     }
 }

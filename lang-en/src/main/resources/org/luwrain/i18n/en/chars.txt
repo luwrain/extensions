@@ -1,0 +1,44 @@
+
+greater_than_sign = Greater than
+full_stop = Dot
+less_than_sign = Less than
+question_mark = Question mark
+left_curly_bracket = Left brace
+right_curly_bracket = Right brace
+left_parenthesis = Left parent
+right_parenthesis = Right parent
+left_square_bracket = Left square
+right_square_bracket = Right square
+
+euro_sign = Euro
+multiplication_sign = Multiplication
+left_pointing_double_angle_quotation_mark = Less less
+right_pointing_double_angle_quotation_mark = Greater greater
+horizontal_ellipsis = Ellipsis
+
+asterisk = Star
+circumflex_accent = Grade
+combining_acute_accent = знак ударения
+commercial_at = At
+dollar_sign = Dollar
+equals_sign = Equals
+exclamation_mark = Exclamation
+full_stop = Dot
+grave_accent = Backquote
+greater_than_sign = Greater than
+hyphen_minus = Dash 
+left_square_bracket = Left square
+less_than_sign = Less than
+low_line = Underline
+number_sign = Sharp
+percent_sign = Percent
+plus_sign = Plus
+question_mark = Question
+quotation_mark = Quotes
+reverse_solidus = Backslash
+solidus = Slash
+superscript_two = два в верхнем индексе
+vertical_line = Bar
+
+
+

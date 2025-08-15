@@ -1,0 +1,30 @@
+command.browser = Internet
+command.calc = Calculator
+command.download = Download manager
+command.commander = Commander
+command.contacts = Contacts
+command.control-panel = Control panel
+command.edu-poem-end = Finish a poem
+command.find-cell = Find music
+command.mail = Mail
+command.news = News
+command.notepad = Notepad
+command.opds = Digital libraries
+command.open-url = Open URL
+command.quit = Quit
+command.reader = Documents preview
+command.reader-luwrain-homepage = LUWRAIN homepage
+command.reader-search-google = Search in Google
+command.reboot = Reboot
+command.run = Run OS command
+command.shutdown = Shutdown
+command.suspend = Suspend
+command.term = Terminal
+command.studio = Studio
+
+command.vk = VKontakte
+command.web-inspector = Web inspector
+command.web-open = Open in Internet
+command.wifi = Wifi connections
+command.wiki = Wikipedia
+
