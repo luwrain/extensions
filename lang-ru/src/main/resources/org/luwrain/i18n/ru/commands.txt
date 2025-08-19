@@ -34,3 +34,6 @@ url = Открыть адрес
 web-open = Открыть в интернете
 web = Интернет
 wizard-mail-account = Подключение почтовый ящик
+notepad = Блокнот
+studio = Студия
+

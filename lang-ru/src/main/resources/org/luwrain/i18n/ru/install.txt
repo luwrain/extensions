@@ -1,0 +1,6 @@
+
+strings.install = org.luwrain.app.install.Strings
+command.install = Установка LUWRAIN на жёсткий диск
+install.AppName = Установка LUWRAIN
+install.Greeting = Это приложение поможет вам установить LUWRAIN на жёсткий диск вашего компьютера. Для этого вы должны выбрать жёсткий диск, на который следует произвести установку:
+

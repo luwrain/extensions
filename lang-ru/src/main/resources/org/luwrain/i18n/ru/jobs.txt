@@ -1,0 +1,5 @@
+strings.jobs = org.luwrain.app.jobs.Strings
+command.jobs = Задачи
+jobs.AppName = Задачи
+jobs.ActionStop = Отменить
+

@@ -1,0 +1,4 @@
+
+desktop.DeleteItemsPopupName = Удаление элемента
+desktop.DeleteSingleItemPopup = Вы действительно хотите удалить элемент "$1" с рабочего стола?
+

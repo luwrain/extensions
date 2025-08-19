@@ -1,0 +1,3 @@
+strings.console = org.luwrain.app.console.Strings
+console.AppName = Консоль
+

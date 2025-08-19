@@ -1,0 +1,3 @@
+cpanel.AppName = Панель управления
+cpanel.SectionsAreaName = Группы параметров
+

@@ -1,0 +1,5 @@
+
+download.AppName = Загрузки
+download.StatusOk = OK
+download.StatusFailure = Ошибка
+
