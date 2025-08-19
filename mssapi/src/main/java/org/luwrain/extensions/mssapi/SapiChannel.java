@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2025 Michael Pozhidaev <msp@luwrain.org>
    Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
 
    This file is part of LUWRAIN.
@@ -20,13 +20,14 @@ package org.luwrain.extensions.mssapi;
 import java.io.*;
 import java.util.*;
 import javax.sound.sampled.AudioFormat;
+import org.apache.logging.log4j.*;
 
 import org.luwrain.core.*;
 import org.luwrain.speech.*;
 
 final class SapiChannel implements org.luwrain.speech.Channel
 {
-        static private final String LOG_COMPONENT = Extension.LOG_COMPONENT;
+    static private final Logger log = LogManager.getLogger();
 	static private final int UPPER_CASE_PITCH_MODIFIER=30;
     static private final int COPY_WAV_BUF_SIZE=1024;
 
@@ -209,7 +210,7 @@ final class SapiChannel implements org.luwrain.speech.Channel
 					if(format.getFrameRate()<=32000000) sapiaudio=SAPIImpl_constants.SPSF_32kHz8BitMono;else
 					    if(format.getFrameRate()<=44000000) sapiaudio=SAPIImpl_constants.SPSF_44kHz8BitMono;else
 						if(format.getFrameRate()<=48000000) sapiaudio=SAPIImpl_constants.SPSF_48kHz8BitMono;else
-						    Log.warning(LOG_COMPONENT, "Audioformat sample frame too big "+format.getFrameRate());
+						    log.warn("Audioformat sample frame too big "+format.getFrameRate());
 	    } else
 		if(format.getSampleSizeInBits()==16)
 		{
@@ -222,10 +223,10 @@ final class SapiChannel implements org.luwrain.speech.Channel
 					    if(format.getFrameRate()<=32000000) sapiaudio=SAPIImpl_constants.SPSF_32kHz16BitMono;else
 						if(format.getFrameRate()<=44000000) sapiaudio=SAPIImpl_constants.SPSF_44kHz16BitMono;else
 						    if(format.getFrameRate()<=48000000) sapiaudio=SAPIImpl_constants.SPSF_48kHz16BitMono;else
-							Log.warning(LOG_COMPONENT, "Audioformat sample frame too big "+format.getFrameRate());
+							log.warn("Audioformat sample frame too big "+format.getFrameRate());
 		} else
 		{
-		    Log.warning(LOG_COMPONENT, "Audioformat sample size can be 8 or 16 bit, but specified "+format.getSampleSizeInBits());
+		    log.warn("Audioformat sample size can be 8 or 16 bit, but specified "+format.getSampleSizeInBits());
 		}
 	} else
 	{ // stereo
@@ -240,7 +241,7 @@ final class SapiChannel implements org.luwrain.speech.Channel
 					if(format.getFrameRate()<=32000000) sapiaudio=SAPIImpl_constants.SPSF_32kHz8BitStereo;else
 					    if(format.getFrameRate()<=44000000) sapiaudio=SAPIImpl_constants.SPSF_44kHz8BitStereo;else
 						if(format.getFrameRate()<=48000000) sapiaudio=SAPIImpl_constants.SPSF_48kHz8BitStereo;else
-						    Log.warning(LOG_COMPONENT, "Audioformat sample frame too big "+format.getFrameRate());
+						    log.warn("Audioformat sample frame too big "+format.getFrameRate());
 	    } else
 		if(format.getSampleSizeInBits()==16)
 		{
@@ -253,10 +254,10 @@ final class SapiChannel implements org.luwrain.speech.Channel
 					    if(format.getFrameRate()<=32000000) sapiaudio=SAPIImpl_constants.SPSF_32kHz16BitStereo;else
 						if(format.getFrameRate()<=44000000) sapiaudio=SAPIImpl_constants.SPSF_44kHz16BitStereo;else
 						    if(format.getFrameRate()<=48000000) sapiaudio=SAPIImpl_constants.SPSF_48kHz16BitStereo;else
-							Log.warning(LOG_COMPONENT, "Audioformat sample frame too big "+format.getFrameRate());
+							log.warn("Audioformat sample frame too big "+format.getFrameRate());
 		} else
 		{
-		    Log.warning(LOG_COMPONENT, "Audioformat sample size can be 8 or 16 bit, but specified "+format.getSampleSizeInBits());
+		    log.warn("Audioformat sample size can be 8 or 16 bit, but specified "+format.getSampleSizeInBits());
 		}
 	}
 	return sapiaudio;
