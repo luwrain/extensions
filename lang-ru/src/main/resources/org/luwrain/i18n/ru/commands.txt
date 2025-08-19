@@ -36,4 +36,6 @@ web = Интернет
 wizard-mail-account = Подключение почтовый ящик
 notepad = Блокнот
 studio = Студия
+calc = Калькулятор
+jobs = Задачи
 

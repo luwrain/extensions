@@ -1,5 +1,3 @@
-strings.calc = org.luwrain.app.calc.Strings
-command.calc = Калькулятор
-calc.AppName = Калькулятор
-calc.Error = Ошибка
 
+AppName = Калькулятор
+Error = Ошибка
