@@ -1,0 +1,10 @@
+# English string constants for org.luwrain.app.crash.Strings
+# Michael Pozhidaev <msp@luwrain.org>
+
+AppName = Internal application error
+Intro = An internal error occurred while the application was running, which\nthe application is unable to process correctly. If it remains\nrunning, it is recommended to close it and restart it again, as\nthe integrity of the internal data may be damaged. The following\nis technical information that can help developers\ndetermine the cause of the error.
+App = Application: $1
+StackTrace = Stack trace:
+Area = Area: \1
+FileNotFound = File or directory not found
+

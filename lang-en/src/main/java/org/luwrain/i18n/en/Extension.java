@@ -16,6 +16,7 @@
 
 package org.luwrain.i18n.en;
 
+import java.io.*;
 import org.apache.logging.log4j.*;
 import com.google.auto.service.*;
 
@@ -40,13 +41,20 @@ public class Extension extends I18nExtensionBase
 
 	try {
 	    	init(getClass().getClassLoader(), luwrain);
-	    loadProperties(RESOURCE_PATH, ext);
-	    loadCommands(ext);
-	    ext.addLang(LANG_NAME, new Lang(luwrain, readStaticStrings(), readChars()));
+			    	    ext.addLang(LANG_NAME, new Lang(luwrain, readStaticStrings(), readChars()));
+				    loadCommands(ext);
+				    loadStrings(org.luwrain.app.console.Strings.class, "console.txt", ext);
+loadStrings(org.luwrain.app.crash.Strings.class, "crash.txt", ext);
+				    loadStrings(org.luwrain.app.cpanel.Strings.class, "cpanel.txt", ext);
 	}
 	catch(java.io.IOException e)
 	{
 	    log.error("Unable to init the language", e);
 	}
+    }
+
+    private void loadStrings(Class c, String resName, I18nExtension ext) throws IOException
+    {
+	ext.addStrings("en", c.getName(), new ResourceStringsObj(Extension.class.getClassLoader(), Extension.class, resName).create("ru", c));
     }
 }
