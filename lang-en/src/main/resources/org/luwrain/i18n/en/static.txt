@@ -116,5 +116,5 @@ TreeNoContent = Empty tree
 UniRefPrefixFile = File
 web = Web searching finished without any results
 Yes = Yes
-
- blard 09:25$ 
+WebCommandPopupName = Find on the Internet
+WebCommandPopupPrefix = Web:
