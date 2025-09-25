@@ -17,9 +17,10 @@
 
 package org.luwrain.extensions.mssapi;
 
-class  SAPIImpl_constants
+//The link to the documentation: https://msdn.microsoft.com/en-us/library/ee431843%28v=vs.85%29.aspx
+
+final class  Constants
 {
-	// link to documentation https://msdn.microsoft.com/en-us/library/ee431843%28v=vs.85%29.aspx
 	public static final int SPF_DEFAULT = 0;
 	public static final int SPF_IS_XML = 8;
 	public static final int SPF_IS_NOT_XML = 16;

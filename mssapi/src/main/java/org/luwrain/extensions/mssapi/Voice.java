@@ -17,16 +17,12 @@
 
 package org.luwrain.extensions.mssapi;
 
-import org.luwrain.speech.Voice;
-
-public class SAPIVoice implements Voice
+public class Voice implements org.luwrain.speech.Voice
 {
-	private String id;
-	
-	private boolean isMale;
-	private String name;
-	
-	public SAPIVoice(String id,String name,boolean isMale)
+    final String id, name;
+	final boolean isMale;
+
+Voice(String id,String name,boolean isMale)
 	{
 		this.id=id;
 		this.name=name;
@@ -42,5 +38,4 @@ public class SAPIVoice implements Voice
 	{
 		return name;
 	}
-
 }

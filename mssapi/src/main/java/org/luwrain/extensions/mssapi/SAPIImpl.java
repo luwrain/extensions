@@ -17,137 +17,124 @@
 
 package org.luwrain.extensions.mssapi;
 
-/**
- * @author Volovodov Roman
- * Класс, определяющий доступ к библиотеке-прослойке SAPI, для синтеза речи
- * 
- * Для получения списка голосовых движков необходимо последовательно вызывать SAPIImpl.getNextVoiceIdFromList(); до тех пор, пока не будет возвращен null
- *  SAPIImpl.searchVoiceByAttributes(null);
- *  while(string id=SAPIImpl.getNextVoiceIdFromList()) System.out.println(id);
- *
- * Простейший сценарий использования
- * 	SAPIImpl.searchVoiceByAttributes("Name=Irina+Alan");	// выбираем голосовой движок по атрибуту name
- *  SAPIImpl.getNextVoiceIdFromList();						// выбираем первый результат
- *  SAPIImpl.selectCurrentVoice();							// выбираем этот голосовой токен
- *  SAPIImpl.speak("Это голосовой движок Ирины и Алана, it's right!",SAPIImpl.SPF_IS_NOT_XML);
- * Данный код запустит поиск голоса Irina+Alan (русский - Irina, английский - Alan), из полученного списка выберет первый голос
- * и произнесет фразу не асинхронно (по умолчанию), не анализируя полученнцю строку как xml
- *
- * Синтаксис строки а формате xml, позволяющий управлять параметрами произношения можно посмотреть в документации msdn по ссылке
- * https://msdn.microsoft.com/en-us/library/ee431815%28v=vs.85%29.aspx
- * Пример замедления - "<rate absspeed='-5'>Медленно</rate>"
- * Пример понижения тона - "<pitch absmiddle='-5'>Ниже тоном</pitch>"
- * Пример выделения голосом - "<emph>Выделить!</emph>"
- *
- * todo: добавить возможность создания нескольких экземпляров объекта (поддержка одновременно нескольких голосовых интерфейсов, в т.ч. одновременно говорящих)
- * todo: добавить поддержку многопоточности или контроль за синхронностью вызовов 
- */
-class SAPIImpl extends SAPIImpl_constants
-{
-    /**
-     * Во время загрузки библиотеки однократно происходит иннициализация SAPI
-     * todo: корректная обработка ошибок иннициализации SAPI  
-     */
-    static
-    {
-	// загружаем динамическу библиотеку под текущую архитектуру (32 или 64 бита)
-    	String libname="SAPIImpl."+System.getProperty("sun.arch.data.model");
-    	System.loadLibrary(libname);
-    	System.out.println("sapi:jni dynamic library loaded "+libname);
+public class SAPIImpl {
+    private int id;
+    private static int idCounter = 0;
+    private String selectedVoiceId = null;
+    private boolean isSpeaking = false;
+
+    static {
+        System.loadLibrary("SAPIImpl");
+        System.out.println("✓ SAPI библиотека загружена");
     }
 
-    static int idCounter = 0;
-    int id = 0;
-
-    SAPIImpl()
-    {
-	id = idCounter++;
+    public SAPIImpl() {
+        this.id = idCounter++;
+        System.out.println("Создан экземпляр SAPI с ID: " + id);
     }
 
-    /**
-     * Переходит к следующему голосовому токену (при первом вызове к первому) и возвращает его идентификатор
-     * Должен быть использован после вызова searchVoiceByAttributes или предыдущего успешного getNextVoiceIdFromList
-     * Метод необходимо использовать перед вызовом selectCurrentVoice() 
-     * @return строку с текущим идентификатором голосового токена либо nul, если больше голосовых токенов в списке нет
-     */
-    native public String getNextVoiceIdFromList();
+    // Нативные методы - должны точно соответствовать C++ коду
+    private native String getLastVoiceDescription();
+    private native String getNextVoiceIdFromList();
+    private native int selectCurrentVoice();
+    private native int selectVoiceById(String id);
+    private native int searchVoiceByAttributes(String cond);
+    private native int speak(String text, int flags);
+    private native int stream(String stream, int flags);
+    private native int rate(int rate);
+    private native int pitch(int pitch);
+    private native int wait(int timeout);
+    // Метода stop() нет в C++ коде - используем speak с флагом остановки
 
-    /**
-     * Возвращает строку описанием голосового токена, идентификатор которого в последний раз был получен методом getNextVoiceIdFromList()  
-     * @return строка с описанием голосового токена (обычно это наименование)
-     */
-    native public String getLastVoiceDescription();
+    // Константы из SAPIImpl_constants
+    public static final int SPF_DEFAULT = 0;
+    public static final int SPF_ASYNC = 1;
+    public static final int SPF_IS_XML = 8;
+    public static final int SPF_IS_NOT_XML = 16;
+    public static final int SPF_PURGEBEFORESPEAK = 2;
 
-    /**
-     * Переходит к следующему голосовому движку и возвращает его идентификатор
-     * Метод необходимо вызвать как минимум для получения первого движка из списка результатов поиска searchVoiceByAttributes  
-     * @return null - если больше нет голосовых токенов или строковый идентификатор движка	
-     */
-    native public int selectCurrentVoice();
+    // Публичный интерфейс
+    public void speakText(String text)
+    {
 
-    /**
-     * Выбор голосового токена (комбинация голосовых движков для используемых в операционной системе языков,
-     * например комбинация двух - английский и русский)
-     * todo: проверить, как голосовые движки работают в мультиязычной среде с поддержкой трех и более языков
-     * @param   id	строковый идентификатор токена (в SAPI это результат вызова GetId(&id) для объекта CComPtr<ISpObjectToken>)
-     * @return	0 если успех и 1 - если не выбран голос
-     */
-    native public int selectVoiceById(String id);
+        stopSpeaking();
 
-    /**
-     * Выбор голосового токена по критерию с помощью атрибутов. Наименование атрибутов и их значения определяются голосовыми движками.
-     * В результате метода сбрасывается текущее перечисление списка голосовых движков и устанавливается новое, в соответствии с заданным критерием
-     * @param cond	Список значений атрибутов, например Name=Alena, Language=409, Gender=male и т.п., разделенные ';', возможно пустое значение null - отсутствие фильтров
-     * подробности можно узнать тут https://msdn.microsoft.com/en-us/library/ms717036%28v=vs.85%29.aspx
-     * @return	@return	количество голосов, удовлетворяющих условию или -1 - если ошибка
-     */
-    native public int searchVoiceByAttributes(String cond);
+        int result = speak(text, SPF_ASYNC | SPF_IS_NOT_XML);
+        if (result == 0) {
+            isSpeaking = true;
+        }
+    }
 
-    /**
-     * Отсылает текстовую строку для синтеза речи с помощью SAPI, текущий голосовой токен уже должен быть выбран
-     * Сообщение будет произнесено с использованием текущего звукового устройства 'по умолчанию',
-     * если предыдущее сообщение было отослано в асинхронном режиме 
-     * @param 	text	Содержит сообщение, для которого необходимо синтезировать голос
-     * @param	flags	Битовая маска, определяет параметры, такие как асинхронный вызов или наличие xml marckup 
-     * @return	0 если успех и 1 если произошла ошибка
-     */
-    native public int speak(String text, int flags);
 
-    /**
-     * Отсылает текстовую строку для синтеза речи с помощью SAPI, текущий голосовой токен уже должен быть выбран
-     * Сообщение будет произнесено с использованием текущего звукового устройства 'по умолчанию',
-     * если предыдущее сообщение было отослано в асинхронном режиме
-     * Используются параметры по умолчанию - Асинхронный режим и XML Marckup 
-     * @return	0 если успех и 1 если произошла ошибка
-     */
-    public int speak(String text) {return speak(text,SPF_ASYNC|SPF_IS_XML);}
 
-    /**
-     * Выбирает текущее устройство для вывода синтезированного звука
-     * @param 	stream	null - для выбора звуковой карты по умолчанию, иначе путь до wav файла
-     * @param	flags	формат звука в файле 
-     * @return	0 если успех и 1 если произошла ошибка
-     */
-    native public int stream(String stream, int flags);
+    public void stopSpeaking() {
+        // Останавливаем через speak с пустым текстом и флагом очистки
+        if (isSpeaking){
+            speak("", SPF_PURGEBEFORESPEAK);
+            isSpeaking = false;
+        }
+    }
 
-    /**
-     * устанавливает скорость речи
-     * @param	rate	значение от -10 до +10, медленное и быстрое соответственно
-     * @return	0	если успех и 1 если произошла ошибка
-     */
-    native public int rate(int rate);
+    public void setRate(int rate)
+    {
+        rate(rate);
+    }
 
-    /**
-     * устанавливает громкость речи
-     * @param	pitch	значение от 0 до 100
-     * @return	0	если успех и 1 если произошла ошибка
-     */
-    native public int pitch(int pitch);
+    public void setPitch(int pitch)
+    {
+        pitch(pitch);
+    }
 
-    /**
-     * ожидает окончания синтеза речи, если был выбран асинхронный режим
-     * @param	timeout	таймаут ожидания в миллисекундах
-     * @return	0 если успех и 1 если произошла ошибка
-     */
-    native public int wait(int timeout);
+    public String[] getAvailableVoices() {
+        int count = searchVoiceByAttributes(null);
+        if (count <= 0) return new String[0];
+
+        String[] voices = new String[count];
+        for (int i = 0; i < count; i++) {
+            String id = getNextVoiceIdFromList();
+            String desc = getLastVoiceDescription();
+            voices[i] = desc + "|" + id;
+        }
+        return voices;
+    }
+
+    public boolean selectVoice(String voiceId) {
+        if (selectVoiceById(voiceId) == 0) {
+            selectedVoiceId = voiceId;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean selectFirstVoice() {
+        int count = searchVoiceByAttributes(null);
+        if (count > 0) {
+            // Получаем ID первого голоса
+            String firstVoiceId = getNextVoiceIdFromList();
+            // Выбираем его
+            if (selectVoiceById(firstVoiceId) == 0) {
+                selectedVoiceId = firstVoiceId;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Дополнительные полезные методы
+    public void waitUntilDone(int timeout) {
+        wait(timeout);
+    }
+
+    public boolean setOutputToFile(String filename, int format) {
+        return stream(filename, format) == 0;
+    }
+
+    public boolean setOutputToDefault() {
+        return stream(null, 0) == 0;
+    }
+
+    public boolean isSpeaking() {
+        return isSpeaking;
+    }
+
 }
