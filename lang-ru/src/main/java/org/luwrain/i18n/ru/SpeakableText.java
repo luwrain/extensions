@@ -1,22 +1,10 @@
-/*
-   Copyright 2012-2024 Michael Pozhidaev <msp@luwrain.org>
-
-   This file is part of LUWRAIN.
-
-   LUWRAIN is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public
-   License as published by the Free Software Foundation; either
-   version 3 of the License, or (at your option) any later version.
-
-   LUWRAIN is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
-*/
+// SPDX-License-Identifier: BUSL-1.1
+// Copyright 2012-2026 Michael Pozhidaev <msp@luwrain.org>
 
 package org.luwrain.i18n.ru;
 
 import java.io.*;
+import org.apache.logging.log4j.*;
 
 import org.luwrain.core.*;
 import org.luwrain.core.Luwrain.SpeakableTextType;
@@ -27,8 +15,9 @@ import static org.luwrain.script.Hooks.*;
 
 final class SpeakableText
 {
+    static private final Logger log = LogManager.getLogger();
+
     static private final String
-	LOG_COMPONENT = Lang.LOG_COMPONENT,
 	HOOK_PROGRAMMING = "luwrain.i18n.ru.speakable.programming";
 
     private final HookContainer hookContainer;
@@ -79,7 +68,7 @@ final class SpeakableText
 	}
 	catch(Throwable e)
 	{
-	    Log.error(LOG_COMPONENT, "unable to load Inlandes rules: " + e.getClass().getName() + ": " + e.getMessage());
+	    log.error("unable to load Inlandes rules", e);
 	}
     }
 }

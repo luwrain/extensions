@@ -13,6 +13,7 @@ CommanderParentDirectory = Parent folder
 CommanderSelected = Marked
 CommanderSpecial = Special system file
 CommanderSymlink = Symbolic link
+CommanderRoot = Root directory
 CommandPopupName = Run
 CommandPopupPrefix = Command:
 ContextMenuName = Context menu

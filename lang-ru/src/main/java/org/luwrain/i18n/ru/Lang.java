@@ -1,22 +1,10 @@
-/*
-   Copyright 2012-2024 Michael Pozhidaev <msp@luwrain.org>
-
-   This file is part of LUWRAIN.
-
-   LUWRAIN is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public
-   License as published by the Free Software Foundation; either
-   version 3 of the License, or (at your option) any later version.
-
-   LUWRAIN is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
-*/
+// SPDX-License-Identifier: BUSL-1.1
+// Copyright 2012-2026 Michael Pozhidaev <msp@luwrain.org>
 
 package org.luwrain.i18n.ru;
 
 import java.util.*;
+import org.apache.logging.log4j.*;
 
 import org.luwrain.core.*;
 import org.luwrain.script.core.*;
@@ -25,7 +13,7 @@ import org.luwrain.nlp.*;
 
 final class Lang extends LangBase
 {
-    static final String LOG_COMPONENT = "ru";
+    static private final Logger log = LogManager.getLogger();
 
     private final ScriptCore  scriptCore;
     private final SpeakableText speakableText;
@@ -34,16 +22,15 @@ final class Lang extends LangBase
     Lang(Luwrain luwrain, Map<String, String> staticStrings, Map<String, String> chars)
     {
 	super("ru", luwrain, staticStrings, chars);
-	NullCheck.notNull(luwrain, "luwrain");
 	this.scriptCore = new ScriptCore(luwrain);
-	Log.debug(LOG_COMPONENT, "Loading Russian");
+	log.trace("Loading Russian");
 	for(ScriptFile s: luwrain.getScriptFilesList("ru"))
 	    try {
 		scriptCore.load(s);
 	    }
 	    catch(Throwable e)
 	    {
-		Log.error(LOG_COMPONENT, "unable to load " + s.toString() + ": " + e.getClass().getName() + ": " + e.getMessage());
+		log.error("unable to load {}", s.toString(), e);
 	    }
 	this.speakableText = new SpeakableText(scriptCore);
 	this.wordsList.loadFromResource();
@@ -56,7 +43,6 @@ final class Lang extends LangBase
 
     @Override public String getNumberStr(int count, String entities)
     {
-	NullCheck.notNull(entities, "entities");
 	switch(entities)
 	{
 	case "items":
@@ -74,14 +60,11 @@ return     "" + count + " " + afterNum(count, "минут", "минута", "м�
 
     @Override public String getSpeakableText(String text, Luwrain.SpeakableTextType type)
     {
-	NullCheck.notNull(text, "text");
-	NullCheck.notNull(type, "type");
 	return speakableText.process(text, type);
     }
 
     @Override public Word[] getWord(String word)
     {
-	NullCheck.notEmpty(word, "word");
 	return wordsList.findWord(word);
     }
 
