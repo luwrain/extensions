@@ -41,6 +41,14 @@ CpSoundsListChangePopupPrefix = New sound file:
 CpSoundsList = Current sounds scheme
 CpSound = Sound
 CpSpeech = Speech
+CpSpeechMainEngineName = Main engine:
+CpSpeechMainEngineParams = Main engine parameters:
+CpSpeechListeningEngineName = Listening engine:
+CpSpeechListeningEngineParams = Listening engine parameters:
+CpSpeechListeningPitch = Listening pitch:
+CpSpeechListeningRate = Listening rate:
+
+CpSpeechGeneral = Common speech output settings
 CpSysDevices = System devices
 CpTreeRoot = Control panel
 CpUiDesktopEscapeCommand = Desktop escape command:
