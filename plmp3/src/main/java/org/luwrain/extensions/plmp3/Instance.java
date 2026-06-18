@@ -1,34 +1,32 @@
 // SPDX-License-Identifier: BUSL-1.1
-// Copyright 2012-2025 Michael Pozhidaev <msp@luwrain.org>
+// Copyright 2012-2026 Michael Pozhidaev <msp@luwrain.org>
 // Copyright 2015-2016 Roman Volovodov <gr.rPman@gmail.com>
 
 package org.luwrain.extensions.plmp3;
 
 import java.io.*;//BufferedInputStream;
-//import java.io.InputStream;
 import java.net.*;
-//import java.util.*;
-//import java.util.concurrent.*;
 import javazoom.jl.decoder.*;
+import org.apache.logging.log4j.*;
 
 import org.luwrain.core.*;
 
+import static java.util.Objects.*;
+
 final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 {
-    static final String
-	LOG_COMPONENT = "plmp3";
+    static private final Logger log = LogManager.getLogger();
 
     private final Luwrain luwrain;
     private final MediaResourcePlayer.Listener listener;
-    //    private FutureTask task = null;
     private Runnable task = null;
     private boolean finishing = false;
     private CustomDevice device = null;
 
     Instance(Luwrain luwrain, MediaResourcePlayer.Listener listener)
     {
-	NullCheck.notNull(luwrain, "luwrain");
-	NullCheck.notNull(listener, "listener");
+	requireNonNull(luwrain, "luwrain can't be null");
+	requireNonNull(listener, "listener can't be null");
 	this.luwrain = luwrain;
 	this.listener = listener;
     }
@@ -100,7 +98,7 @@ bitstream = new Bitstream(is);
 	    }
 	    catch (Throwable e)
 	    {
-		Log.error(LOG_COMPONENT, e.getClass().getName() + ":" + e.getMessage());
+		log.error("Error playing media resource", e);
 		e.printStackTrace();
 		finishing = true;
 		if (e instanceof Exception)

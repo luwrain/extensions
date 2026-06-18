@@ -1,14 +1,17 @@
 // SPDX-License-Identifier: BUSL-1.1
-// Copyright 2012-2025 Michael Pozhidaev <msp@luwrain.org>
+// Copyright 2012-2026 Michael Pozhidaev <msp@luwrain.org>
 
 package org.luwrain.extensions.plfx;
 
 import java.net.*;
+import org.apache.logging.log4j.*;
 
 import javafx.scene.media.*;
 
 import org.luwrain.core.*;
 import org.luwrain.graphical.*;
+
+import static java.util.Objects.*;
 
 /**
  * Implementation of {@link MediaResourcePlayer.Instance} that uses
@@ -21,7 +24,7 @@ import org.luwrain.graphical.*;
  */
 final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 {
-    static final String LOG_COMPONENT = "plfx";
+    static private final Logger log = LogManager.getLogger();
 
     private final Luwrain luwrain;
     private final MediaResourcePlayer.Listener listener;
@@ -34,8 +37,8 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 
     Instance(Luwrain luwrain, MediaResourcePlayer.Listener listener)
     {
-	NullCheck.notNull(luwrain, "luwrain");
-	NullCheck.notNull(listener, "listener");
+	requireNonNull(luwrain, "luwrain can't be null");
+	requireNonNull(listener, "listener can't be null");
 	this.luwrain = luwrain;
 	this.listener = listener;
     }
@@ -136,7 +139,7 @@ final class Instance implements org.luwrain.core.MediaResourcePlayer.Instance
 	    }
 	    catch (Throwable e)
 	    {
-		Log.error(LOG_COMPONENT, e.getClass().getName() + ":" + e.getMessage());
+		log.error("Error playing media resource", e);
 		e.printStackTrace();
 		finishing = true;
 		if (e instanceof Exception)

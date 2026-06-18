@@ -3,6 +3,7 @@
 
 package org.luwrain.extensions.plmp3;
 
+import org.apache.logging.log4j.*;
 import javax.sound.sampled.*;
 
 import javazoom.jl.decoder.Decoder;
@@ -18,8 +19,8 @@ import org.luwrain.core.*;
 */
 class CustomDevice extends AudioDeviceBase implements AutoCloseable
 {
-static private final String LOG_COMPONENT = Instance.LOG_COMPONENT;
-
+    static private final Logger log = LogManager.getLogger();
+    
     SourceDataLine	source = null;
     private final int initialVolume;
     private AudioFormat		fmt = null;
@@ -37,7 +38,7 @@ static private final String LOG_COMPONENT = Instance.LOG_COMPONENT;
 	if (source == null)
 	    return;
 	if (!org.luwrain.util.SoundUtils.setLineMasterGanePercent(source, value))
-	    Log.error(LOG_COMPONENT, "unable to set volume (" + value + ")");
+	    log.error("Unable to set volume ({})", value);
 	    }
 
     @Override protected void openImpl() throws JavaLayerException
@@ -110,7 +111,7 @@ static private final String LOG_COMPONENT = Instance.LOG_COMPONENT;
 		source = (SourceDataLine)line;
 		source.open(fmt);
 		if (!org.luwrain.util.SoundUtils.setLineMasterGanePercent(source, initialVolume))
-		    Log.error(LOG_COMPONENT, "unable to set initial volume (" + initialVolume + ")");
+		    log.error("unable to set initial volume ({})", initialVolume);
                 source.start();
             }
 	}
