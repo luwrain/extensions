@@ -26,7 +26,7 @@ public final class Player implements MediaResourcePlayer
 
     @Override public String getSupportedMimeType()
     {
-	return ContentTypes.SOUND_MP3_DEFAULT;
+	return "audio/mpeg";
     }
 
     @Override public String getExtObjName()
